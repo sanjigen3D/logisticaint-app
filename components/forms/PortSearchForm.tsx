@@ -32,57 +32,70 @@ const PortSearchForm = () => {
 	}
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.titleContainer}>
-				<Text style={styles.title} >Buscar Puertos</Text>
+		<View className="mt-10 w-[95%] md:max-w-3xl md:w-1/2 gap-6 border p-4 rounded-xl border-[#596d91] bg-[#ebf1f8]" >
+			<View className="items-center">
+				<Text className="text-primary font-bold text-2xl">
+					Buscar Itinerario
+				</Text>
 			</View>
-			<View>
-				<Text style={styles.text}>Origen</Text>
+			<View className="gap-1.5">
+				<Text className={"text-primary font-bold text-xl"}>
+					Origen
+				</Text>
 				<Controller
 					control={control}
 					name="origin"
 					render={({field: {onChange, value, disabled, onBlur}}) => (
-						<View>
+						<View className="gap-1.5">
 							<TextInput
-								style={styles.input}
+								className="border border-foreground outline-foreground p-2 rounded-md text-base placeholder:text-foreground text-primary"
 								onChangeText={onChange}
 								value={value}
 								placeholder="San Antonio, Chile"
 								/>
 							{errors.origin && (
-								<Text style={styles.errorMessage}>{errors.origin.message}</Text>
+								<Text className="text-error font-semibold">
+									{errors.origin.message}
+								</Text>
 							)}
 						</View>
 					)}
 					/>
 			</View>
 
-			<View>
-				<Text style={styles.text}>Destino</Text>
+			<View className="gap-1.5">
+				<Text className={"text-primary font-bold text-xl"}>
+					Destino
+				</Text>
 				<Controller
 					control={control}
 					name="destination"
 					render={({field: {onChange, value, disabled, onBlur}}) => (
-						<View>
+						<View className="gap-1.5">
 							<TextInput
-								style={styles.input}
+								className="border border-foreground outline-foreground p-2 rounded-md text-base placeholder:text-foreground text-primary"
 								onChangeText={onChange}
 								value={value}
 								placeholder="Shanghai, China"
 							/>
 							{errors.destination && (
-								<Text style={styles.errorMessage}>{errors.destination.message}</Text>
+								<Text className="text-error font-semibold">
+									{errors.destination.message}
+								</Text>
 							)}
 						</View>
 					)}
 				/>
 			</View>
 
-			<Pressable style={isHovered ? styles.buttonHover: styles.button}
+			<Pressable style={isHovered ? styles.buttonHover : styles.button}
+			           className="w-full p-2 rounded-md text-white items-center hover:!bg-[#091836]"
 			           onPress={handleSubmit(onSubmit)}
 			           onPressIn={() => setIsHovered(true)}
 			           onPressOut={() => setIsHovered(false)}>
-				<Text style={styles.buttonText}>Search</Text>
+				<Text style={styles.buttonText} className={"text-base font-semibold"}>
+					Buscar
+				</Text>
 			</Pressable>
 		</View>
 	)
@@ -90,62 +103,15 @@ const PortSearchForm = () => {
 export default PortSearchForm
 
 const styles = StyleSheet.create({
-	container:{
-		marginTop: 20,
-		marginEnd: 'auto',
-		marginStart: 'auto',
-		width: "50%",
-		gap: 20,
-		borderWidth: 1,
-		padding: 5,
-		borderRadius: 10,
-		backgroundColor: '#ebf1f8',
-		borderColor: '#596d91'
-	},
-	input: {
-		borderWidth: 1,
-		borderColor: '#b2c1e1',
-		padding: 10,
-		borderRadius: 5,
-		fontSize: 14,
-		margin: 2,
-		color: '#33548e',
-		outlineColor: '#596d91',
-	},
 	button: {
 		backgroundColor: '#5a8ce8',
-		padding: 10,
-		borderRadius: 5,
 		borderColor: '#5a8ce8',
-		alignItems: 'center',
 	},
 	buttonHover: {
 		backgroundColor: '#091836',
-		padding: 10,
-		borderRadius: 5,
 		borderColor: '#091836',
-		alignItems: 'center'
 	},
 	buttonText: {
 		color: 'white',
-		fontSize: 16,
 	},
-	errorMessage: {
-		color: '#c33f3f',
-		fontSize: 16,
-	},
-	text: {
-		color: '#33548e',
-		fontSize: 20,
-		fontWeight: 'bold'
-	},
-	title: {
-		color: '#33548e',
-		fontSize: 24,
-		fontWeight: 'bold',
-	},
-	titleContainer: {
-		alignItems: 'center',
-		paddingTop: 10
-	}
 })
