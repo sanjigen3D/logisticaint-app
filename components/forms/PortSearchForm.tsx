@@ -71,7 +71,7 @@ const PortSearchForm = () => {
 								placeholder="Shanghai, China"
 							/>
 							{errors.destination && (
-								<Text>{errors.destination.message}</Text>
+								<Text style={styles.errorMessage}>{errors.destination.message}</Text>
 							)}
 						</View>
 					)}
