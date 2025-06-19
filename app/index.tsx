@@ -1,15 +1,13 @@
-import { Text, View } from "react-native";
+import { SafeAreaView } from "react-native";
+import PortSearchForm from "@/components/forms/PortSearchForm";
 
 export default function Index() {
   return (
-    <View
-      style={{
+    <SafeAreaView style={{
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+        alignItems: "center"
+      }}>
+      <PortSearchForm />
+    </SafeAreaView>
   );
 }
