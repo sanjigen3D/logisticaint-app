@@ -7,7 +7,7 @@ export default function Index() {
         flex: 1,
         alignItems: "center"
       }}
-    className={"min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 flex items-center justify-center"}
+    className={"min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pt-10 flex items-center px-2 md:px-0"}
     >
       <PortSearchForm />
     </SafeAreaView>
