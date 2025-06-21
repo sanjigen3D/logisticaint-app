@@ -50,15 +50,19 @@ const PortSearchForm = () => {
 	const debouncedDestination = useDebounce(destinationQuery, 400);
 
 	// Buscar sugerencias para origen
-	type Port = { name: string };
+	type Port = { name: string, country: string };
 
 	const fetchPorts = async (query: string): Promise<string[]> => {
 		if (query.length < 3) return [];
 		try {
-			const res = await fetch(`https://marines-services.vercel.app/portSearch?name=${encodeURIComponent(query)}`);
+			const res = await fetch(`http://localhost:5005/portSearch?name=${encodeURIComponent(query)}`);
 			if (!res.ok) return [];
 			const data: Port[] = await res.json();
-			return data.map((port) => port.name);
+
+			// aquí retorno cada puerto encontrado para ser mostrado en el autocompletar
+			return data.map((port) => {
+				return `${port.name}, ${port.country}`;
+			});
 		} catch {
 			return [];
 		}
@@ -128,8 +132,9 @@ const PortSearchForm = () => {
 								/>
 								{loadingOrigin && (
 									<ActivityIndicator
-										size='small'
+										size='large'
 										color='#5a8ce8'
+										className={"mt-2"}
 									/>
 								)}
 								{originSuggestions.length > 0 && (
@@ -178,14 +183,15 @@ const PortSearchForm = () => {
 								/>
 								{loadingDestination && (
 									<ActivityIndicator
-										size='small'
+										size='large'
 										color='#5a8ce8'
+										className={"mt-2"}
 									/>
 								)}
 								{destinationSuggestions.length > 0 && (
 									<FlatList
 										data={destinationSuggestions}
-										keyExtractor={(item) => item}
+										keyExtractor={(item, index) => index.toString()}
 										renderItem={({ item }) => (
 											<TouchableOpacity
 												onPress={() => {
