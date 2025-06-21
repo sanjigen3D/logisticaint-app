@@ -6,7 +6,9 @@ export default function Index() {
     <SafeAreaView style={{
         flex: 1,
         alignItems: "center"
-      }}>
+      }}
+    className={"min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 flex items-center justify-center"}
+    >
       <PortSearchForm />
     </SafeAreaView>
   );
