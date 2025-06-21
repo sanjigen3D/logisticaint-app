@@ -45,7 +45,6 @@ const PortSearchForm = () => {
 	const [destinationSuggestions, setDestinationSuggestions] = useState<string[]>([]);
 	const [loadingOrigin, setLoadingOrigin] = useState(false);
 	const [loadingDestination, setLoadingDestination] = useState(false);
-
 	const debouncedOrigin = useDebounce(originQuery, 400);
 	const debouncedDestination = useDebounce(destinationQuery, 400);
 
@@ -55,7 +54,7 @@ const PortSearchForm = () => {
 	const fetchPorts = async (query: string): Promise<string[]> => {
 		if (query.length < 3) return [];
 		try {
-			const res = await fetch(`http://localhost:5005/portSearch?name=${encodeURIComponent(query)}`);
+			const res = await fetch(`https://marines-services.vercel.app/portSearch?name=${encodeURIComponent(query)}`);
 			if (!res.ok) return [];
 			const data: Port[] = await res.json();
 
