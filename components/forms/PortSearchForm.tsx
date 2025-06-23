@@ -53,8 +53,9 @@ const PortSearchForm = () => {
 
 	const fetchPorts = async (query: string): Promise<string[]> => {
 		if (query.length < 3) return [];
+		const newQuery = query.toLowerCase();
 		try {
-			const res = await fetch(`https://marines-services.vercel.app/portSearch?name=${encodeURIComponent(query)}`);
+			const res = await fetch(`https://marines-services.vercel.app/portSearch?name=${encodeURIComponent(newQuery)}`);
 			if (!res.ok) return [];
 			const data: Port[] = await res.json();
 
