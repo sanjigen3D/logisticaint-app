@@ -14,6 +14,8 @@ import {
 import { z } from "zod";
 import useDebounce from "../../lib/useDebounce";
 import {MapPin} from "lucide-react-native"
+import { router } from 'expo-router';
+
 
 const formSchema = z.object({
 	origin: z.string().min(3, {
@@ -94,9 +96,15 @@ const PortSearchForm = () => {
 	}, [ debouncedDestination ]);
 
 	const onSubmit = (data: FormData) => {
-		console.log(data);
-		// consulta a la api y obtención de datos
+		router.push({
+			pathname: "/results",
+			params: {
+				origin: data.origin,
+				destination: data.destination
+			}
+		});
 	};
+};
 
 	return (
 		<View className="w-full max-w-2xl shadow-xl p-2 space-y-4 rounded-lg">
