@@ -97,14 +97,13 @@ const PortSearchForm = () => {
 
 	const onSubmit = (data: FormData) => {
 		router.push({
-			pathname: "/results",
+			pathname: "/itineraries",
 			params: {
 				origin: data.origin,
 				destination: data.destination
 			}
 		});
 	};
-};
 
 	return (
 		<View className="w-full max-w-2xl shadow-xl p-2 space-y-4 rounded-lg">
