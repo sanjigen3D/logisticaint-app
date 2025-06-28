@@ -14,7 +14,7 @@ import {
 	Text,
 	View,
 } from 'react-native';
-import useDebounce from '../../../lib/useDebounce';
+import useDebounce from '@/lib/useDebounce';
 
 const PortSearchForm = () => {
 	const {

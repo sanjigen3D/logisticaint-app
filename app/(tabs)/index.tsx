@@ -7,15 +7,7 @@ import {
 } from 'react-native';
 import PortSearchForm from '@/components/forms/itinery/PortSearchForm';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-	Ship,
-	ArrowUpDown,
-	Search,
-	MapPin,
-	Calendar,
-	Box,
-} from 'lucide-react-native';
-import { router } from 'expo-router';
+import { Ship } from 'lucide-react-native';
 
 export default function Index() {
 	return (
