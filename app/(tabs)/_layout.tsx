@@ -1,8 +1,12 @@
-import { Tabs } from 'expo-router';
+import { Tabs, Stack } from 'expo-router';
 import { Platform } from 'react-native';
-import { Search, Package, History, User } from 'lucide-react-native';
+import { Search } from 'lucide-react-native';
 
 export default function TabLayout() {
+	if (Platform.OS === 'web') {
+		return <Stack screenOptions={{ headerShown: false }} />;
+	}
+
 	return (
 		<Tabs
 			screenOptions={{
@@ -13,9 +17,9 @@ export default function TabLayout() {
 					backgroundColor: '#fff',
 					borderTopWidth: 1,
 					borderTopColor: '#e2e8f0',
-					paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+					paddingBottom: 20,
 					paddingTop: 10,
-					height: Platform.OS === 'ios' ? 90 : 70,
+					height: 90,
 				},
 				tabBarLabelStyle: {
 					fontSize: 12,
