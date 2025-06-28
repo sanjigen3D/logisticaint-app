@@ -1,4 +1,4 @@
-import LocationInput from '@/components/forms/LocationInput';
+import LocationInput from '@/components/forms/itinery/LocationInput';
 import { FormData, Port } from '@/lib/types';
 import { formSchema } from '@/lib/validations/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +14,7 @@ import {
 	Text,
 	View,
 } from 'react-native';
-import useDebounce from '../../lib/useDebounce';
+import useDebounce from '../../../lib/useDebounce';
 
 const PortSearchForm = () => {
 	const {

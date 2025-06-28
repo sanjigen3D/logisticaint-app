@@ -5,7 +5,7 @@ import {
 	View,
 	Text,
 } from 'react-native';
-import PortSearchForm from '@/components/forms/PortSearchForm';
+import PortSearchForm from '@/components/forms/itinery/PortSearchForm';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
 	Ship,

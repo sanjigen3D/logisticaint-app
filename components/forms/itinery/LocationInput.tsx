@@ -1,4 +1,4 @@
-import SuggestionsModal from '@/components/forms/SuggestModal';
+import SuggestionsModal from '@/components/forms/itinery/SuggestModal';
 import { MapPin } from 'lucide-react-native';
 import {
 	Controller,
