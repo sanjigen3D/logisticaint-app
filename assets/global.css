@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.inputContainerItinerario {
+    @apply flex-row items-center bg-[#f8fafc] border rounded-xl border-[#e2e8f0] px-4 py-3 flex !important;
+}
+
+#originWrapper, #destinationWrapper {
+    @apply relative mb-4 !important;
+}

@@ -12,6 +12,7 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.1",
     "@expo/metro-runtime": "~5.0.4",
     "@expo/vector-icons": "^14.1.0",
     "@hookform/resolvers": "^5.1.1",
@@ -33,6 +34,7 @@
     "expo-web-browser": "~14.1.6",
     "lucide-react-native": "^0.519.0",
     "nativewind": "^4.1.23",
+    "prettier": "^3.6.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.58.1",
@@ -43,7 +45,8 @@
     "react-native-screens": "~4.11.1",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
-    "zod": "^3.25.67"
+    "zod": "^3.25.67",
+    "expo-linear-gradient": "~14.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
