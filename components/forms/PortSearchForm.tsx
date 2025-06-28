@@ -1,4 +1,10 @@
+import LocationInput from '@/components/forms/LocationInput';
+import { FormData, Port } from '@/lib/types';
+import { formSchema } from '@/lib/validations/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { Search } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
@@ -9,17 +15,12 @@ import {
 	View,
 } from 'react-native';
 import useDebounce from '../../lib/useDebounce';
-import { Search } from 'lucide-react-native';
-import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Port, FormData } from '@/lib/types';
-import LocationInput from '@/components/forms/LocationInput';
-import { formSchema } from '@/lib/validations/schemas';
 
 const PortSearchForm = () => {
 	const {
 		control,
 		handleSubmit,
+		watch,
 		formState: { errors, isValid, isLoading },
 	} = useForm<FormData>({
 		resolver: zodResolver(formSchema),
@@ -34,6 +35,11 @@ const PortSearchForm = () => {
 			},
 		},
 	});
+
+	// Observar los valores actuales del formulario
+	const originValue = watch('origin');
+	const destinationValue = watch('destination');
+
 	const [originQuery, setOriginQuery] = useState('');
 	const [destinationQuery, setDestinationQuery] = useState('');
 	const [originSuggestions, setOriginSuggestions] = useState<Port[]>([]);
@@ -67,30 +73,51 @@ const PortSearchForm = () => {
 		}
 	};
 
+	// Función para verificar si la query coincide con el puerto seleccionado
+	const isQueryMatchingSelectedPort = (
+		query: string,
+		selectedPort: Port,
+	): boolean => {
+		if (!selectedPort.name || !selectedPort.country) return false;
+		const fullPortName = `${selectedPort.name}, ${selectedPort.country}`;
+		return (
+			fullPortName.toLowerCase().includes(query.toLowerCase()) ||
+			selectedPort.name.toLowerCase().includes(query.toLowerCase())
+		);
+	};
+
 	// Efectos para buscar sugerencias
 	useEffect(() => {
-		if (debouncedOrigin.length >= 3) {
+		// Solo hacer fetch si la query no coincide con el puerto ya seleccionado
+		if (
+			debouncedOrigin.length >= 3 &&
+			!isQueryMatchingSelectedPort(debouncedOrigin, originValue)
+		) {
 			setLoadingOrigin(true);
 			fetchPorts(debouncedOrigin).then((results) => {
 				setOriginSuggestions(results);
 				setLoadingOrigin(false);
 			});
-		} else {
+		} else if (debouncedOrigin.length < 3) {
 			setOriginSuggestions([]);
 		}
-	}, [debouncedOrigin]);
+	}, [debouncedOrigin, originValue]);
 
 	useEffect(() => {
-		if (debouncedDestination.length >= 3) {
+		// Solo hacer fetch si la query no coincide con el puerto ya seleccionado
+		if (
+			debouncedDestination.length >= 3 &&
+			!isQueryMatchingSelectedPort(debouncedDestination, destinationValue)
+		) {
 			setLoadingDestination(true);
 			fetchPorts(debouncedDestination).then((results) => {
 				setDestinationSuggestions(results);
 				setLoadingDestination(false);
 			});
-		} else {
+		} else if (debouncedDestination.length < 3) {
 			setDestinationSuggestions([]);
 		}
-	}, [debouncedDestination]);
+	}, [debouncedDestination, destinationValue]);
 
 	const onSubmit = (data: FormData) => {
 		router.push({
