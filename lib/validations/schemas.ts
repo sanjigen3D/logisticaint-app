@@ -8,6 +8,7 @@ export const formSchema = z.object({
 		country: z
 			.string()
 			.min(2, { message: 'El pais debe tener al menos 2 caracteres.' }),
+		location: z.string().optional(),
 	}),
 	destination: z.object({
 		name: z.string().min(3, {
@@ -16,5 +17,6 @@ export const formSchema = z.object({
 		country: z
 			.string()
 			.min(2, { message: 'El pais debe tener al menos 2 caracteres.' }),
+		location: z.string().optional(),
 	}),
 });

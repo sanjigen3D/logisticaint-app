@@ -48,8 +48,8 @@ const PortSearchForm = () => {
 	);
 	const [loadingOrigin, setLoadingOrigin] = useState(false);
 	const [loadingDestination, setLoadingDestination] = useState(false);
-	const debouncedOrigin = useDebounce(originQuery, 400);
-	const debouncedDestination = useDebounce(destinationQuery, 400);
+	const debouncedOrigin = useDebounce(originQuery, 600);
+	const debouncedDestination = useDebounce(destinationQuery, 600);
 
 	const fetchPorts = async (query: string): Promise<Port[]> => {
 		if (query.length < 3) return [];
@@ -66,6 +66,7 @@ const PortSearchForm = () => {
 				return {
 					name: port.name,
 					country: port.country,
+					location: port.location,
 				};
 			});
 		} catch {
@@ -125,8 +126,10 @@ const PortSearchForm = () => {
 			params: {
 				origin: data.origin.name,
 				originCountry: data.origin.country,
-				destination: data.destination.country + ',' + data.destination.name,
+				oriLocation: data.origin.location,
+				destination: data.destination.name,
 				destinationCountry: data.destination.country,
+				destLocation: data.destination.location,
 			},
 		});
 	};

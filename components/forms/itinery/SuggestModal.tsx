@@ -38,8 +38,13 @@ const SuggestionsModal = ({
 				>
 					<Anchor size={16} color={iconColor} />
 					<View style={styles.suggestionContent}>
-						<Text style={styles.suggestionName}>{item.name}</Text>
-						<Text style={styles.suggestionCode}>{item.country}</Text>
+						<Text style={styles.suggestionName}>
+							{item.name}, {item.country}
+						</Text>
+						<View className="flex flex-row">
+							<Text style={styles.suggestionCode}>{item.country}</Text>
+							<Text style={styles.suggestionCode}>{item.location}</Text>
+						</View>
 					</View>
 				</TouchableOpacity>
 			)}
