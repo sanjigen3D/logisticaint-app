@@ -1,5 +1,5 @@
 import { ZimApiResponse } from '@/components/results/zim/zimTypes';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import LoadingComp from '@/components/Loading';
 import ResultCard from '@/components/results/ResultCard';
 import { useQuery } from '@tanstack/react-query';
@@ -25,6 +25,13 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 		enabled: !!origin && !!destination,
 	});
 
+	if (!data) return null;
+
+	const {
+		response: { routes },
+	} = data as ZimApiResponse;
+	console.log(routes.length);
+
 	if (isLoading) {
 		return (
 			<LoadingComp loading={isLoading} text={'Cargando opciones de envío...'} />
@@ -40,10 +47,29 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 		);
 	}
 
-	return (
-		<View>
-			<ResultCard />
-		</View>
-	);
+	if (routes.length > 0) {
+		return (
+			<View style={styles.summaryContainer}>
+				<Text style={styles.summaryTitle}>
+					Zim Integrated Shipping Services ({routes.length})
+				</Text>
+				<ResultCard />
+			</View>
+		);
+	}
+
+	return <ActivityIndicator size="large" color="#5a8ce8" />;
 };
 export default ZimResults;
+
+const styles = StyleSheet.create({
+	summaryContainer: {
+		paddingTop: 20,
+		paddingBottom: 16,
+	},
+	summaryTitle: {
+		fontSize: 20,
+		fontFamily: 'Inter-SemiBold',
+		color: '#1e293b',
+	},
+});

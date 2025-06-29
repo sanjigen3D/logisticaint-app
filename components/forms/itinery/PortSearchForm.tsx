@@ -48,8 +48,8 @@ const PortSearchForm = () => {
 	);
 	const [loadingOrigin, setLoadingOrigin] = useState(false);
 	const [loadingDestination, setLoadingDestination] = useState(false);
-	const debouncedOrigin = useDebounce(originQuery, 800);
-	const debouncedDestination = useDebounce(destinationQuery, 800);
+	const debouncedOrigin = useDebounce(originQuery, 600);
+	const debouncedDestination = useDebounce(destinationQuery, 600);
 
 	const fetchPorts = async (query: string): Promise<Port[]> => {
 		if (query.length < 3) return [];

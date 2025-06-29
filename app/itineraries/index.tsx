@@ -1,7 +1,6 @@
 import {
 	View,
 	Text,
-	ActivityIndicator,
 	ScrollView,
 	StyleSheet,
 	TouchableOpacity,
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
 		padding: 8,
 	},
 	mainContainer: {
-		flex: 1,
+		flex: 6,
 		width: '100%',
 		maxWidth: 900,
 		alignSelf: 'center',
