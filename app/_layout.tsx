@@ -9,6 +9,7 @@ import {
 	Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import '@/assets/global.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,9 +32,11 @@ export default function RootLayout() {
 	}
 
 	return (
-		<Stack screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="tabs" options={{ headerShown: false }} />
-			<Stack.Screen name={'+not-found'} />
-		</Stack>
+		<QueryClientProvider client={new QueryClient()}>
+			<Stack screenOptions={{ headerShown: false }}>
+				<Stack.Screen name="tabs" options={{ headerShown: false }} />
+				<Stack.Screen name={'+not-found'} />
+			</Stack>
+		</QueryClientProvider>
 	);
 }

@@ -22,7 +22,7 @@ export default function Index() {
 			>
 				{/* Header */}
 				<LinearGradient
-					colors={['#1e40af', '#3b82f6']}
+					colors={['#07174c', '#0b3477']}
 					className={Platform.OS === 'ios' ? 'pt-16 pb-10' : 'py-10'}
 				>
 					<View className="container self-center px-5">
