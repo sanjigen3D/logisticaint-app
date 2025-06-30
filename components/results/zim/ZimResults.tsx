@@ -1,8 +1,20 @@
-import { ZimApiResponse } from '@/components/results/zim/zimTypes';
-import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	Text,
+	ActivityIndicator,
+	ScrollView,
+	Platform,
+	TouchableOpacity,
+	Pressable,
+} from 'react-native';
 import LoadingComp from '@/components/Loading';
 import ResultCard from '@/components/results/ResultCard';
 import { useQuery } from '@tanstack/react-query';
+import { ZimResponse } from '@/lib/interfaces';
+import { mapZimResponseToUnifiedRoutes } from '@/lib/mappers/ZimMapper';
+import { ChevronsDown, ChevronsUp } from 'lucide-react-native';
+import { useState } from 'react';
 
 type ZimResultsProps = {
 	origin: string;
@@ -19,6 +31,7 @@ const fetchZimData = async (origCode: string, destCode: string) => {
 
 // En este componente llamaré a la API con la info pasada de la vista en result
 const ZimResults = ({ origin, destination }: ZimResultsProps) => {
+	const [expanded, setExpanded] = useState(true);
 	const { data, isLoading, isError, error } = useQuery({
 		queryKey: ['zimResults', origin, destination],
 		queryFn: () => fetchZimData(origin, destination),
@@ -27,10 +40,7 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 
 	if (!data) return null;
 
-	const {
-		response: { routes },
-	} = data as ZimApiResponse;
-	console.log(routes.length);
+	const routes = mapZimResponseToUnifiedRoutes(data as ZimResponse);
 
 	if (isLoading) {
 		return (
@@ -49,12 +59,30 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 
 	if (routes.length > 0) {
 		return (
-			<View style={styles.summaryContainer}>
-				<Text style={styles.summaryTitle}>
-					Zim Integrated Shipping Services ({routes.length})
-				</Text>
-				<ResultCard />
-			</View>
+			<ScrollView showsVerticalScrollIndicator={Platform.OS !== 'web'}>
+				<View style={styles.summaryContainer}>
+					<View className={'flex flex-row gap-3 items-center'}>
+						<Text style={styles.summaryTitle}>
+							Zim Integrated Shipping Services ({routes.length})
+						</Text>
+						<Pressable
+							className="hover:bg-gray-200 rounded-full p-1"
+							onPress={() => setExpanded(!expanded)}
+						>
+							{expanded ? (
+								<ChevronsUp size={24} color="#000" />
+							) : (
+								<ChevronsDown size={24} color="#000" />
+							)}
+						</Pressable>
+					</View>
+
+					{expanded &&
+						routes.map((route, index) => (
+							<ResultCard key={index} route={route} />
+						))}
+				</View>
+			</ScrollView>
 		);
 	}
 
@@ -71,5 +99,11 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontFamily: 'Inter-SemiBold',
 		color: '#1e293b',
+	},
+	scrollView: {
+		flex: 1,
+	},
+	scrollContent: {
+		flexGrow: 1,
 	},
 });
