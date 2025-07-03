@@ -79,6 +79,7 @@ const PortSearchForm = () => {
 		query: string,
 		selectedPort: Port,
 	): boolean => {
+		if (!query || query.length < 3) return true;
 		if (!selectedPort.name || !selectedPort.country) return false;
 		const fullPortName = `${selectedPort.name}, ${selectedPort.country}`;
 		return (

@@ -62,7 +62,11 @@ const LocationInput = ({
 							}}
 							className="flex flex-1 text-base text-[#1e293b] placeholder:text-foreground pl-4"
 							onChangeText={(text) => {
-								onChange({ ...value, name: text });
+								if (!text) {
+									onChange({ name: '', country: '' });
+								} else {
+									onChange({ ...value, name: text });
+								}
 								setQuery(text);
 							}}
 							value={value.name}
