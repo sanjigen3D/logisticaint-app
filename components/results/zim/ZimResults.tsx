@@ -1,20 +1,19 @@
-import {
-	View,
-	StyleSheet,
-	Text,
-	ActivityIndicator,
-	ScrollView,
-	Platform,
-	TouchableOpacity,
-	Pressable,
-} from 'react-native';
 import LoadingComp from '@/components/Loading';
 import ResultCard from '@/components/results/ResultCard';
-import { useQuery } from '@tanstack/react-query';
 import { ZimResponse } from '@/lib/interfaces';
 import { mapZimResponseToUnifiedRoutes } from '@/lib/mappers/ZimMapper';
+import { useQuery } from '@tanstack/react-query';
 import { ChevronsDown, ChevronsUp } from 'lucide-react-native';
 import { useState } from 'react';
+import {
+	ActivityIndicator,
+	Platform,
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	Text,
+	View,
+} from 'react-native';
 
 type ZimResultsProps = {
 	origin: string;
@@ -39,6 +38,14 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 	});
 
 	if (!data) return null;
+
+	if (!data.response) {
+		return (
+			<View className="mt-20">
+				<LoadingComp loading={true} text={'No se encontraron resultados...'} />
+			</View>
+		);
+	}
 
 	const routes = mapZimResponseToUnifiedRoutes(data as ZimResponse);
 

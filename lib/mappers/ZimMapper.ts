@@ -1,8 +1,9 @@
-import { ZimResponse, UnifiedRoute } from '@/lib/interfaces';
+import { UnifiedRoute, ZimResponse } from '@/lib/interfaces';
 
 export function mapZimResponseToUnifiedRoutes(
 	data: ZimResponse,
 ): UnifiedRoute[] {
+	if (!data.response.routes) return [];
 	return data.response.routes.map((route) => ({
 		id: `ZIM-${route.routeSequence}`,
 		carrier: 'ZIM',

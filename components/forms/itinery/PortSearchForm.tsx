@@ -1,5 +1,6 @@
 import LocationInput from '@/components/forms/itinery/LocationInput';
 import { FormData, Port } from '@/lib/types';
+import useDebounce from '@/lib/useDebounce';
 import { formSchema } from '@/lib/validations/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,7 +15,6 @@ import {
 	Text,
 	View,
 } from 'react-native';
-import useDebounce from '@/lib/useDebounce';
 
 const PortSearchForm = () => {
 	const {
@@ -90,33 +90,23 @@ const PortSearchForm = () => {
 	// Efectos para buscar sugerencias
 	useEffect(() => {
 		// Solo hacer fetch si la query no coincide con el puerto ya seleccionado
-		if (
-			debouncedOrigin.length >= 3 &&
-			!isQueryMatchingSelectedPort(debouncedOrigin, originValue)
-		) {
+		if (!isQueryMatchingSelectedPort(debouncedOrigin, originValue)) {
 			setLoadingOrigin(true);
 			fetchPorts(debouncedOrigin).then((results) => {
 				setOriginSuggestions(results);
 				setLoadingOrigin(false);
 			});
-		} else if (debouncedOrigin.length < 3) {
-			setOriginSuggestions([]);
 		}
 	}, [debouncedOrigin, originValue]);
 
 	useEffect(() => {
 		// Solo hacer fetch si la query no coincide con el puerto ya seleccionado
-		if (
-			debouncedDestination.length >= 3 &&
-			!isQueryMatchingSelectedPort(debouncedDestination, destinationValue)
-		) {
+		if (!isQueryMatchingSelectedPort(debouncedDestination, destinationValue)) {
 			setLoadingDestination(true);
 			fetchPorts(debouncedDestination).then((results) => {
 				setDestinationSuggestions(results);
 				setLoadingDestination(false);
 			});
-		} else if (debouncedDestination.length < 3) {
-			setDestinationSuggestions([]);
 		}
 	}, [debouncedDestination, destinationValue]);
 

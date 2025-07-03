@@ -1,14 +1,14 @@
-import {
-	View,
-	Text,
-	ScrollView,
-	StyleSheet,
-	TouchableOpacity,
-} from 'react-native';
-import { router, useGlobalSearchParams } from 'expo-router';
 import ZimResults from '@/components/results/zim/ZimResults';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router, useGlobalSearchParams } from 'expo-router';
 import { ArrowLeft, Ship } from 'lucide-react-native';
+import {
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 
 // este componente sirve para pasar la información a los demás que mostraran las llamadas de las API
 export default function ResultsPage() {
@@ -20,6 +20,32 @@ export default function ResultsPage() {
 		destinationCountry,
 		destLocation,
 	} = useGlobalSearchParams();
+
+	if (!origin || !destination) {
+		return (
+			<View style={styles.container}>
+				<ScrollView style={styles.scrollView}>
+					{/* HEADER */}
+					<LinearGradient colors={['#07174c', '#0b3477']} style={styles.header}>
+						<View style={styles.headerContainer}>
+							<TouchableOpacity
+								style={styles.backButton}
+								onPress={() => router.push('/')}
+							>
+								<ArrowLeft size={24} color="#ffffff" />
+							</TouchableOpacity>
+							<View style={styles.headerContent}>
+								<View className={'flex flex-row items-center space-x-4'}>
+									<Ship size={32} color="#ffffff" />
+									<Text style={styles.headerTitle}>Resultados de Búsqueda</Text>
+								</View>
+							</View>
+						</View>
+					</LinearGradient>
+				</ScrollView>
+			</View>
+		);
+	}
 
 	const originCode = `${originCountry}${oriLocation}`;
 	const destinationCode = `${destinationCountry}${destLocation}`;
