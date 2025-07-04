@@ -10,6 +10,7 @@ import {
 	View,
 } from 'react-native';
 import MaerskResults from '@/components/results/maersk/MaerskResult';
+import HapagResults from '@/components/results/hapag/HapagResult';
 
 // este componente sirve para pasar la información a los demás que mostraran las llamadas de las API
 export default function ResultsPage() {
@@ -79,6 +80,7 @@ export default function ResultsPage() {
 				<View style={styles.mainContainer}>
 					<ZimResults origin={originCode} destination={destinationCode} />
 					<MaerskResults origin={originCode} destination={destinationCode} />
+					<HapagResults origin={originCode} destination={destinationCode} />
 				</View>
 			</ScrollView>
 		</View>
