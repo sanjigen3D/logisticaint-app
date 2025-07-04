@@ -1,13 +1,14 @@
-// Estructura original (Maersk/MSC/CMA)
-export interface OriginalShippingLeg {
+interface maerskServicePartners {
+	carrierCode: string;
+	carrierServiceName: string;
+	carrierServiceCode: string;
+}
+
+export interface MaerskShippingLeg {
 	sequenceNumber: number;
 	transport: {
 		modeOfTransport: string;
-		servicePartners: Array<{
-			carrierCode: string;
-			carrierServiceName: string;
-			carrierServiceCode: string;
-		}>;
+		servicePartners: maerskServicePartners[];
 		vessel: {
 			vesselIMONumber: string;
 			name: string;
@@ -36,10 +37,14 @@ export interface OriginalShippingLeg {
 	};
 }
 
-export interface OriginalShippingRoute {
+export interface MaerskShippingRoute {
 	solutionNumber: number;
 	transitTime: number;
-	legs: OriginalShippingLeg[];
+	legs: MaerskShippingLeg[];
+}
+
+export interface MaerskAPIResponse {
+	oceanProducts: MaerskShippingRoute[];
 }
 
 // Nueva estructura (ZIM)

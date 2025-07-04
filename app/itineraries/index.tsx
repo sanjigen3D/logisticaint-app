@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import MaerskResults from '@/components/results/maersk/MaerskResult';
 
 // este componente sirve para pasar la información a los demás que mostraran las llamadas de las API
 export default function ResultsPage() {
@@ -52,33 +53,34 @@ export default function ResultsPage() {
 
 	return (
 		<View style={styles.container}>
-			<ScrollView style={styles.scrollView}>
-				{/* HEADER */}
-				<LinearGradient colors={['#07174c', '#0b3477']} style={styles.header}>
-					<View style={styles.headerContainer}>
-						<TouchableOpacity
-							style={styles.backButton}
-							onPress={() => router.push('/')}
-						>
-							<ArrowLeft size={24} color="#ffffff" />
-						</TouchableOpacity>
-						<View style={styles.headerContent}>
-							<View className={'flex flex-row items-center space-x-4'}>
-								<Ship size={32} color="#ffffff" />
-								<Text style={styles.headerTitle}>Resultados de Búsqueda</Text>
-							</View>
-							<Text style={styles.headerSubtitle} className="mt-4">
-								{origin}({originCode}) → {destination}({destinationCode})
-							</Text>
+			{/* HEADER */}
+			<LinearGradient colors={['#07174c', '#0b3477']} style={styles.header}>
+				<View style={styles.headerContainer}>
+					<TouchableOpacity
+						style={styles.backButton}
+						onPress={() => router.push('/')}
+					>
+						<ArrowLeft size={24} color="#ffffff" />
+					</TouchableOpacity>
+					<View style={styles.headerContent}>
+						<View className={'flex flex-row items-center space-x-4'}>
+							<Ship size={32} color="#ffffff" />
+							<Text style={styles.headerTitle}>Resultados de Búsqueda</Text>
 						</View>
+						<Text style={styles.headerSubtitle} className="mt-4">
+							{origin}({originCode}) → {destination}({destinationCode})
+						</Text>
 					</View>
-				</LinearGradient>
-			</ScrollView>
+				</View>
+			</LinearGradient>
 
 			{/* RESULTADOS */}
-			<View style={styles.mainContainer}>
-				<ZimResults origin={originCode} destination={destinationCode} />
-			</View>
+			<ScrollView style={styles.scrollView}>
+				<View style={styles.mainContainer}>
+					<ZimResults origin={originCode} destination={destinationCode} />
+					<MaerskResults origin={originCode} destination={destinationCode} />
+				</View>
+			</ScrollView>
 		</View>
 	);
 }
