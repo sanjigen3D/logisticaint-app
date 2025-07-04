@@ -37,24 +37,38 @@ const MaerskResults = ({ origin, destination }: MaerskResultsProps) => {
 		enabled: !!origin && !!destination,
 	});
 
-	if (!data) return null;
-
-	if (!data.oceanProducts) {
+	if (isLoading) {
 		return (
-			<View className="mt-20">
-				<LoadingComp loading={true} text={'No se encontraron resultados...'} />
+			<LoadingComp loading={isLoading} text={'Cargando opciones de envío...'} />
+		);
+	}
+
+	if (!data.oceanProducts || !data) {
+		return (
+			<View style={styles.summaryContainer}>
+				<View className={'flex flex-row gap-3 items-center'}>
+					<Text style={styles.summaryTitle}>Maersk (0)</Text>
+					<Pressable
+						className="hover:bg-gray-200 rounded-full p-1"
+						onPress={() => setExpanded(!expanded)}
+					>
+						{expanded ? (
+							<ChevronsUp size={24} color="#000" />
+						) : (
+							<ChevronsDown size={24} color="#000" />
+						)}
+					</Pressable>
+				</View>
+
+				{expanded && (
+					<Text style={styles.loadingText}>No se encontraron resultados</Text>
+				)}
 			</View>
 		);
 	}
 
 	// mapper para estructurar todo a un mismo tipo y usarlo en las Cards
 	const routes = mapMaerskToUnified(data as MaerskAPIResponse);
-
-	if (isLoading) {
-		return (
-			<LoadingComp loading={isLoading} text={'Cargando opciones de envío...'} />
-		);
-	}
 
 	if (isError) {
 		return (
@@ -108,5 +122,10 @@ const styles = StyleSheet.create({
 	},
 	scrollContent: {
 		flexGrow: 1,
+	},
+	loadingText: {
+		fontSize: 16,
+		fontFamily: 'Inter-Regular',
+		color: '#64748b',
 	},
 });

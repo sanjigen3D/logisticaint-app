@@ -37,12 +37,26 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 		enabled: !!origin && !!destination,
 	});
 
-	if (!data) return null;
-
-	if (!data.response) {
+	if (!data || !data.response) {
 		return (
-			<View className="mt-20">
-				<LoadingComp loading={true} text={'No se encontraron resultados...'} />
+			<View style={styles.summaryContainer}>
+				<View className={'flex flex-row gap-3 items-center'}>
+					<Text style={styles.summaryTitle}>ZIM (0)</Text>
+					<Pressable
+						className="hover:bg-gray-200 rounded-full p-1"
+						onPress={() => setExpanded(!expanded)}
+					>
+						{expanded ? (
+							<ChevronsUp size={24} color="#000" />
+						) : (
+							<ChevronsDown size={24} color="#000" />
+						)}
+					</Pressable>
+				</View>
+
+				{expanded && (
+					<Text style={styles.loadingText}>No se encontraron resultados</Text>
+				)}
 			</View>
 		);
 	}
@@ -112,5 +126,10 @@ const styles = StyleSheet.create({
 	},
 	scrollContent: {
 		flexGrow: 1,
+	},
+	loadingText: {
+		fontSize: 16,
+		fontFamily: 'Inter-Regular',
+		color: '#64748b',
 	},
 });
