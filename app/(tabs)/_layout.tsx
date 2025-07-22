@@ -3,9 +3,9 @@ import { Platform } from 'react-native';
 import { Search } from 'lucide-react-native';
 
 export default function TabLayout() {
-	if (Platform.OS === 'web') {
-		return <Stack screenOptions={{ headerShown: false }} />;
-	}
+	// if (Platform.OS === 'web') {
+	// 	return <Stack screenOptions={{ headerShown: false }} />;
+	// }
 
 	return (
 		<Tabs
@@ -36,7 +36,7 @@ export default function TabLayout() {
 				}}
 			/>
 			{/* oculta en el menu */}
-			<Tabs.Screen name={'results'} options={{ href: null }} />
+			<Tabs.Screen name="results" options={{ href: null }} />
 		</Tabs>
 	);
 }
