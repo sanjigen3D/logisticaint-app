@@ -1,6 +1,6 @@
 import LoadingComp from '@/components/Loading';
 import ResultCard from '@/components/results/ResultCard';
-import { ZimResponse } from '@/lib/interfaces';
+import { ZimResponse } from '@/lib/types/interfaces';
 import { mapZimResponseToUnifiedRoutes } from '@/lib/mappers/ZimMapper';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronsDown, ChevronsUp } from 'lucide-react-native';

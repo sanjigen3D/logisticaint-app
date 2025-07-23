@@ -6,7 +6,7 @@ import {
 	Text,
 	StyleSheet,
 } from 'react-native';
-import { Port } from '@/lib/types';
+import { Port } from '@/lib/types/types';
 
 type SuggestionsModalProps = {
 	suggestions: Port[];

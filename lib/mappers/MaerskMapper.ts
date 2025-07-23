@@ -1,4 +1,4 @@
-import { UnifiedRoute } from '@/lib/interfaces'; // Usa tu ruta correcta
+import { UnifiedRoute } from '@/lib/types/interfaces'; // Usa tu ruta correcta
 
 export function mapMaerskToUnified(maerskJson: any): UnifiedRoute[] {
 	return maerskJson.oceanProducts.map((product: any, index: number) => {

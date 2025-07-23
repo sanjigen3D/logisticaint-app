@@ -14,7 +14,7 @@ import {
 	Text,
 	StyleSheet,
 } from 'react-native';
-import { FormData, Port } from '@/lib/types';
+import { FormData, Port } from '@/lib/types/types';
 
 type LocationInputProps = {
 	control: Control<FormData>;

@@ -1,4 +1,4 @@
-import { UnifiedRoute } from '@/lib/interfaces';
+import { UnifiedRoute } from '@/lib/types/interfaces';
 
 export function mapHapagToUnified(hapagData: any[]): UnifiedRoute[] {
 	return hapagData.map((route, index) => {

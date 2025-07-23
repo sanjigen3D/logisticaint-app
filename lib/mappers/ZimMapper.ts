@@ -1,4 +1,5 @@
-import { UnifiedRoute, ZimResponse } from '@/lib/interfaces';
+import { UnifiedRoute } from '@/lib/types/interfaces';
+import { ZimResponse } from '@/lib/types/zim/zimTypes';
 
 export function mapZimResponseToUnifiedRoutes(
 	data: ZimResponse,

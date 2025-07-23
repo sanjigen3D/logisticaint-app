@@ -8,7 +8,7 @@ import {
 	MapPin,
 	Ship,
 } from 'lucide-react-native';
-import { UnifiedRoute } from '@/lib/interfaces';
+import { UnifiedRoute } from '@/lib/types/interfaces';
 
 type Props = {
 	route: UnifiedRoute;
