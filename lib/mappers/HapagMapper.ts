@@ -1,4 +1,10 @@
-import { UnifiedRoute } from '@/lib/types/interfaces';
+import {
+	UnifiedRoute,
+	UnifiedTrackingData,
+	UnifiedTrackingEvent,
+} from '@/lib/types/unifiedInterfaces';
+import { HapagEvent } from '../types/hapag/hapagTypes';
+import { formatDate, getEventTypeDescription } from '@/lib/utils';
 
 export function mapHapagToUnified(hapagData: any[]): UnifiedRoute[] {
 	return hapagData.map((route, index) => {
@@ -45,3 +51,46 @@ export function mapHapagToUnified(hapagData: any[]): UnifiedRoute[] {
 		};
 	});
 }
+
+// Mapper de Hapag para el tracking
+export const convertHapagToUnified = (
+	hapagData: HapagEvent[],
+	trackingNum: string,
+): UnifiedTrackingData => {
+	const events: UnifiedTrackingEvent[] = hapagData.map((event, index) => ({
+		id: `hapag-${index}`,
+		date: event.eventDateTime,
+		status: getEventTypeDescription(
+			event.eventType,
+			event.transportEventTypeCode ||
+				event.shipmentEventTypeCode ||
+				event.equipmentEventTypeCode,
+		),
+		location:
+			event.transportCall?.location.locationName ||
+			event.eventLocation?.locationName ||
+			'Ubicación no disponible',
+		vessel: event.transportCall?.vessel.vesselName,
+		voyage: event.transportCall?.exportVoyageNumber,
+		containerNumber: event.equipmentReference,
+		eventType: event.eventType.toLowerCase() as
+			| 'transport'
+			| 'shipment'
+			| 'equipment',
+		completed: true,
+	}));
+
+	return {
+		trackingNumber: trackingNum,
+		status: 'En tránsito',
+		origin: events[0]?.location || 'Origen no disponible',
+		destination: events[events.length - 1]?.location || 'Destino no disponible',
+		estimatedArrival: formatDate(
+			events[events.length - 1]?.date || new Date().toISOString(),
+		),
+		carrier: 'Hapag-Lloyd',
+		events: events.sort(
+			(a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+		),
+	};
+};

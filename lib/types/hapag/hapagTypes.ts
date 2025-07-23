@@ -1,3 +1,5 @@
+/************* Itinerario  *********************/
+
 interface HapagAddress {
 	street: string;
 	streetNumber: string;
@@ -78,3 +80,44 @@ export interface HapagRoute {
 }
 
 export type HapagAPIResponse = HapagRoute[];
+
+/************* Tracking  *********************/
+
+export interface HapagEvent {
+	eventCreatedDateTime: string;
+	eventType: 'TRANSPORT' | 'SHIPMENT' | 'EQUIPMENT';
+	eventClassifierCode: string;
+	eventDateTime: string;
+	transportEventTypeCode?: string;
+	shipmentEventTypeCode?: string;
+	equipmentEventTypeCode?: string;
+	equipmentReference?: string;
+	documentID?: string;
+	documentTypeCode?: string;
+	transportCall?: {
+		transportCallID: string;
+		exportVoyageNumber: string;
+		importVoyageNumber: string;
+		UNLocationCode: string;
+		facilityTypeCode: string;
+		modeOfTransport: string;
+		location: {
+			locationName: string;
+			UNLocationCode: string;
+			address: {
+				name: string;
+			};
+		};
+		vessel: {
+			vesselIMONumber: string;
+			vesselName: string;
+		};
+	};
+	eventLocation?: {
+		locationName: string;
+		UNLocationCode: string;
+		address: {
+			name: string;
+		};
+	};
+}

@@ -20,3 +20,16 @@ export const formSchema = z.object({
 		location: z.string().optional(),
 	}),
 });
+
+export const trackingSchema = z.object({
+	trackingNumber: z
+		.string()
+		.min(3, 'El número debe tener al menos 3 caracteres')
+		.max(50, 'El número no puede exceder 50 caracteres')
+		.regex(/^[A-Z0-9]+$/i, 'Solo se permiten letras y números')
+		.transform((val) => val.toUpperCase()),
+	carrier: z.enum(['hapag', 'zim'], {
+		required_error: 'Debe seleccionar una naviera',
+		invalid_type_error: 'Naviera no válida',
+	}),
+});
