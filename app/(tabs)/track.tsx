@@ -8,7 +8,6 @@ import {
 	ScrollView,
 	KeyboardAvoidingView,
 	Platform,
-	FlatList,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -139,13 +138,363 @@ export const Track = () => {
 					subtitle={'Sigue tu paquete en tiempo real'}
 					icon={<Package size={32} color="#ffffff" />}
 				/>
-			</ScrollView>
 
-			{/* MAIN CONTAINER */}
-			<View style={styles.mainContainer}>
-				{/* FORM CONTAINER */}
-				<View style={styles.formContainer}></View>
-			</View>
+				{/* MAIN CONTAINER */}
+				<View style={styles.mainContainer}>
+					{/* FORM CONTAINER */}
+					<View style={styles.formContainer}>
+						<View style={styles.formCard}>
+							<Text style={styles.formTitle}>Número de seguimiento</Text>
+
+							{/* Selección de carrier */}
+							<View style={styles.inputWrapper}>
+								<Text style={styles.inputLabel}>Naviera</Text>
+								<Controller
+									control={control}
+									name="carrier"
+									render={({ field: { value } }) => (
+										<View style={styles.radioGroupContainer}>
+											{CARRIERS.map((carrier) => (
+												<TouchableOpacity
+													key={carrier.id}
+													style={[
+														styles.radioOption,
+														value === carrier.id && styles.radioOptionSelected,
+													]}
+													onPress={() => handleCarrierSelect(carrier.id)}
+													activeOpacity={0.7}
+												>
+													<View style={styles.radioButton}>
+														<View
+															style={[
+																styles.radioButtonInner,
+																value === carrier.id &&
+																	styles.radioButtonInnerSelected,
+																value === carrier.id && {
+																	backgroundColor: carrier.color,
+																},
+															]}
+														/>
+													</View>
+													<View
+														style={[
+															styles.carrierIconContainer,
+															{ backgroundColor: `${carrier.color}20` },
+														]}
+													>
+														<Ship size={20} color={carrier.color} />
+													</View>
+													<View style={styles.carrierContent}>
+														<Text
+															style={[
+																styles.carrierName,
+																value === carrier.id &&
+																	styles.carrierNameSelected,
+															]}
+														>
+															{carrier.name}
+														</Text>
+														<Text style={styles.carrierDescription}>
+															{carrier.description}
+														</Text>
+													</View>
+												</TouchableOpacity>
+											))}
+										</View>
+									)}
+								/>
+								{errors.carrier && (
+									<Text style={styles.errorText}>{errors.carrier.message}</Text>
+								)}
+							</View>
+
+							{/* Tracking Number Input */}
+
+							<Controller
+								control={control}
+								name="trackingNumber"
+								render={({ field: { onChange, onBlur, value } }) => (
+									<View style={styles.inputWrapper}>
+										<Text style={styles.inputLabel}>Número de Seguimiento</Text>
+										<View
+											style={[
+												styles.inputContainer,
+												errors.trackingNumber && styles.inputContainerError,
+											]}
+										>
+											<TextInput
+												style={styles.textInput}
+												placeholder={
+													selectedCarrier
+														? `Ej: ${getSelectedCarrier()?.examples[0]}`
+														: 'Selecciona una naviera primero'
+												}
+												value={value}
+												onChangeText={onChange}
+												onBlur={onBlur}
+												placeholderTextColor="#64748b"
+												autoCapitalize="characters"
+												editable={!!selectedCarrier}
+											/>
+										</View>
+										{errors.trackingNumber && (
+											<Text style={styles.errorText}>
+												{errors.trackingNumber.message}
+											</Text>
+										)}
+									</View>
+								)}
+							/>
+							{/* Examples */}
+							{selectedCarrier && (
+								<View style={styles.examplesContainer}>
+									<Text style={styles.examplesTitle}>
+										Ejemplos de números válidos:
+									</Text>
+									{getSelectedCarrier()?.examples.map((example, index) => (
+										<TouchableOpacity
+											key={index}
+											style={styles.exampleItem}
+											onPress={() =>
+												setValue('trackingNumber', example, {
+													shouldValidate: true,
+												})
+											}
+											activeOpacity={0.7}
+										>
+											<Text style={styles.exampleText}>{example}</Text>
+										</TouchableOpacity>
+									))}
+								</View>
+							)}
+
+							{/* SUBMIT BUTTON */}
+							<TouchableOpacity
+								style={[
+									styles.trackButton,
+									!isValid && styles.trackButtonDisabled,
+								]}
+								onPress={handleSubmit(handleTrack)}
+								disabled={!isValid || isTracking}
+								activeOpacity={0.8}
+							>
+								<LinearGradient
+									colors={
+										!isValid ? ['#94a3b8', '#64748b'] : ['#07174c', '#0b3477']
+									}
+									style={styles.trackButtonGradient}
+								>
+									<Search size={20} color="#ffffff" />
+									<Text style={styles.trackButtonText}>
+										{isTracking ? 'Rastreando...' : 'Rastrear'}
+									</Text>
+								</LinearGradient>
+							</TouchableOpacity>
+						</View>
+					</View>
+					{/*  Tracking Result */}
+					{trackingData && (
+						<View style={styles.resultsCard}>
+							<Text style={styles.resultsTitle}>Estado del Envío</Text>
+
+							{/* Carrier Info */}
+							<View style={styles.carrierContainer}>
+								<Text style={styles.carrierName}>{trackingData.carrier}</Text>
+								<Text style={styles.trackingNumber}>
+									{trackingData.trackingNumber}
+								</Text>
+							</View>
+
+							{/* Status Bar */}
+							<View style={styles.statusContainer}>
+								<View style={styles.statusBadge}>
+									<Text style={styles.statusText}>{trackingData.status}</Text>
+								</View>
+							</View>
+
+							{/* ORIGEN - DESTINO - FECHA LLEGADA */}
+							<View style={styles.routeContainer}>
+								<View style={styles.routeItem}>
+									<MapPin size={16} color="#10b981" />
+									<Text style={styles.routeText}>
+										Origen: {trackingData.origin}
+									</Text>
+								</View>
+								<View style={styles.routeItem}>
+									<MapPin size={16} color="#ef4444" />
+									<Text style={styles.routeText}>
+										Destino: {trackingData.destination}
+									</Text>
+								</View>
+								<View style={styles.routeItem}>
+									<Clock size={16} color="#3b82f6" />
+									<Text style={styles.routeTextDate}>
+										Llegada estimada: {trackingData.estimatedArrival}
+									</Text>
+								</View>
+							</View>
+
+							{/* Route Details (for ZIM) */}
+							{trackingData.routeDetails && (
+								<View style={styles.routeDetailsContainer}>
+									<Text style={styles.sectionTitle}>Detalles de la Ruta</Text>
+									{trackingData.routeDetails.map((route, index) => (
+										<View key={index} style={styles.routeDetailCard}>
+											<View style={styles.routeDetailHeader}>
+												<Ship size={16} color="#3b82f6" />
+												<Text style={styles.vesselName}>{route.vessel}</Text>
+												<Text style={styles.voyageNumber}>
+													Voyage: {route.voyage}
+												</Text>
+											</View>
+											<View style={styles.routeDetailContent}>
+												<Text style={styles.routeDetailText}>
+													{route.from} → {route.to}
+												</Text>
+												<Text style={styles.routeDetailDates}>
+													{formatDate(route.departure)} -{' '}
+													{formatDate(route.arrival)}
+												</Text>
+											</View>
+										</View>
+									))}
+								</View>
+							)}
+
+							{/* Timeline */}
+							<View style={styles.timelineContainer}>
+								<Text style={styles.timelineTitle}>
+									Historial de Seguimiento
+								</Text>
+								{trackingData.events.map((event) => (
+									<View key={event.id} style={styles.timelineItem}>
+										<View
+											style={[
+												styles.timelineIcon,
+												event.completed && styles.timelineIconCompleted,
+											]}
+										>
+											{event.completed ? (
+												<CheckCircle size={16} color="#10b981" />
+											) : (
+												<View style={styles.timelineIconEmpty} />
+											)}
+										</View>
+										<View style={styles.timelineContent}>
+											<Text
+												style={[
+													styles.timelineStatus,
+													event.completed && styles.timelineStatusCompleted,
+												]}
+											>
+												{event.status}
+											</Text>
+											<Text style={styles.timelineLocation}>
+												{event.location}
+											</Text>
+											<View style={styles.timelineDetails}>
+												<Calendar size={12} color="#64748b" />
+												<Text style={styles.timelineDate}>
+													{formatDate(event.date)}
+												</Text>
+											</View>
+											{event.vessel && (
+												<Text style={styles.timelineVessel}>
+													Barco: {event.vessel}{' '}
+													{event.voyage && `- Voyage: ${event.voyage}`}
+												</Text>
+											)}
+											{event.containerNumber && (
+												<Text style={styles.timelineContainer}>
+													Contenedor: {event.containerNumber}
+												</Text>
+											)}
+										</View>
+									</View>
+								))}
+							</View>
+
+							{/* Container Information (for ZIM) */}
+							{trackingData.containers &&
+								trackingData.containers.length > 0 && (
+									<View style={styles.containersContainer}>
+										<Text style={styles.sectionTitle}>
+											Contenedores ({trackingData.containers.length})
+										</Text>
+										{trackingData.containers.map((container) => (
+											<View key={container.number} style={styles.containerCard}>
+												<TouchableOpacity
+													style={styles.containerHeader}
+													onPress={() =>
+														toggleContainerExpansion(container.number)
+													}
+													activeOpacity={0.7}
+												>
+													<View style={styles.containerHeaderContent}>
+														<Box size={16} color="#3b82f6" />
+														<Text style={styles.containerNumber}>
+															{container.number}
+														</Text>
+														<Text style={styles.containerType}>
+															{container.type}
+														</Text>
+													</View>
+													{expandedContainers.has(container.number) ? (
+														<ChevronUp size={16} color="#64748b" />
+													) : (
+														<ChevronDown size={16} color="#64748b" />
+													)}
+												</TouchableOpacity>
+
+												{expandedContainers.has(container.number) && (
+													<View style={styles.containerEvents}>
+														{container.events.map((event) => (
+															<View
+																key={event.id}
+																style={styles.containerEvent}
+															>
+																<View
+																	style={[
+																		styles.eventIcon,
+																		event.completed &&
+																			styles.eventIconCompleted,
+																	]}
+																>
+																	{event.completed ? (
+																		<CheckCircle size={12} color="#10b981" />
+																	) : (
+																		<View style={styles.eventIconEmpty} />
+																	)}
+																</View>
+																<View style={styles.containerEventContent}>
+																	<Text style={styles.containerEventStatus}>
+																		{event.status}
+																	</Text>
+																	<Text style={styles.containerEventLocation}>
+																		{event.location}
+																	</Text>
+																	<Text style={styles.containerEventDate}>
+																		{formatDate(event.date)}
+																	</Text>
+																	{event.vessel && (
+																		<Text style={styles.containerEventVessel}>
+																			Barco: {event.vessel} - Voyage:{' '}
+																			{event.voyage}
+																		</Text>
+																	)}
+																</View>
+															</View>
+														))}
+													</View>
+												)}
+											</View>
+										))}
+									</View>
+								)}
+						</View>
+					)}
+				</View>
+			</ScrollView>
 		</KeyboardAvoidingView>
 	);
 };
@@ -189,7 +538,6 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 	},
 	mainContainer: {
-		flex: 1,
 		width: '100%',
 		maxWidth: 800,
 		alignSelf: 'center',
@@ -406,6 +754,13 @@ const styles = StyleSheet.create({
 		marginLeft: 12,
 		flex: 1,
 	},
+	routeTextDate: {
+		fontSize: 14,
+		fontFamily: 'Inter-Bold',
+		color: '#403838',
+		marginLeft: 12,
+		flex: 1,
+	},
 	sectionTitle: {
 		fontSize: 18,
 		fontFamily: 'Inter-SemiBold',
@@ -613,9 +968,9 @@ const styles = StyleSheet.create({
 	},
 	timelineContainer: {
 		marginTop: 24,
-		fontSize: 12,
-		fontFamily: 'Inter-Regular',
-		color: '#64748b',
+		fontSize: 14,
+		fontFamily: 'Inter-SemiBold',
+		color: '#475569',
 	},
 	carrierContainer: {
 		marginBottom: 16,

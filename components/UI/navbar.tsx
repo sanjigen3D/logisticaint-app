@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		left: 20,
 		top: 0,
-		zIndex: 1,
+		zIndex: 10,
 		padding: 8,
 	},
 });
