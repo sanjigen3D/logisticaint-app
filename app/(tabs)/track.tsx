@@ -8,6 +8,7 @@ import {
 	ScrollView,
 	KeyboardAvoidingView,
 	Platform,
+	FlatList,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -19,11 +20,11 @@ import {
 	Ship,
 	Box,
 	Calendar,
+	Anchor,
 	ChevronDown,
 	ChevronUp,
-	Anchor,
 } from 'lucide-react-native';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
 import { TrackingFormData } from '@/lib/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -34,24 +35,9 @@ import {
 	hapagTrackingResult200,
 	zimTracingResult200,
 } from '@/assets/DUMMY/data';
-
-// Carrier options
-const CARRIERS = [
-	{
-		id: 'hapag' as const,
-		name: 'Hapag-Lloyd',
-		description: 'Números como HLCUGDN0000000',
-		color: '#ef4444',
-		examples: ['HLCUGDN0000000', 'HLCU1234567890'],
-	},
-	{
-		id: 'zim' as const,
-		name: 'ZIM Integrated Shipping',
-		description: 'Números como ZIMUNNJ1011275',
-		color: '#3b82f6',
-		examples: ['ZIMUNNJ1011275', 'ZIM1234567890'],
-	},
-];
+import { formatDate } from '@/lib/utils';
+import Navbar from '@/components/UI/navbar';
+import { CARRIERS } from '@/lib/constants';
 
 export const Track = () => {
 	const [isTracking, setIsTracking] = useState(false);
@@ -106,6 +92,11 @@ export const Track = () => {
 					data.trackingNumber,
 				);
 			}
+			// } else if (data.carrier === 'hapag') {
+			// 	unifiedData = convertHapagToUnified(
+			// 		hapagTrackingResult200,
+			// 		data.trackingNumber,
+			// 	);
 
 			setTrackingData(unifiedData);
 		}, 1500);
@@ -133,27 +124,6 @@ export const Track = () => {
 		return CARRIERS.find((carrier) => carrier.id === selectedCarrier);
 	};
 
-	const renderCarrierOption = ({ item }: { item: (typeof CARRIERS)[0] }) => (
-		<TouchableOpacity
-			style={styles.carrierOption}
-			onPress={() => handleCarrierSelect(item.id)}
-			activeOpacity={0.7}
-		>
-			<View
-				style={[
-					styles.carrierOptionIcon,
-					{ backgroundColor: `${item.color}20` },
-				]}
-			>
-				<Anchor size={20} color={item.color} />
-			</View>
-			<View style={styles.carrierOptionContent}>
-				<Text style={styles.carrierOptionName}>{item.name}</Text>
-				<Text style={styles.carrierOptionDescription}>{item.description}</Text>
-			</View>
-		</TouchableOpacity>
-	);
-
 	return (
 		<KeyboardAvoidingView
 			style={styles.container}
@@ -164,18 +134,18 @@ export const Track = () => {
 				contentContainerStyle={styles.scrollContent}
 				keyboardShouldPersistTaps="handled"
 			>
-				<LinearGradient colors={['#07174c', '#0b3477']} style={styles.header}>
-					<View style={styles.headerContainer}>
-						<View style={styles.headerContent}>
-							<Package size={32} color="#ffffff" />
-							<Text style={styles.headerTitle}>Rastrear Envío</Text>
-							<Text style={styles.headerSubtitle}>
-								Sigue tu paquete en tiempo real
-							</Text>
-						</View>
-					</View>
-				</LinearGradient>
+				<Navbar
+					title={'Rastrear Envío'}
+					subtitle={'Sigue tu paquete en tiempo real'}
+					icon={<Package size={32} color="#ffffff" />}
+				/>
 			</ScrollView>
+
+			{/* MAIN CONTAINER */}
+			<View style={styles.mainContainer}>
+				{/* FORM CONTAINER */}
+				<View style={styles.formContainer}></View>
+			</View>
 		</KeyboardAvoidingView>
 	);
 };
@@ -214,7 +184,7 @@ const styles = StyleSheet.create({
 	headerSubtitle: {
 		fontSize: 16,
 		fontFamily: 'Inter-Regular',
-		color: '#bfdbfe',
+		color: '#a7f3d0',
 		marginTop: 4,
 		textAlign: 'center',
 	},
@@ -275,96 +245,48 @@ const styles = StyleSheet.create({
 		marginTop: 8,
 		marginLeft: 4,
 	},
-	trackButton: {
-		marginTop: 16,
-		borderRadius: 12,
-		overflow: 'hidden',
-	},
 	inputLabel: {
 		fontSize: 14,
 		fontFamily: 'Inter-Medium',
 		color: '#374151',
 		marginBottom: 8,
 	},
-	carrierInputWrapper: {
-		position: 'relative',
+	radioGroupContainer: {
+		gap: 12,
 	},
-	carrierSelector: {
+	radioOption: {
+		flexDirection: 'row',
+		alignItems: 'center',
 		backgroundColor: '#f8fafc',
 		borderRadius: 12,
 		borderWidth: 1,
 		borderColor: '#e2e8f0',
-		paddingHorizontal: 16,
-		paddingVertical: 12,
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
+		padding: 16,
 	},
-	carrierSelectorActive: {
+	radioOptionSelected: {
 		borderColor: '#3b82f6',
 		backgroundColor: '#f0f9ff',
 	},
-	selectedCarrierContent: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		flex: 1,
-	},
-	selectedCarrierIcon: {
-		width: 24,
-		height: 24,
-		borderRadius: 12,
+	radioButton: {
+		width: 20,
+		height: 20,
+		borderRadius: 10,
+		borderWidth: 2,
+		borderColor: '#d1d5db',
 		alignItems: 'center',
 		justifyContent: 'center',
 		marginRight: 12,
 	},
-	selectedCarrierText: {
-		fontSize: 16,
-		fontFamily: 'Inter-Medium',
-		color: '#1e293b',
+	radioButtonInner: {
+		width: 10,
+		height: 10,
+		borderRadius: 5,
+		backgroundColor: 'transparent',
 	},
-	carrierPlaceholder: {
-		fontSize: 16,
-		fontFamily: 'Inter-Regular',
-		color: '#64748b',
-		flex: 1,
+	radioButtonInnerSelected: {
+		backgroundColor: '#3b82f6',
 	},
-	carrierChevron: {
-		transform: [{ rotate: '0deg' }],
-	},
-	carrierChevronRotated: {
-		transform: [{ rotate: '180deg' }],
-	},
-	carrierDropdown: {
-		position: 'absolute',
-		top: '100%',
-		left: 0,
-		right: 0,
-		backgroundColor: '#ffffff',
-		borderRadius: 12,
-		borderWidth: 1,
-		borderColor: '#e2e8f0',
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 4,
-		},
-		shadowOpacity: 0.15,
-		shadowRadius: 12,
-		elevation: 15,
-		zIndex: 9999,
-		maxHeight: 200,
-	},
-	carrierList: {
-		maxHeight: 200,
-	},
-	carrierOption: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		padding: 16,
-		borderBottomWidth: 1,
-		borderBottomColor: '#f1f5f9',
-	},
-	carrierOptionIcon: {
+	carrierIconContainer: {
 		width: 40,
 		height: 40,
 		borderRadius: 20,
@@ -372,16 +294,19 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		marginRight: 12,
 	},
-	carrierOptionContent: {
+	carrierContent: {
 		flex: 1,
 	},
-	carrierOptionName: {
+	carrierName: {
 		fontSize: 16,
 		fontFamily: 'Inter-SemiBold',
 		color: '#1e293b',
 		marginBottom: 2,
 	},
-	carrierOptionDescription: {
+	carrierNameSelected: {
+		color: '#1e40af',
+	},
+	carrierDescription: {
 		fontSize: 14,
 		fontFamily: 'Inter-Regular',
 		color: '#64748b',
@@ -409,6 +334,11 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		fontFamily: 'Inter-Regular',
 		color: '#3b82f6',
+	},
+	trackButton: {
+		marginTop: 24,
+		borderRadius: 12,
+		overflow: 'hidden',
 	},
 	trackButtonDisabled: {
 		opacity: 0.6,
@@ -445,20 +375,6 @@ const styles = StyleSheet.create({
 		fontFamily: 'Inter-SemiBold',
 		color: '#1e293b',
 		marginBottom: 16,
-	},
-	carrierContainer: {
-		marginBottom: 16,
-	},
-	carrierName: {
-		fontSize: 16,
-		fontFamily: 'Inter-SemiBold',
-		color: '#3b82f6',
-		marginBottom: 4,
-	},
-	trackingNumber: {
-		fontSize: 14,
-		fontFamily: 'Inter-Regular',
-		color: '#64748b',
 	},
 	statusContainer: {
 		alignItems: 'center',
@@ -631,9 +547,6 @@ const styles = StyleSheet.create({
 		fontFamily: 'Inter-Regular',
 		color: '#64748b',
 	},
-	timelineContainer: {
-		marginTop: 24,
-	},
 	timelineTitle: {
 		fontSize: 18,
 		fontFamily: 'Inter-SemiBold',
@@ -697,5 +610,19 @@ const styles = StyleSheet.create({
 		fontFamily: 'Inter-Regular',
 		color: '#64748b',
 		marginBottom: 2,
+	},
+	timelineContainer: {
+		marginTop: 24,
+		fontSize: 12,
+		fontFamily: 'Inter-Regular',
+		color: '#64748b',
+	},
+	carrierContainer: {
+		marginBottom: 16,
+	},
+	trackingNumber: {
+		fontSize: 14,
+		fontFamily: 'Inter-Regular',
+		color: '#64748b',
 	},
 });

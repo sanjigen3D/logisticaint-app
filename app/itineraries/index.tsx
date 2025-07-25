@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import MaerskResults from '@/components/results/maersk/MaerskResult';
 import HapagResults from '@/components/results/hapag/HapagResult';
+import Navbar from '@/components/UI/navbar';
 
 // este componente sirve para pasar la información a los demás que mostraran las llamadas de las API
 export default function ResultsPage() {
@@ -27,23 +28,11 @@ export default function ResultsPage() {
 		return (
 			<View style={styles.container}>
 				<ScrollView style={styles.scrollView}>
-					{/* HEADER */}
-					<LinearGradient colors={['#07174c', '#0b3477']} style={styles.header}>
-						<View style={styles.headerContainer}>
-							<TouchableOpacity
-								style={styles.backButton}
-								onPress={() => router.push('/')}
-							>
-								<ArrowLeft size={24} color="#ffffff" />
-							</TouchableOpacity>
-							<View style={styles.headerContent}>
-								<View className={'flex flex-row items-center space-x-4'}>
-									<Ship size={32} color="#ffffff" />
-									<Text style={styles.headerTitle}>Resultados de Búsqueda</Text>
-								</View>
-							</View>
-						</View>
-					</LinearGradient>
+					<Navbar
+						title={'Resultados de Búsqueda'}
+						subtitle={'No se encontraron resultados'}
+						icon={<Ship size={32} color="#ffffff" />}
+					/>
 				</ScrollView>
 			</View>
 		);
@@ -55,25 +44,12 @@ export default function ResultsPage() {
 	return (
 		<View style={styles.container}>
 			{/* HEADER */}
-			<LinearGradient colors={['#07174c', '#0b3477']} style={styles.header}>
-				<View style={styles.headerContainer}>
-					<TouchableOpacity
-						style={styles.backButton}
-						onPress={() => router.push('/')}
-					>
-						<ArrowLeft size={24} color="#ffffff" />
-					</TouchableOpacity>
-					<View style={styles.headerContent}>
-						<View className={'flex flex-row items-center space-x-4'}>
-							<Ship size={32} color="#ffffff" />
-							<Text style={styles.headerTitle}>Resultados de Búsqueda</Text>
-						</View>
-						<Text style={styles.headerSubtitle} className="mt-4">
-							{origin}({originCode}) → {destination}({destinationCode})
-						</Text>
-					</View>
-				</View>
-			</LinearGradient>
+			<Navbar
+				title={'Resultados de Búsqueda'}
+				subtitle={`${origin}(${originCode}) → ${destination}(${destinationCode})`}
+				icon={<Ship size={32} color="#ffffff" />}
+				backButton={true}
+			/>
 
 			{/* RESULTADOS */}
 			<ScrollView style={styles.scrollView}>

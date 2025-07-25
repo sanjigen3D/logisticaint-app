@@ -1,6 +1,6 @@
 import LoadingComp from '@/components/Loading';
 import ResultCard from '@/components/results/ResultCard';
-import { MaerskAPIResponse } from '@/lib/types/unifiedInterfaces';
+import { MaerskAPIResponse } from '@/lib/types/maersk/maerskTypes';
 import { mapMaerskToUnified } from '@/lib/mappers/MaerskMapper';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronsDown, ChevronsUp } from 'lucide-react-native';

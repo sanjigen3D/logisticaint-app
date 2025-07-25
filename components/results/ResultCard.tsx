@@ -9,25 +9,13 @@ import {
 	Ship,
 } from 'lucide-react-native';
 import { UnifiedRoute } from '@/lib/types/unifiedInterfaces';
+import { formatDate } from '@/lib/utils';
 
 type Props = {
 	route: UnifiedRoute;
 };
 
 const ResultCard = ({ route }: Props) => {
-	const formatDate = (dateString: string) => {
-		if (!dateString) return 'N/A';
-
-		const date = new Date(dateString);
-		return date.toLocaleDateString('es-ES', {
-			day: 'numeric',
-			month: 'short',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-		});
-	};
-
 	return (
 		<View style={styles.routeCard} className={'mt-6'}>
 			{/* Carrier Header */}
@@ -62,7 +50,7 @@ const ResultCard = ({ route }: Props) => {
 								<Ship size={16} color="#3b82f6" />
 								<Text style={styles.vesselName}>{leg.vesselName}</Text>
 								{leg.vesselCode && (
-									<Text style={styles.vesselCode}>{leg.vesselCode}</Text>
+									<Text style={styles.vesselCode}>Navío {leg.vesselCode}</Text>
 								)}
 							</View>
 							<View style={styles.vesselDetails}>

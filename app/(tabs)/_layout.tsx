@@ -3,10 +3,6 @@ import { Platform } from 'react-native';
 import { Package, Search } from 'lucide-react-native';
 
 export default function TabLayout() {
-	// if (Platform.OS === 'web') {
-	// 	return <Stack screenOptions={{ headerShown: false }} />;
-	// }
-
 	return (
 		<Tabs
 			screenOptions={{

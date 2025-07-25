@@ -1,6 +1,6 @@
 import LoadingComp from '@/components/Loading';
 import ResultCard from '@/components/results/ResultCard';
-import { HapagAPIResponse } from '@/lib/types/unifiedInterfaces';
+import { HapagAPIResponse } from '@/lib/types/hapag/hapagTypes';
 import { mapHapagToUnified } from '@/lib/mappers/HapagMapper';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronsDown, ChevronsUp } from 'lucide-react-native';

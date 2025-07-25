@@ -1,12 +1,6 @@
-import {
-	Platform,
-	KeyboardAvoidingView,
-	ScrollView,
-	View,
-	Text,
-} from 'react-native';
+import { Platform, KeyboardAvoidingView, ScrollView, View } from 'react-native';
 import PortSearchForm from '@/components/forms/itinery/PortSearchForm';
-import { LinearGradient } from 'expo-linear-gradient';
+import Navbar from '@/components/UI/navbar';
 import { Ship } from 'lucide-react-native';
 
 export default function Index() {
@@ -21,30 +15,11 @@ export default function Index() {
 				contentContainerClassName="grow"
 			>
 				{/* Header */}
-				<LinearGradient
-					colors={['#07174c', '#0b3477']}
-					className={Platform.OS === 'ios' ? 'pt-16 pb-10' : 'py-10'}
-				>
-					<View className="container self-center px-5">
-						<View className="items-center">
-							<View className="flex flex-row items-center space-x-4">
-								<Ship size={32} color="#fff" />
-								<Text
-									style={{ fontFamily: 'Inter-Bold' }}
-									className="text-white text-2xl mt-2"
-								>
-									Logisticainst-app
-								</Text>
-							</View>
-							<Text
-								className="text-base text-[#bfdbfe] mt-1 text-center"
-								style={{ fontFamily: 'Inter-Regular' }}
-							>
-								Encuentre rutas entre puertos marítimos de todo el mundo
-							</Text>
-						</View>
-					</View>
-				</LinearGradient>
+				<Navbar
+					title={'Logisticainst-app'}
+					subtitle={'Encuentre rutas entre puertos marítimos de todo el mundo'}
+					icon={<Ship size={32} color="#fff" />}
+				/>
 
 				{/* Contenido Buscar Itinerario por ahora */}
 				<View className="container max-w-5xl w-full flex mx-auto">
