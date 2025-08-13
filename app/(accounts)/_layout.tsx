@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Package, Search, User } from 'lucide-react-native';
+import { Home, UserPlus, LogIn } from 'lucide-react-native';
 
 export default function TabLayout() {
 	return (
@@ -24,30 +24,31 @@ export default function TabLayout() {
 			}}
 		>
 			<Tabs.Screen
-				name="index"
+				name="backToHome"
 				options={{
-					title: 'Buscar Itinerario',
-					tabBarIcon: ({ size, color }) => <Search size={size} color={color} />,
+					title: 'Home',
+					tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
 				}}
 			/>
 			<Tabs.Screen
-				name="track"
+				name="login"
 				options={{
-					title: 'Seguimiento',
+					title: 'Ingresar',
+					tabBarIcon: ({ size, color }) => <LogIn size={size} color={color} />,
+				}}
+			/>
+			<Tabs.Screen
+				name="register"
+				options={{
+					title: 'Crear Cuenta',
 					tabBarIcon: ({ size, color }) => (
-						<Package size={size} color={color} />
+						<UserPlus size={size} color={color} />
 					),
 				}}
 			/>
-			<Tabs.Screen
-				name="account-dummy"
-				options={{
-					title: 'Cuenta',
-					tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
-				}}
-			/>
+
 			{/* oculta en el menu */}
-			<Tabs.Screen name="results" options={{ href: null }} />
+			<Tabs.Screen name="account" options={{ href: null }} />
 		</Tabs>
 	);
 }
