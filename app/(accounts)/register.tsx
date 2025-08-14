@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
 	View,
 	Text,
@@ -11,46 +10,31 @@ import {
 	ScrollView,
 	KeyboardAvoidingView,
 	Platform,
-	Alert,
+	Modal,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { UserPlus, User, Building, Mail } from 'lucide-react-native';
+import {
+	UserPlus,
+	User,
+	Building,
+	Mail,
+	X,
+	CheckCircle,
+} from 'lucide-react-native';
 import Navbar from '@/components/UI/navbar';
-
-// Zod validation schema
-const registerSchema = z.object({
-	firstName: z
-		.string()
-		.min(1, 'El nombre es requerido')
-		.min(2, 'El nombre debe tener al menos 2 caracteres')
-		.max(50, 'El nombre no puede exceder 50 caracteres')
-		.regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'Solo se permiten letras y espacios'),
-	lastName: z
-		.string()
-		.min(1, 'El apellido es requerido')
-		.min(2, 'El apellido debe tener al menos 2 caracteres')
-		.max(50, 'El apellido no puede exceder 50 caracteres')
-		.regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'Solo se permiten letras y espacios'),
-	company: z
-		.string()
-		.min(1, 'La empresa es requerida')
-		.min(2, 'El nombre de la empresa debe tener al menos 2 caracteres')
-		.max(100, 'El nombre de la empresa no puede exceder 100 caracteres'),
-	email: z
-		.string()
-		.min(1, 'El email es requerido')
-		.email('Ingresa un email válido')
-		.toLowerCase(),
-});
-
-type RegisterFormData = z.infer<typeof registerSchema>;
+import { registerSchema } from '@/lib/validations/schemas';
+import { RegisterFormData } from '@/lib/types/types';
 
 export default function RegisterScreen() {
 	const [isLoading, setIsLoading] = useState(false);
+	const [showSuccessModal, setShowSuccessModal] = useState(false);
+	const [registeredUserData, setRegisteredUserData] =
+		useState<RegisterFormData | null>(null);
 
 	const {
 		control,
 		handleSubmit,
+		reset,
 		formState: { errors, isValid },
 	} = useForm<RegisterFormData>({
 		resolver: zodResolver(registerSchema),
@@ -66,15 +50,18 @@ export default function RegisterScreen() {
 	const handleRegister = async (data: RegisterFormData) => {
 		setIsLoading(true);
 
-		// Simular API call
+		// API call
 		setTimeout(() => {
-			Alert.alert(
-				'Registro Exitoso',
-				`¡Cuenta creada exitosamente!\n\nNombre: ${data.firstName} ${data.lastName}\nEmpresa: ${data.company}\nEmail: ${data.email}\n\nRecibirás un email de confirmación pronto.`,
-				[{ text: 'OK' }],
-			);
 			setIsLoading(false);
+			setRegisteredUserData(data);
+			setShowSuccessModal(true);
 		}, 2000);
+	};
+
+	const handleCloseModal = () => {
+		setShowSuccessModal(false);
+		setRegisteredUserData(null);
+		reset(); // resetea el formulario
 	};
 
 	return (
@@ -270,13 +257,78 @@ export default function RegisterScreen() {
 
 							{/* INFO */}
 							<Text style={styles.termsText}>
-								Al crear una cuenta, uno de nuestros administrativos se
-								contactara contigo a la brevedad.
+								Al crear una cuenta, uno de nuestros ejecutivos se contactara
+								contigo al correo ingresado.
 							</Text>
 						</View>
 					</View>
 				</View>
 			</ScrollView>
+
+			<Modal
+				visible={showSuccessModal}
+				transparent={true}
+				animationType="fade"
+				onRequestClose={handleCloseModal}
+			>
+				<View style={styles.modalOverlay}>
+					<View style={styles.modalContainer}>
+						<TouchableOpacity
+							style={styles.modalCloseButton}
+							onPress={handleCloseModal}
+							activeOpacity={0.7}
+						>
+							<X size={24} color="#64748b" />
+						</TouchableOpacity>
+
+						<View style={styles.modalContent}>
+							<View style={styles.modalIconContainer}>
+								<CheckCircle size={64} color="#0b3477" />
+							</View>
+
+							<Text style={styles.modalTitle}>¡Cuenta Creada!</Text>
+							<Text style={styles.modalSubtitle}>
+								Tu cuenta ha sido creada exitosamente
+							</Text>
+
+							{registeredUserData && (
+								<View style={styles.modalUserInfo}>
+									<Text style={styles.modalUserName}>
+										{registeredUserData.firstName} {registeredUserData.lastName}
+									</Text>
+									<Text style={styles.modalUserCompany}>
+										{registeredUserData.company}
+									</Text>
+									<Text style={styles.modalUserEmail}>
+										{registeredUserData.email}
+									</Text>
+								</View>
+							)}
+
+							<View style={styles.modalEmailInfo}>
+								<Mail size={20} color="#3b82f6" />
+								<Text style={styles.modalEmailText}>
+									Se ha enviado un correo a uno de nuestros ejecutivos para
+									habilitar la creación de tu cuenta.
+								</Text>
+							</View>
+
+							<TouchableOpacity
+								style={styles.modalButton}
+								onPress={handleCloseModal}
+								activeOpacity={0.8}
+							>
+								<LinearGradient
+									colors={['#07174c', '#0b3477']}
+									style={styles.modalButtonGradient}
+								>
+									<Text style={styles.modalButtonText}>Entendido</Text>
+								</LinearGradient>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
 		</KeyboardAvoidingView>
 	);
 }
@@ -434,5 +486,114 @@ const styles = StyleSheet.create({
 	termsLink: {
 		color: '#10b981',
 		fontFamily: 'Inter-Medium',
+	},
+	modalOverlay: {
+		flex: 1,
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingHorizontal: 20,
+	},
+	modalContainer: {
+		backgroundColor: '#ffffff',
+		borderRadius: 20,
+		width: '100%',
+		maxWidth: 400,
+		position: 'relative',
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 10,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 20,
+		elevation: 25,
+	},
+	modalCloseButton: {
+		position: 'absolute',
+		top: 16,
+		right: 16,
+		zIndex: 1,
+		padding: 8,
+		borderRadius: 20,
+		backgroundColor: '#f8fafc',
+	},
+	modalContent: {
+		padding: 32,
+		alignItems: 'center',
+	},
+	modalIconContainer: {
+		marginBottom: 24,
+	},
+	modalTitle: {
+		fontSize: 24,
+		fontFamily: 'Inter-Bold',
+		color: '#1e293b',
+		marginBottom: 8,
+		textAlign: 'center',
+	},
+	modalSubtitle: {
+		fontSize: 16,
+		fontFamily: 'Inter-Regular',
+		color: '#64748b',
+		marginBottom: 24,
+		textAlign: 'center',
+	},
+	modalUserInfo: {
+		backgroundColor: '#f8fafc',
+		borderRadius: 12,
+		padding: 16,
+		width: '100%',
+		marginBottom: 24,
+		alignItems: 'center',
+	},
+	modalUserName: {
+		fontSize: 18,
+		fontFamily: 'Inter-SemiBold',
+		color: '#1e293b',
+		marginBottom: 4,
+	},
+	modalUserCompany: {
+		fontSize: 14,
+		fontFamily: 'Inter-Medium',
+		color: '#475569',
+		marginBottom: 4,
+	},
+	modalUserEmail: {
+		fontSize: 14,
+		fontFamily: 'Inter-Regular',
+		color: '#64748b',
+	},
+	modalEmailInfo: {
+		flexDirection: 'row',
+		alignItems: 'flex-start',
+		backgroundColor: '#eff6ff',
+		borderRadius: 12,
+		padding: 16,
+		marginBottom: 24,
+		width: '100%',
+	},
+	modalEmailText: {
+		fontSize: 14,
+		fontFamily: 'Inter-Regular',
+		color: '#1e40af',
+		marginLeft: 12,
+		flex: 1,
+		lineHeight: 20,
+	},
+	modalButton: {
+		borderRadius: 12,
+		overflow: 'hidden',
+		width: '100%',
+	},
+	modalButtonGradient: {
+		paddingVertical: 16,
+		paddingHorizontal: 24,
+		alignItems: 'center',
+	},
+	modalButtonText: {
+		fontSize: 16,
+		fontFamily: 'Inter-SemiBold',
+		color: '#ffffff',
 	},
 });

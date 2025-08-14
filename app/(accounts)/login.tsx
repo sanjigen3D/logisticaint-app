@@ -55,11 +55,13 @@ export default function LoginScreen() {
 		// Simular API call
 		setTimeout(() => {
 			setIsLoading(false);
-			Alert.alert(
-				'Login Exitoso',
-				`Bienvenido de vuelta!\nEmail: ${data.email}`,
-				[{ text: 'OK' }],
-			);
+			if (Platform.OS !== 'web') {
+				Alert.alert(
+					'Login Exitoso',
+					`Bienvenido de vuelta!\nEmail: ${data.email}`,
+					[{ text: 'OK' }],
+				);
+			}
 		}, 1500);
 	};
 

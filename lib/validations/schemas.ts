@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// Formulario para Itinerario
 export const formSchema = z.object({
 	origin: z.object({
 		name: z.string().min(3, {
@@ -32,4 +33,30 @@ export const trackingSchema = z.object({
 		required_error: 'Debe seleccionar una naviera',
 		invalid_type_error: 'Naviera no válida',
 	}),
+});
+
+// formulario de registro
+export const registerSchema = z.object({
+	firstName: z
+		.string()
+		.min(1, 'El nombre es requerido')
+		.min(2, 'El nombre debe tener al menos 2 caracteres')
+		.max(50, 'El nombre no puede exceder 50 caracteres')
+		.regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'Solo se permiten letras y espacios'),
+	lastName: z
+		.string()
+		.min(1, 'El apellido es requerido')
+		.min(2, 'El apellido debe tener al menos 2 caracteres')
+		.max(50, 'El apellido no puede exceder 50 caracteres')
+		.regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'Solo se permiten letras y espacios'),
+	company: z
+		.string()
+		.min(1, 'La empresa es requerida')
+		.min(2, 'El nombre de la empresa debe tener al menos 2 caracteres')
+		.max(100, 'El nombre de la empresa no puede exceder 100 caracteres'),
+	email: z
+		.string()
+		.min(1, 'El email es requerido')
+		.email('Ingresa un email válido')
+		.toLowerCase(),
 });
