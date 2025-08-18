@@ -64,8 +64,6 @@ export default function RegisterScreen() {
 
 			const resJson = await response.json();
 
-			console.log(resJson);
-
 			if (response.status !== 200) {
 				console.error(resJson);
 				setIsLoading(false);
