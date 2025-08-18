@@ -50,12 +50,37 @@ export default function RegisterScreen() {
 	const handleRegister = async (data: RegisterFormData) => {
 		setIsLoading(true);
 
-		// API call
-		setTimeout(() => {
+		try {
+			const response = await fetch(
+				'https://marines-services-auth.vercel.app/auth/register',
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(data),
+				},
+			);
+
+			const resJson = await response.json();
+
+			console.log(resJson);
+
+			if (response.status !== 200) {
+				console.error(resJson);
+				setIsLoading(false);
+				// TODO MODAL DE ERROR
+				setRegisteredUserData(null);
+				reset();
+				return;
+			}
+
 			setIsLoading(false);
 			setRegisteredUserData(data);
 			setShowSuccessModal(true);
-		}, 2000);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const handleCloseModal = () => {
