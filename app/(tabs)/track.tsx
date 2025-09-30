@@ -104,8 +104,13 @@ export const Track = () => {
 
 			const resApiData = await response.json();
 
-			unifiedData = convertZimToUnified(resApiData, data.trackingNumber);
-			setTrackingData(unifiedData);
+			if (data.carrier === 'Zim') {
+				unifiedData = convertZimToUnified(resApiData, data.trackingNumber);
+				setTrackingData(unifiedData);
+			} else if (data.carrier === 'Hapag') {
+				unifiedData = convertHapagToUnified(resApiData, data.trackingNumber);
+				setTrackingData(unifiedData);
+			}
 		} catch (e) {
 			console.error('Error fetching tracking data:', e);
 		}
