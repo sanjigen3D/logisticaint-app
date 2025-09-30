@@ -109,28 +109,6 @@ export const Track = () => {
 		} catch (e) {
 			console.error('Error fetching tracking data:', e);
 		}
-
-		// Simular API call
-		setTimeout(() => {
-			setIsTracking(false);
-
-			// Usar la naviera seleccionada por el usuario
-			let unifiedData: UnifiedTrackingData;
-
-			if (data.carrier === 'Zim') {
-				unifiedData = convertZimToUnified(
-					zimTracingResult200,
-					data.trackingNumber,
-				);
-			} else {
-				unifiedData = convertHapagToUnified(
-					hapagTrackingResult200,
-					data.trackingNumber,
-				);
-			}
-
-			setTrackingData(unifiedData);
-		}, 1500);
 	};
 
 	// para no mostrar toda la info de los container si el usuario no lo quiere
