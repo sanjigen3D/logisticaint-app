@@ -24,10 +24,7 @@ const loginSchema = z.object({
 		.min(1, 'El email es requerido')
 		.email('Ingresa un email válido')
 		.toLowerCase(),
-	password: z
-		.string()
-		.min(1, 'La contraseña es requerida')
-		.min(6, 'La contraseña debe tener al menos 6 caracteres'),
+	password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -52,17 +49,10 @@ export default function LoginScreen() {
 	const handleLogin = async (data: LoginFormData) => {
 		setIsLoading(true);
 
-		// Simular API call
-		setTimeout(() => {
-			setIsLoading(false);
-			if (Platform.OS !== 'web') {
-				Alert.alert(
-					'Login Exitoso',
-					`Bienvenido de vuelta!\nEmail: ${data.email}`,
-					[{ text: 'OK' }],
-				);
-			}
-		}, 1500);
+		try {
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	const togglePasswordVisibility = () => {

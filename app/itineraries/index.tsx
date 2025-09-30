@@ -1,14 +1,7 @@
 import ZimResults from '@/components/results/zim/ZimResults';
-import { LinearGradient } from 'expo-linear-gradient';
-import { router, useGlobalSearchParams } from 'expo-router';
-import { ArrowLeft, Ship } from 'lucide-react-native';
-import {
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { useGlobalSearchParams } from 'expo-router';
+import { Ship } from 'lucide-react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import MaerskResults from '@/components/results/maersk/MaerskResult';
 import HapagResults from '@/components/results/hapag/HapagResult';
 import Navbar from '@/components/UI/navbar';

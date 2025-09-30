@@ -19,7 +19,6 @@ import {
 	Ship,
 	Box,
 	Calendar,
-	Anchor,
 	ChevronDown,
 	ChevronUp,
 } from 'lucide-react-native';
@@ -37,6 +36,9 @@ import {
 import { formatDate } from '@/lib/utils';
 import Navbar from '@/components/UI/navbar';
 import { CARRIERS } from '@/lib/constants';
+import { ROUTES } from '@/lib/Routes';
+
+type Naviera = 'Zim' | 'Hapag' | 'Maersk';
 
 export const Track = () => {
 	const [isTracking, setIsTracking] = useState(false);
@@ -63,15 +65,50 @@ export const Track = () => {
 		},
 	});
 
-	// subscripción a los input
+	// subscripción de los input
 	const [trackingNumber, selectedCarrier] = watch([
 		'trackingNumber',
 		'carrier',
 	]);
 
+	const getTrackingUrl = (carrier: Naviera, trackingNumber: string) => {
+		switch (carrier) {
+			case 'Zim':
+				return `${ROUTES.API_ROUTE}/tracking/Zim?trackingNumber=${trackingNumber}`;
+			case 'Hapag':
+				return `${ROUTES.API_ROUTE}/tracking/Hapag?trackingNumber=${trackingNumber}`;
+			case 'Maersk':
+				return `${ROUTES.API_ROUTE}/tracking/Maersk?trackingNumber=${trackingNumber}`;
+		}
+	};
 	const handleTrack = async (data: TrackingFormData) => {
 		setIsTracking(true);
 		setShowCarrierDropdown(false);
+		let unifiedData: UnifiedTrackingData;
+
+		const url = getTrackingUrl(data.carrier, data.trackingNumber);
+
+		try {
+			const response = await fetch(url, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			if (response.status !== 200) {
+				// respuesta fallida aquí puedo mostrar algo
+				console.error('Error fetching tracking data:', response.statusText);
+				return;
+			}
+
+			const resApiData = await response.json();
+
+			unifiedData = convertZimToUnified(resApiData, data.trackingNumber);
+			setTrackingData(unifiedData);
+		} catch (e) {
+			console.error('Error fetching tracking data:', e);
+		}
 
 		// Simular API call
 		setTimeout(() => {
@@ -80,7 +117,7 @@ export const Track = () => {
 			// Usar la naviera seleccionada por el usuario
 			let unifiedData: UnifiedTrackingData;
 
-			if (data.carrier === 'zim') {
+			if (data.carrier === 'Zim') {
 				unifiedData = convertZimToUnified(
 					zimTracingResult200,
 					data.trackingNumber,
@@ -91,11 +128,6 @@ export const Track = () => {
 					data.trackingNumber,
 				);
 			}
-			// } else if (data.carrier === 'hapag') {
-			// 	unifiedData = convertHapagToUnified(
-			// 		hapagTrackingResult200,
-			// 		data.trackingNumber,
-			// 	);
 
 			setTrackingData(unifiedData);
 		}, 1500);
@@ -114,7 +146,7 @@ export const Track = () => {
 		});
 	};
 
-	const handleCarrierSelect = (carrierId: 'hapag' | 'zim') => {
+	const handleCarrierSelect = (carrierId: 'Hapag' | 'Zim') => {
 		setValue('carrier', carrierId, { shouldValidate: true });
 		setShowCarrierDropdown(false);
 	};

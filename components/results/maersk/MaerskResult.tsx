@@ -14,6 +14,7 @@ import {
 	Text,
 	View,
 } from 'react-native';
+import { ROUTES } from '@/lib/Routes';
 
 type MaerskResultsProps = {
 	origin: string;
@@ -22,7 +23,7 @@ type MaerskResultsProps = {
 
 const fetchMaerskData = async (origCode: string, destCode: string) => {
 	const response = await fetch(
-		`https://marines-services.vercel.app/Maersk/itinerarySearch?origin=${encodeURIComponent(origCode)}&destination=${encodeURIComponent(destCode)}`,
+		`${ROUTES.API_ROUTE}/itinerary/Maersk?origin=${encodeURIComponent(origCode)}&destination=${encodeURIComponent(destCode)}`,
 	);
 	if (!response.ok) throw new Error('Error al obtener datos');
 	return response.json();

@@ -6,32 +6,16 @@ import {
 	StyleSheet,
 	Platform,
 } from 'react-native';
-import { User, LogIn, UserPlus } from 'lucide-react-native';
-import { router } from 'expo-router';
+import { User } from 'lucide-react-native';
+import { ExternalPathString, RelativePathString, router } from 'expo-router';
 import Navbar from '@/components/UI/navbar';
-
-const quickActions = [
-	{
-		id: 1,
-		title: 'Iniciar Sesión',
-		subtitle: 'Accede a tu cuenta',
-		icon: LogIn,
-		color: '#3b82f6',
-		route: '/login',
-	},
-	{
-		id: 2,
-		title: 'Crear Cuenta',
-		subtitle: 'Regístrate gratis',
-		icon: UserPlus,
-		color: '#10b981',
-		route: '/register',
-	},
-];
+import { quickActions } from '@/lib/constants';
 
 export default function AccountHomeScreen() {
-	const handleQuickAction = (route: string) => {
-		router.push(route as any);
+	const handleQuickAction = (
+		route: ExternalPathString | RelativePathString,
+	) => {
+		router.push(route);
 	};
 
 	return (

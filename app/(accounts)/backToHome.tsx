@@ -1,5 +1,9 @@
-import { Redirect } from 'expo-router';
+import { ExternalPathString, Redirect, RelativePathString } from 'expo-router';
+import { ROUTES } from '@/lib/Routes';
+import React from 'react';
 
 export default function BackToHome() {
-	return <Redirect href="/" />;
+	return (
+		<Redirect href={ROUTES.HOME as ExternalPathString | RelativePathString} />
+	);
 }

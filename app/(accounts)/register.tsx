@@ -24,6 +24,7 @@ import {
 import Navbar from '@/components/UI/navbar';
 import { registerSchema } from '@/lib/validations/schemas';
 import { RegisterFormData } from '@/lib/types/types';
+import { ROUTES } from '@/lib/Routes';
 
 export default function RegisterScreen() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -51,16 +52,13 @@ export default function RegisterScreen() {
 		setIsLoading(true);
 
 		try {
-			const response = await fetch(
-				'https://marines-services-auth.vercel.app/auth/register',
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(data),
+			const response = await fetch(ROUTES.API_RESEND_REGISTER, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
 				},
-			);
+				body: JSON.stringify(data),
+			});
 
 			const resJson = await response.json();
 

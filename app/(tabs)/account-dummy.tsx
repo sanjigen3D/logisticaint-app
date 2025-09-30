@@ -1,5 +1,6 @@
-import { Redirect } from 'expo-router';
+import { Redirect, RelativePathString } from 'expo-router';
+import { ROUTES } from '@/lib/Routes';
 
 export default function AccountDummy() {
-	return <Redirect href="/(accounts)/account" />;
+	return <Redirect href={ROUTES.ACCOUNT_DUMMY as RelativePathString} />;
 }
