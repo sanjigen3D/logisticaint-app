@@ -10,11 +10,11 @@ import {
 	Platform,
 	Pressable,
 	ScrollView,
-	StyleSheet,
 	Text,
 	View,
 } from 'react-native';
 import { ROUTES } from '@/lib/Routes';
+import { resultItineraryStyles } from '@/components/results/hapag/HapagResult';
 
 type MaerskResultsProps = {
 	origin: string;
@@ -46,9 +46,9 @@ const MaerskResults = ({ origin, destination }: MaerskResultsProps) => {
 
 	if (!data.oceanProducts || !data) {
 		return (
-			<View style={styles.summaryContainer}>
+			<View style={resultItineraryStyles.summaryContainer}>
 				<View className={'flex flex-row gap-3 items-center'}>
-					<Text style={styles.summaryTitle}>Maersk (0)</Text>
+					<Text style={resultItineraryStyles.summaryTitle}>Maersk (0)</Text>
 					<Pressable
 						className="hover:bg-gray-200 rounded-full p-1"
 						onPress={() => setExpanded(!expanded)}
@@ -62,13 +62,15 @@ const MaerskResults = ({ origin, destination }: MaerskResultsProps) => {
 				</View>
 
 				{expanded && (
-					<Text style={styles.loadingText}>No se encontraron resultados</Text>
+					<Text style={resultItineraryStyles.loadingText}>
+						No se encontraron resultados
+					</Text>
 				)}
 			</View>
 		);
 	}
 
-	// mapper para estructurar todo a un mismo tipo y usarlo en las Cards
+	// mapper para unificar a un mismo tipo y usarlo en las Cards
 	const routes = mapMaerskToUnified(data as MaerskAPIResponse);
 
 	if (isError) {
@@ -83,9 +85,11 @@ const MaerskResults = ({ origin, destination }: MaerskResultsProps) => {
 	if (routes.length > 0) {
 		return (
 			<ScrollView showsVerticalScrollIndicator={Platform.OS !== 'web'}>
-				<View style={styles.summaryContainer}>
+				<View style={resultItineraryStyles.summaryContainer}>
 					<View className={'flex flex-row gap-3 items-center'}>
-						<Text style={styles.summaryTitle}>Maersk ({routes.length})</Text>
+						<Text style={resultItineraryStyles.summaryTitle}>
+							Maersk ({routes.length})
+						</Text>
 						<Pressable
 							className="hover:bg-gray-200 rounded-full p-1"
 							onPress={() => setExpanded(!expanded)}
@@ -110,23 +114,3 @@ const MaerskResults = ({ origin, destination }: MaerskResultsProps) => {
 	return <ActivityIndicator size="large" color="#5a8ce8" />;
 };
 export default MaerskResults;
-
-const styles = StyleSheet.create({
-	summaryContainer: {
-		paddingTop: 20,
-		paddingBottom: 16,
-	},
-	summaryTitle: {
-		fontSize: 20,
-		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
-	},
-	scrollContent: {
-		flexGrow: 1,
-	},
-	loadingText: {
-		fontSize: 16,
-		fontFamily: 'Inter-Regular',
-		color: '#64748b',
-	},
-});

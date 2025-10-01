@@ -46,9 +46,11 @@ const HapagResults = ({ origin, destination }: HapagResultsProps) => {
 
 	if (!Array.isArray(data) || data.length === 0) {
 		return (
-			<View style={styles.summaryContainer}>
+			<View style={resultItineraryStyles.summaryContainer}>
 				<View className={'flex flex-row gap-3 items-center'}>
-					<Text style={styles.summaryTitle}>Hapag - Lloyd (0)</Text>
+					<Text style={resultItineraryStyles.summaryTitle}>
+						Hapag - Lloyd (0)
+					</Text>
 					<Pressable
 						className="hover:bg-gray-200 rounded-full p-1"
 						onPress={() => setExpanded(!expanded)}
@@ -62,7 +64,9 @@ const HapagResults = ({ origin, destination }: HapagResultsProps) => {
 				</View>
 
 				{expanded && (
-					<Text style={styles.loadingText}>No se encontraron resultados</Text>
+					<Text style={resultItineraryStyles.loadingText}>
+						No se encontraron resultados
+					</Text>
 				)}
 			</View>
 		);
@@ -85,9 +89,9 @@ const HapagResults = ({ origin, destination }: HapagResultsProps) => {
 	if (routes.length > 0) {
 		return (
 			<ScrollView showsVerticalScrollIndicator={Platform.OS !== 'web'}>
-				<View style={styles.summaryContainer}>
+				<View style={resultItineraryStyles.summaryContainer}>
 					<View className={'flex flex-row gap-3 items-center'}>
-						<Text style={styles.summaryTitle}>
+						<Text style={resultItineraryStyles.summaryTitle}>
 							Hapag - Lloyd ({routes.length})
 						</Text>
 						<Pressable
@@ -115,7 +119,7 @@ const HapagResults = ({ origin, destination }: HapagResultsProps) => {
 };
 export default HapagResults;
 
-const styles = StyleSheet.create({
+export const resultItineraryStyles = StyleSheet.create({
 	summaryContainer: {
 		paddingTop: 20,
 		paddingBottom: 16,

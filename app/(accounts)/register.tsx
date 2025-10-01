@@ -413,14 +413,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		borderRadius: 16,
 		padding: 24,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.1,
-		shadowRadius: 8,
-		elevation: 5,
+		boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
 	},
 	formTitle: {
 		fontSize: 24,
@@ -521,14 +514,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		maxWidth: 400,
 		position: 'relative',
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 10,
-		},
-		shadowOpacity: 0.25,
-		shadowRadius: 20,
-		elevation: 25,
+		boxShadow: '0px 10px 20px rgba(0,0,0, 0.25)',
 	},
 	modalCloseButton: {
 		position: 'absolute',

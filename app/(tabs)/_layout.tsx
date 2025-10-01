@@ -47,7 +47,7 @@ export default function TabLayout() {
 				}}
 			/>
 			{/* oculta en el menu */}
-			<Tabs.Screen name="results" options={{ href: null }} />
+			{/*<Tabs.Screen name="results" options={{ href: null }} />*/}
 		</Tabs>
 	);
 }

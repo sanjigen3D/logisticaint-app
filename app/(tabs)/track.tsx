@@ -24,21 +24,13 @@ import {
 } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
-import { TrackingFormData } from '@/lib/types/types';
+import { Naviera, TrackingFormData } from '@/lib/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { trackingSchema } from '@/lib/validations/schemas';
-import { convertZimToUnified } from '@/lib/mappers/ZimMapper';
-import { convertHapagToUnified } from '@/lib/mappers/HapagMapper';
-import {
-	hapagTrackingResult200,
-	zimTracingResult200,
-} from '@/assets/DUMMY/data';
 import { formatDate } from '@/lib/utils';
 import Navbar from '@/components/UI/navbar';
 import { CARRIERS } from '@/lib/constants';
-import { ROUTES } from '@/lib/Routes';
-
-type Naviera = 'Zim' | 'Hapag' | 'Maersk';
+import { fetchTrackingData } from '@/lib/trackHelpers';
 
 export const Track = () => {
 	const [isTracking, setIsTracking] = useState(false);
@@ -48,7 +40,6 @@ export const Track = () => {
 	const [expandedContainers, setExpandedContainers] = useState<Set<string>>(
 		new Set(),
 	);
-	const [showCarrierDropdown, setShowCarrierDropdown] = useState(false);
 
 	const {
 		control,
@@ -66,53 +57,20 @@ export const Track = () => {
 	});
 
 	// subscripción de los input
-	const [trackingNumber, selectedCarrier] = watch([
-		'trackingNumber',
-		'carrier',
-	]);
+	const [_, selectedCarrier] = watch(['trackingNumber', 'carrier']);
 
-	const getTrackingUrl = (carrier: Naviera, trackingNumber: string) => {
-		switch (carrier) {
-			case 'Zim':
-				return `${ROUTES.API_ROUTE}/tracking/Zim?trackingNumber=${trackingNumber}`;
-			case 'Hapag':
-				return `${ROUTES.API_ROUTE}/tracking/Hapag?trackingNumber=${trackingNumber}`;
-			case 'Maersk':
-				return `${ROUTES.API_ROUTE}/tracking/Maersk?trackingNumber=${trackingNumber}`;
-		}
-	};
-	const handleTrack = async (data: TrackingFormData) => {
+	const handleTrack = async (formData: TrackingFormData) => {
 		setIsTracking(true);
-		setShowCarrierDropdown(false);
-		let unifiedData: UnifiedTrackingData;
-
-		const url = getTrackingUrl(data.carrier, data.trackingNumber);
-
 		try {
-			const response = await fetch(url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-
-			if (response.status !== 200) {
-				// respuesta fallida aquí puedo mostrar algo
-				console.error('Error fetching tracking data:', response.statusText);
-				return;
-			}
-
-			const resApiData = await response.json();
-
-			if (data.carrier === 'Zim') {
-				unifiedData = convertZimToUnified(resApiData, data.trackingNumber);
-				setTrackingData(unifiedData);
-			} else if (data.carrier === 'Hapag') {
-				unifiedData = convertHapagToUnified(resApiData, data.trackingNumber);
-				setTrackingData(unifiedData);
-			}
+			const result = await fetchTrackingData(
+				formData.carrier,
+				formData.trackingNumber,
+			);
+			setTrackingData(result);
 		} catch (e) {
 			console.error('Error fetching tracking data:', e);
+		} finally {
+			setIsTracking(false);
 		}
 	};
 
@@ -129,9 +87,8 @@ export const Track = () => {
 		});
 	};
 
-	const handleCarrierSelect = (carrierId: 'Hapag' | 'Zim') => {
+	const handleCarrierSelect = (carrierId: Naviera) => {
 		setValue('carrier', carrierId, { shouldValidate: true });
-		setShowCarrierDropdown(false);
 	};
 
 	const getSelectedCarrier = () => {
@@ -565,14 +522,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		borderRadius: 16,
 		padding: 24,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.1,
-		shadowRadius: 8,
-		elevation: 5,
+		boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
 	},
 	formTitle: {
 		fontSize: 20,
@@ -724,14 +674,7 @@ const styles = StyleSheet.create({
 		borderRadius: 16,
 		padding: 24,
 		marginTop: 20,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.1,
-		shadowRadius: 8,
-		elevation: 5,
+		boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
 	},
 	resultsTitle: {
 		fontSize: 20,

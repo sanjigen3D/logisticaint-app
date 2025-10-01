@@ -15,6 +15,7 @@ import {
 	View,
 } from 'react-native';
 import { ROUTES } from '@/lib/Routes';
+import { resultItineraryStyles } from '@/components/results/hapag/HapagResult';
 
 type ZimResultsProps = {
 	origin: string;
@@ -40,9 +41,9 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 
 	if (!data || !data.response) {
 		return (
-			<View style={styles.summaryContainer}>
+			<View style={resultItineraryStyles.summaryContainer}>
 				<View className={'flex flex-row gap-3 items-center'}>
-					<Text style={styles.summaryTitle}>ZIM (0)</Text>
+					<Text style={resultItineraryStyles.summaryTitle}>ZIM (0)</Text>
 					<Pressable
 						className="hover:bg-gray-200 rounded-full p-1"
 						onPress={() => setExpanded(!expanded)}
@@ -56,7 +57,9 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 				</View>
 
 				{expanded && (
-					<Text style={styles.loadingText}>No se encontraron resultados</Text>
+					<Text style={resultItineraryStyles.loadingText}>
+						No se encontraron resultados
+					</Text>
 				)}
 			</View>
 		);
@@ -82,9 +85,9 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 	if (routes.length > 0) {
 		return (
 			<ScrollView showsVerticalScrollIndicator={Platform.OS !== 'web'}>
-				<View style={styles.summaryContainer}>
+				<View style={resultItineraryStyles.summaryContainer}>
 					<View className={'flex flex-row gap-3 items-center'}>
-						<Text style={styles.summaryTitle}>
+						<Text style={resultItineraryStyles.summaryTitle}>
 							Zim Integrated Shipping Services ({routes.length})
 						</Text>
 						<Pressable
@@ -111,26 +114,3 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 	return <ActivityIndicator size="large" color="#5a8ce8" />;
 };
 export default ZimResults;
-
-const styles = StyleSheet.create({
-	summaryContainer: {
-		paddingTop: 20,
-		paddingBottom: 16,
-	},
-	summaryTitle: {
-		fontSize: 20,
-		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
-	},
-	scrollView: {
-		flex: 1,
-	},
-	scrollContent: {
-		flexGrow: 1,
-	},
-	loadingText: {
-		fontSize: 16,
-		fontFamily: 'Inter-Regular',
-		color: '#64748b',
-	},
-});

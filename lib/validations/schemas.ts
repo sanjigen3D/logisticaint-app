@@ -29,7 +29,7 @@ export const trackingSchema = z.object({
 		.max(50, 'El número no puede exceder 50 caracteres')
 		.regex(/^[A-Z0-9]+$/i, 'Solo se permiten letras y números')
 		.transform((val) => val.toUpperCase()),
-	carrier: z.enum(['Hapag', 'Zim'], {
+	carrier: z.enum(['Hapag', 'Zim', 'Maersk'], {
 		required_error: 'Debe seleccionar una naviera',
 		invalid_type_error: 'Naviera no válida',
 	}),

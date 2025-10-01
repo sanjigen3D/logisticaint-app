@@ -139,14 +139,7 @@ const styles = StyleSheet.create({
 		borderRadius: 16,
 		padding: 20,
 		alignItems: 'center',
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.1,
-		shadowRadius: 8,
-		elevation: 5,
+		boxShadow: '0px 2px 8px rgba(0,0,0, 0.1)',
 	},
 	quickActionIcon: {
 		width: 48,
@@ -191,14 +184,7 @@ const styles = StyleSheet.create({
 		marginBottom: 12,
 		flexDirection: 'row',
 		alignItems: 'center',
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 1,
-		},
-		shadowOpacity: 0.05,
-		shadowRadius: 2,
-		elevation: 2,
+		boxShadow: '0px 1px 2px rgba(0,0,0, 0.05)',
 	},
 	featureIcon: {
 		width: 40,
@@ -226,14 +212,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		borderRadius: 16,
 		padding: 20,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
-		shadowOpacity: 0.1,
-		shadowRadius: 8,
-		elevation: 5,
+		boxShadow: '0px 2px 8px rgba(0,0,0, 0.1)',
 	},
 	infoTitle: {
 		fontSize: 18,
