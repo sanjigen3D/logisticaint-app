@@ -5,7 +5,7 @@ export const ROUTES = {
 	REGISTER: '/register',
 	ACCOUNT: '/account',
 	ITINERARY: '/itineraries',
-	TRACKING: '/tracking',
+	TRACKING: '/track',
 	API_RESEND_REGISTER: 'https://marines-services.vercel.app/email/register',
 	API_ROUTE: 'https://marines-services.vercel.app',
 };
