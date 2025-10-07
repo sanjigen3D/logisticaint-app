@@ -6,9 +6,7 @@ import {
 	StyleSheet,
 	Platform,
 } from 'react-native';
-import { User } from 'lucide-react-native';
 import { ExternalPathString, RelativePathString, router } from 'expo-router';
-import Navbar from '@/components/UI/navbar';
 import { quickActions } from '@/lib/constants';
 
 export default function AccountHomeScreen() {
@@ -24,13 +22,6 @@ export default function AccountHomeScreen() {
 				style={styles.scrollView}
 				contentContainerStyle={styles.scrollContent}
 			>
-				{/* Header */}
-				<Navbar
-					title={'Mi Cuenta'}
-					subtitle={'Gestiona tu cuenta y accede a funciones avanzadas'}
-					icon={<User size={40} color="#ffffff" />}
-				/>
-
 				{/* Main Content Container */}
 				<View style={styles.mainContainer}>
 					{/* Quick Actions */}

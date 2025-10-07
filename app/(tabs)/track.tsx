@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
-	Package,
 	Search,
 	MapPin,
 	Clock,
@@ -28,7 +27,6 @@ import { Naviera, TrackingFormData } from '@/lib/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { trackingSchema } from '@/lib/validations/schemas';
 import { formatDate } from '@/lib/utils';
-import Navbar from '@/components/UI/navbar';
 import { CARRIERS } from '@/lib/constants';
 import { fetchTrackingData } from '@/lib/trackHelpers';
 
@@ -105,12 +103,6 @@ export const Track = () => {
 				contentContainerStyle={styles.scrollContent}
 				keyboardShouldPersistTaps="handled"
 			>
-				<Navbar
-					title={'Rastrear Envío'}
-					subtitle={'Sigue tu paquete en tiempo real'}
-					icon={<Package size={32} color="#ffffff" />}
-				/>
-
 				{/* MAIN CONTAINER */}
 				<View style={styles.mainContainer}>
 					{/* FORM CONTAINER */}

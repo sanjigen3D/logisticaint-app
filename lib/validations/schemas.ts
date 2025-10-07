@@ -36,10 +36,9 @@ export const trackingSchema = z.object({
 });
 
 // formulario de registro
-export const registerSchema = z.object({
+export const RequestNewUserSchema = z.object({
 	firstName: z
 		.string()
-		.min(1, 'El nombre es requerido')
 		.min(2, 'El nombre debe tener al menos 2 caracteres')
 		.max(50, 'El nombre no puede exceder 50 caracteres')
 		.regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'Solo se permiten letras y espacios'),
@@ -59,4 +58,14 @@ export const registerSchema = z.object({
 		.min(1, 'El email es requerido')
 		.email('Ingresa un email válido')
 		.toLowerCase(),
+});
+
+// formulario de login
+export const loginSchema = z.object({
+	email: z
+		.string()
+		.min(1, 'El email es requerido')
+		.email('Ingresa un email válido')
+		.toLowerCase(),
+	password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 });

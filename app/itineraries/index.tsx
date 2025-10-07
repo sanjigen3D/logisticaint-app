@@ -4,7 +4,7 @@ import { Ship } from 'lucide-react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import MaerskResults from '@/components/results/maersk/MaerskResult';
 import HapagResults from '@/components/results/hapag/HapagResult';
-import Navbar from '@/components/UI/navbar';
+import Navbar from '@/components/UI/navbar/navbar';
 
 // este componente sirve para pasar la información a los demás que mostraran las llamadas de las API
 export default function ResultsPage() {

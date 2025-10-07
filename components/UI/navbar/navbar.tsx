@@ -8,12 +8,14 @@ import {
 import { JSX, useMemo } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft } from 'lucide-react-native';
-import { router } from 'expo-router';
+import { router, usePathname } from 'expo-router';
+import { getNavbarProps } from '@/components/UI/navbar/getNavbarProps';
+import { ROUTES } from '@/lib/Routes';
 
-interface NavbarProps {
-	title: string;
-	subtitle: string;
-	icon: JSX.Element;
+export interface NavbarProps {
+	title?: string;
+	subtitle?: string;
+	icon?: JSX.Element;
 	colors?: string[];
 	backButton?: boolean;
 }
@@ -21,10 +23,21 @@ interface NavbarProps {
 const Navbar = ({
 	title,
 	subtitle,
-	colors = ['#07174c', '#0b3477'],
 	icon,
+	colors = ['#07174c', '#0b3477'],
 	backButton = false,
 }: NavbarProps) => {
+	const pathname = usePathname();
+
+	const navParams = getNavbarProps(pathname);
+
+	// esta ruta usa un navbar especial para mostrar más info
+	if (pathname === ROUTES.ITINERARY) {
+		navParams.title = title;
+		navParams.subtitle = subtitle;
+		navParams.icon = icon;
+	}
+
 	// Usar useMemo para calcular los colores del gradiente una sola vez
 	const gradientColors = useMemo(() => {
 		// Sí hay al menos 2 colores, tomar los primeros 2
@@ -51,10 +64,12 @@ const Navbar = ({
 				)}
 				<View style={styles.headerContent}>
 					<View className={'flex flex-row items-center space-x-4'}>
-						{icon}
-						<Text style={styles.headerTitle}>{title}</Text>
+						{navParams.icon || icon}
+						<Text style={styles.headerTitle}>{navParams.title || title}</Text>
 					</View>
-					<Text style={styles.headerSubtitle}>{subtitle}</Text>
+					<Text style={styles.headerSubtitle}>
+						{navParams.subtitle || subtitle}
+					</Text>
 				</View>
 			</View>
 		</LinearGradient>
