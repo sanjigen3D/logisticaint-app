@@ -12,6 +12,13 @@ import '@/assets/global.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from '@/components/UI/navbar/navbar';
 import { ROUTES } from '@/lib/Routes';
+import {
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	View,
+} from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -37,12 +44,46 @@ export default function RootLayout() {
 
 	return (
 		<QueryClientProvider client={new QueryClient()}>
-			{!path.includes(ROUTES.ITINERARY) && <Navbar />}
-			<Stack screenOptions={{ headerShown: false }}>
-				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				<Stack.Screen name="(accounts)" options={{ headerShown: false }} />
-				<Stack.Screen name={'+not-found'} />
-			</Stack>
+			<KeyboardAvoidingView
+				style={styles.container}
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+			>
+				<ScrollView
+					style={styles.scrollView}
+					contentContainerStyle={styles.scrollContent}
+					keyboardShouldPersistTaps="handled"
+				>
+					<View style={styles.mainContainer}>
+						{!path.includes(ROUTES.ITINERARY) && <Navbar />}
+						<Stack screenOptions={{ headerShown: false }}>
+							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+							<Stack.Screen
+								name="(accounts)"
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen name={'+not-found'} />
+						</Stack>
+					</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
 		</QueryClientProvider>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: '#f8fafc',
+	},
+	scrollView: {
+		flex: 1,
+	},
+	scrollContent: {
+		flexGrow: 1,
+	},
+	mainContainer: {
+		flex: 1,
+		width: '100%',
+		alignSelf: 'center',
+	},
+});

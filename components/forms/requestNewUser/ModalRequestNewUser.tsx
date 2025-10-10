@@ -42,11 +42,15 @@ export const ModalRequestNewUser = ({
 
 						{userData && (
 							<View style={styles.modalUserInfo}>
-								<Text style={styles.modalUserName}>
-									{userData.firstName} {userData.lastName}
-								</Text>
-								<Text style={styles.modalUserCompany}>{userData.company}</Text>
-								<Text style={styles.modalUserEmail}>{userData.email}</Text>
+								<View>
+									<Text style={styles.modalUserName}>
+										{userData.firstName} {userData.lastName}
+									</Text>
+									<Text style={styles.modalUserCompany}>
+										{userData.company}
+									</Text>
+									<Text style={styles.modalUserEmail}>{userData.email}</Text>
+								</View>
 							</View>
 						)}
 
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		borderRadius: 20,
 		width: '100%',
-		maxWidth: 400,
+		maxWidth: 800,
 		position: 'relative',
 		boxShadow: '0px 10px 20px rgba(0,0,0, 0.25)',
 	},

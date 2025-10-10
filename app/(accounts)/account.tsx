@@ -1,10 +1,4 @@
-import {
-	View,
-	Text,
-	ScrollView,
-	TouchableOpacity,
-	StyleSheet,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { ExternalPathString, RelativePathString, router } from 'expo-router';
 import { quickActions } from '@/lib/constants';
 
@@ -16,61 +10,40 @@ export default function AccountHomeScreen() {
 	};
 
 	return (
-		<View style={styles.container}>
-			<ScrollView
-				style={styles.scrollView}
-				contentContainerStyle={styles.scrollContent}
-			>
-				{/* Main Content Container */}
-				<View style={styles.mainContainer}>
-					{/* Quick Actions */}
-					<View style={styles.quickActionsContainer}>
-						<Text style={styles.quickActionsTitle}>Acceso Rápido</Text>
-						<View style={styles.quickActionsGrid}>
-							{quickActions.map((action) => (
-								<TouchableOpacity
-									key={action.id}
-									style={styles.quickActionCard}
-									onPress={() => handleQuickAction(action.route)}
-									activeOpacity={0.7}
-								>
-									<View
-										style={[
-											styles.quickActionIcon,
-											{ backgroundColor: `${action.color}20` },
-										]}
-									>
-										<action.icon size={24} color={action.color} />
-									</View>
-									<Text style={styles.quickActionTitle}>{action.title}</Text>
-									<Text style={styles.quickActionSubtitle}>
-										{action.subtitle}
-									</Text>
-								</TouchableOpacity>
-							))}
-						</View>
-					</View>
+		<View style={styles.accountContainer}>
+			<View style={styles.quickActionsContainer}>
+				<Text style={styles.quickActionsTitle}>Acceso Rápido</Text>
+				<View style={styles.quickActionsGrid}>
+					{quickActions.map((action) => (
+						<TouchableOpacity
+							key={action.id}
+							style={styles.quickActionCard}
+							onPress={() => handleQuickAction(action.route)}
+							activeOpacity={0.7}
+						>
+							<View
+								style={[
+									styles.quickActionIcon,
+									{ backgroundColor: `${action.color}20` },
+								]}
+							>
+								<action.icon size={24} color={action.color} />
+							</View>
+							<Text style={styles.quickActionTitle}>{action.title}</Text>
+							<Text style={styles.quickActionSubtitle}>{action.subtitle}</Text>
+						</TouchableOpacity>
+					))}
 				</View>
-			</ScrollView>
+			</View>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#f8fafc',
-	},
-	scrollView: {
-		flex: 1,
-	},
-	scrollContent: {
-		flexGrow: 1,
-	},
-	mainContainer: {
+	accountContainer: {
 		flex: 1,
 		width: '100%',
-		maxWidth: 800,
+		maxWidth: 1024,
 		alignSelf: 'center',
 		paddingHorizontal: 20,
 	},
