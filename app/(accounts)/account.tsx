@@ -4,7 +4,6 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	StyleSheet,
-	Platform,
 } from 'react-native';
 import { ExternalPathString, RelativePathString, router } from 'expo-router';
 import { quickActions } from '@/lib/constants';
@@ -68,40 +67,6 @@ const styles = StyleSheet.create({
 	scrollContent: {
 		flexGrow: 1,
 	},
-	header: {
-		paddingTop: Platform.OS === 'ios' ? 60 : 40,
-		paddingBottom: 40,
-	},
-	headerContainer: {
-		width: '100%',
-		maxWidth: 1200,
-		alignSelf: 'center',
-		paddingHorizontal: 20,
-	},
-	headerContent: {
-		alignItems: 'center',
-	},
-	avatarContainer: {
-		width: 80,
-		height: 80,
-		borderRadius: 40,
-		backgroundColor: 'rgba(255, 255, 255, 0.2)',
-		alignItems: 'center',
-		justifyContent: 'center',
-		marginBottom: 16,
-	},
-	headerTitle: {
-		fontSize: 28,
-		fontFamily: 'Inter-Bold',
-		color: '#ffffff',
-		marginBottom: 4,
-	},
-	headerSubtitle: {
-		fontSize: 16,
-		fontFamily: 'Inter-Regular',
-		color: '#e9d5ff',
-		textAlign: 'center',
-	},
 	mainContainer: {
 		flex: 1,
 		width: '100%',
@@ -152,72 +117,5 @@ const styles = StyleSheet.create({
 		fontFamily: 'Inter-Regular',
 		color: '#64748b',
 		textAlign: 'center',
-	},
-	featuresContainer: {
-		marginBottom: 24,
-	},
-	featuresTitle: {
-		fontSize: 20,
-		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
-		marginBottom: 8,
-	},
-	featuresSubtitle: {
-		fontSize: 16,
-		fontFamily: 'Inter-Regular',
-		color: '#64748b',
-		marginBottom: 16,
-	},
-	featureCard: {
-		backgroundColor: '#ffffff',
-		borderRadius: 12,
-		padding: 16,
-		marginBottom: 12,
-		flexDirection: 'row',
-		alignItems: 'center',
-		boxShadow: '0px 1px 2px rgba(0,0,0, 0.05)',
-	},
-	featureIcon: {
-		width: 40,
-		height: 40,
-		borderRadius: 20,
-		alignItems: 'center',
-		justifyContent: 'center',
-		marginRight: 16,
-	},
-	featureContent: {
-		flex: 1,
-	},
-	featureTitle: {
-		fontSize: 16,
-		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
-		marginBottom: 2,
-	},
-	featureDescription: {
-		fontSize: 14,
-		fontFamily: 'Inter-Regular',
-		color: '#64748b',
-	},
-	infoContainer: {
-		backgroundColor: '#ffffff',
-		borderRadius: 16,
-		padding: 20,
-		boxShadow: '0px 2px 8px rgba(0,0,0, 0.1)',
-	},
-	infoTitle: {
-		fontSize: 18,
-		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
-		marginBottom: 16,
-	},
-	benefitsList: {
-		gap: 8,
-	},
-	benefitItem: {
-		fontSize: 14,
-		fontFamily: 'Inter-Regular',
-		color: '#475569',
-		lineHeight: 20,
 	},
 });

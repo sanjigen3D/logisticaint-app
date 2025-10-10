@@ -5,8 +5,6 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 } from 'react-native';
-import { LogIn } from 'lucide-react-native';
-import Navbar from '@/components/UI/navbar/navbar';
 import { LoginForm } from '@/components/forms/login/LoginForm';
 
 export default function LoginScreen() {
