@@ -19,15 +19,11 @@ export default function ResultsPage() {
 
 	if (!origin || !destination) {
 		return (
-			<View style={styles.container}>
-				<ScrollView style={styles.scrollView}>
-					<Navbar
-						title={'Resultados de Búsqueda'}
-						subtitle={'No se encontraron resultados'}
-						icon={<Ship size={32} color="#ffffff" />}
-					/>
-				</ScrollView>
-			</View>
+			<Navbar
+				title={'Resultados de Búsqueda'}
+				subtitle={'No se encontraron resultados'}
+				icon={<Ship size={32} color="#ffffff" />}
+			/>
 		);
 	}
 
@@ -35,7 +31,7 @@ export default function ResultsPage() {
 	const destinationCode = `${destinationCountry}${destLocation}`;
 
 	return (
-		<View style={styles.container}>
+		<>
 			{/* HEADER */}
 			<Navbar
 				title={'Resultados de Búsqueda'}
@@ -52,59 +48,22 @@ export default function ResultsPage() {
 					<HapagResults origin={originCode} destination={destinationCode} />
 				</View>
 			</ScrollView>
-		</View>
+		</>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
+	itineraryContainer: {
 		flex: 1,
 		backgroundColor: '#f8fafc',
 	},
 	scrollView: {
 		flex: 1,
 	},
-	scrollContent: {
-		flexGrow: 1,
-	},
-	header: {
-		paddingTop: 60,
-		paddingBottom: 40,
-	},
-	headerContainer: {
-		width: '100%',
-		maxWidth: 1200,
-		alignSelf: 'center',
-		paddingHorizontal: 20,
-		position: 'relative',
-	},
-	headerContent: {
-		alignItems: 'center',
-	},
-	headerTitle: {
-		fontSize: 24,
-		fontFamily: 'Inter-Bold',
-		color: '#ffffff',
-		marginTop: 8,
-	},
-	headerSubtitle: {
-		fontSize: 16,
-		fontFamily: 'Inter-Regular',
-		color: '#bfdbfe',
-		marginTop: 4,
-		textAlign: 'center',
-	},
-	backButton: {
-		position: 'absolute',
-		left: 20,
-		top: 0,
-		zIndex: 1,
-		padding: 8,
-	},
 	mainContainer: {
 		flex: 6,
 		width: '100%',
-		maxWidth: 900,
+		maxWidth: 1024,
 		alignSelf: 'center',
 		paddingHorizontal: 20,
 	},
