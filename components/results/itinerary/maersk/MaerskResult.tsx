@@ -1,5 +1,5 @@
 import LoadingComp from '@/components/Loading';
-import ResultCard from '@/components/results/ResultCard';
+import ResultCard from '@/components/results/itinerary/ResultCard';
 import { MaerskAPIResponse } from '@/lib/types/maersk/maerskTypes';
 import { mapMaerskToUnified } from '@/lib/mappers/MaerskMapper';
 import { useQuery } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ import {
 	View,
 } from 'react-native';
 import { ROUTES } from '@/lib/Routes';
-import { resultItineraryStyles } from '@/components/results/hapag/HapagResult';
+import { resultItineraryStyles } from '@/components/results/itinerary/hapag/HapagResult';
 
 type MaerskResultsProps = {
 	origin: string;

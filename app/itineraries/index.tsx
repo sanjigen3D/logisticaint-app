@@ -1,9 +1,9 @@
-import ZimResults from '@/components/results/zim/ZimResults';
+import ZimResults from '@/components/results/itinerary/zim/ZimResults';
 import { useGlobalSearchParams } from 'expo-router';
 import { Ship } from 'lucide-react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import MaerskResults from '@/components/results/maersk/MaerskResult';
-import HapagResults from '@/components/results/hapag/HapagResult';
+import MaerskResults from '@/components/results/itinerary/maersk/MaerskResult';
+import HapagResults from '@/components/results/itinerary/hapag/HapagResult';
 import Navbar from '@/components/UI/navbar/navbar';
 
 // este componente sirve para pasar la información a los demás que mostraran las llamadas de las API

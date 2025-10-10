@@ -1,7 +1,7 @@
 import LoadingComp from '@/components/Loading';
-import ResultCard from '@/components/results/ResultCard';
-import { ZimResponse } from '@/lib/types/zim/zimTypes';
-import { mapZimResponseToUnifiedRoutes } from '@/lib/mappers/ZimMapper';
+import ResultCard from '@/components/results/itinerary/ResultCard';
+import { HapagAPIResponse } from '@/lib/types/hapag/hapagTypes';
+import { mapHapagToUnified } from '@/lib/mappers/HapagMapper';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronsDown, ChevronsUp } from 'lucide-react-native';
 import { useState } from 'react';
@@ -15,35 +15,42 @@ import {
 	View,
 } from 'react-native';
 import { ROUTES } from '@/lib/Routes';
-import { resultItineraryStyles } from '@/components/results/hapag/HapagResult';
 
-type ZimResultsProps = {
+type HapagResultsProps = {
 	origin: string;
 	destination: string;
 };
 
-const fetchZimData = async (origCode: string, destCode: string) => {
+const fetchHapagData = async (origCode: string, destCode: string) => {
 	const response = await fetch(
-		`${ROUTES.API_ROUTE}/itinerary/Zim?origin=${encodeURIComponent(origCode)}&destination=${encodeURIComponent(destCode)}`,
+		`${ROUTES.API_ROUTE}/itinerary/Hapag?origin=${encodeURIComponent(origCode)}&destination=${encodeURIComponent(destCode)}`,
 	);
 	if (!response.ok) throw new Error('Error al obtener datos');
 	return response.json();
 };
 
-// En este componente llamaré a la API con la info pasada de la vista en result
-const ZimResults = ({ origin, destination }: ZimResultsProps) => {
+// Llamado a la API con la info pasada de la vista en result
+const HapagResults = ({ origin, destination }: HapagResultsProps) => {
 	const [expanded, setExpanded] = useState(true);
 	const { data, isLoading, isError, error } = useQuery({
-		queryKey: ['zimResults', origin, destination],
-		queryFn: () => fetchZimData(origin, destination),
+		queryKey: ['hapagResults', origin, destination],
+		queryFn: () => fetchHapagData(origin, destination),
 		enabled: !!origin && !!destination,
 	});
 
-	if (!data || !data.response) {
+	if (isLoading) {
+		return (
+			<LoadingComp loading={isLoading} text={'Cargando opciones de envío...'} />
+		);
+	}
+
+	if (!Array.isArray(data) || data.length === 0) {
 		return (
 			<View style={resultItineraryStyles.summaryContainer}>
 				<View className={'flex flex-row gap-3 items-center'}>
-					<Text style={resultItineraryStyles.summaryTitle}>ZIM (0)</Text>
+					<Text style={resultItineraryStyles.summaryTitle}>
+						Hapag - Lloyd (0)
+					</Text>
 					<Pressable
 						className="hover:bg-gray-200 rounded-full p-1"
 						onPress={() => setExpanded(!expanded)}
@@ -65,13 +72,10 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 		);
 	}
 
-	const routes = mapZimResponseToUnifiedRoutes(data as ZimResponse);
+	// mapper para estructurar todo a un mismo tipo y usarlo en las Cards
+	const routes = mapHapagToUnified(data as HapagAPIResponse);
 
-	if (isLoading) {
-		return (
-			<LoadingComp loading={isLoading} text={'Cargando opciones de envío...'} />
-		);
-	}
+	console.log(routes);
 
 	if (isError) {
 		return (
@@ -88,7 +92,7 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 				<View style={resultItineraryStyles.summaryContainer}>
 					<View className={'flex flex-row gap-3 items-center'}>
 						<Text style={resultItineraryStyles.summaryTitle}>
-							Zim Integrated Shipping Services ({routes.length})
+							Hapag - Lloyd ({routes.length})
 						</Text>
 						<Pressable
 							className="hover:bg-gray-200 rounded-full p-1"
@@ -113,4 +117,24 @@ const ZimResults = ({ origin, destination }: ZimResultsProps) => {
 
 	return <ActivityIndicator size="large" color="#5a8ce8" />;
 };
-export default ZimResults;
+export default HapagResults;
+
+export const resultItineraryStyles = StyleSheet.create({
+	summaryContainer: {
+		paddingTop: 20,
+		paddingBottom: 16,
+	},
+	summaryTitle: {
+		fontSize: 20,
+		fontFamily: 'Inter-SemiBold',
+		color: '#1e293b',
+	},
+	scrollContent: {
+		flexGrow: 1,
+	},
+	loadingText: {
+		fontSize: 16,
+		fontFamily: 'Inter-Regular',
+		color: '#64748b',
+	},
+});
