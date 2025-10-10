@@ -1,4 +1,10 @@
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	ScrollView,
+} from 'react-native';
 import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
 import {
 	Box,
@@ -22,7 +28,7 @@ export const TrackingResult = ({
 	expandedContainers: Set<string>;
 	setExpandedContainers: Dispatch<SetStateAction<Set<string>>>;
 }) => {
-	// para no mostrar toda la info de los container si el usuario no lo quiere
+	// Show the container details when the container number is clicked
 	const toggleContainerExpansion = (containerNumber: string) => {
 		setExpandedContainers((prev) => {
 			const newSet = new Set(prev);

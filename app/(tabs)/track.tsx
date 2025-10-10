@@ -1,17 +1,6 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import {
-	MapPin,
-	Clock,
-	CircleCheck as CheckCircle,
-	Ship,
-	Box,
-	Calendar,
-	ChevronDown,
-	ChevronUp,
-} from 'lucide-react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
-import { formatDate } from '@/lib/utils';
 import { TrackingForm } from '@/components/forms/tracking/TrackingForm';
 import { TrackingResult } from '@/components/results/tracking/TrackingResult';
 
@@ -24,21 +13,8 @@ export const Track = () => {
 		new Set(),
 	);
 
-	// para no mostrar toda la info de los container si el usuario no lo quiere
-	const toggleContainerExpansion = (containerNumber: string) => {
-		setExpandedContainers((prev) => {
-			const newSet = new Set(prev);
-			if (newSet.has(containerNumber)) {
-				newSet.delete(containerNumber);
-			} else {
-				newSet.add(containerNumber);
-			}
-			return newSet;
-		});
-	};
-
 	return (
-		<>
+		<ScrollView>
 			{/* tracking form */}
 			<TrackingForm
 				isTracking={isTracking}
@@ -48,12 +24,26 @@ export const Track = () => {
 
 			{/*  Tracking Result */}
 			{trackingData && (
-				<TrackingResult
-					trackingData={trackingData}
-					expandedContainers={expandedContainers}
-				/>
+				<View style={styles.resultContainer}>
+					<TrackingResult
+						trackingData={trackingData}
+						expandedContainers={expandedContainers}
+						setExpandedContainers={setExpandedContainers}
+					/>
+				</View>
 			)}
-		</>
+		</ScrollView>
 	);
 };
 export default Track;
+
+const styles = StyleSheet.create({
+	resultContainer: {
+		flex: 1,
+		width: '100%',
+		maxWidth: 1024,
+		alignSelf: 'center',
+		paddingHorizontal: 20,
+		paddingTop: 20,
+	},
+});
