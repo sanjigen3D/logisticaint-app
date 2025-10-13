@@ -33,13 +33,26 @@ export interface AuthState {
 // Storage personalizado para Zustand que usa nuestro servicio
 const createSecureStorage = () => ({
   getItem: async (name: string): Promise<string | null> => {
-    return await storageService.getItem(name, true);
+    try {
+      return await storageService.getItem(name, true);
+    } catch (error) {
+      console.error('Error en getItem de Zustand storage:', error);
+      return null;
+    }
   },
   setItem: async (name: string, value: string): Promise<void> => {
-    await storageService.setItem(name, value, true);
+    try {
+      await storageService.setItem(name, value, true);
+    } catch (error) {
+      console.error('Error en setItem de Zustand storage:', error);
+    }
   },
   removeItem: async (name: string): Promise<void> => {
-    await storageService.removeItem(name, true);
+    try {
+      await storageService.removeItem(name, true);
+    } catch (error) {
+      console.error('Error en removeItem de Zustand storage:', error);
+    }
   },
 });
 

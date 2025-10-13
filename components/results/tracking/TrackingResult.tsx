@@ -1,10 +1,4 @@
-import {
-	View,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	ScrollView,
-} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
 import {
 	Box,

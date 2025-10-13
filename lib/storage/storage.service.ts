@@ -8,7 +8,19 @@ import * as SecureStore from 'expo-secure-store';
  * - Móvil: Usa SecureStore para datos sensibles y AsyncStorage para otros datos
  */
 class StorageService {
-	private isWeb = Platform.OS === 'web' || typeof window !== 'undefined';
+	private isWeb = Platform.OS === 'web';
+	
+	// Verificar si SecureStore está disponible
+	private isSecureStoreAvailable = async (): Promise<boolean> => {
+		if (this.isWeb) return false;
+		try {
+			// Intentar usar SecureStore para verificar si está disponible
+			await SecureStore.getItemAsync('test');
+			return true;
+		} catch {
+			return false;
+		}
+	};
 
 	/**
 	 * Almacena un valor de forma segura
@@ -27,7 +39,7 @@ class StorageService {
 				await AsyncStorage.setItem(key, value);
 			} else {
 				// En móvil, usa SecureStore para datos sensibles, AsyncStorage para otros
-				if (secure) {
+				if (secure && await this.isSecureStoreAvailable()) {
 					await SecureStore.setItemAsync(key, value);
 				} else {
 					await AsyncStorage.setItem(key, value);
@@ -51,7 +63,7 @@ class StorageService {
 				return await AsyncStorage.getItem(key);
 			} else {
 				// En móvil, usa SecureStore para datos sensibles, AsyncStorage para otros
-				if (secure) {
+				if (secure && await this.isSecureStoreAvailable()) {
 					return await SecureStore.getItemAsync(key);
 				} else {
 					return await AsyncStorage.getItem(key);
@@ -75,7 +87,7 @@ class StorageService {
 				await AsyncStorage.removeItem(key);
 			} else {
 				// En móvil, usa SecureStore para datos sensibles, AsyncStorage para otros
-				if (secure) {
+				if (secure && await this.isSecureStoreAvailable()) {
 					await SecureStore.deleteItemAsync(key);
 				} else {
 					await AsyncStorage.removeItem(key);
@@ -99,12 +111,14 @@ class StorageService {
 				// En móvil, limpia AsyncStorage y SecureStore
 				await AsyncStorage.clear();
 				// SecureStore no tiene método clear, así que eliminamos las claves conocidas
-				try {
-					await SecureStore.deleteItemAsync('auth_token');
-					await SecureStore.deleteItemAsync('user_data');
-				} catch (secureError) {
-					// Ignorar errores si las claves no existen
-					console.log('Algunas claves de SecureStore no existían');
+				if (await this.isSecureStoreAvailable()) {
+					try {
+						await SecureStore.deleteItemAsync('auth_token');
+						await SecureStore.deleteItemAsync('user_data');
+					} catch (secureError) {
+						// Ignorar errores si las claves no existen
+						console.log('Algunas claves de SecureStore no existían');
+					}
 				}
 			}
 		} catch (error) {
