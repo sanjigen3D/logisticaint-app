@@ -9,7 +9,8 @@ import {
 	Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import '@/assets/global.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryProvider } from '@/lib/providers/QueryProvider';
+import { AuthProvider } from '@/lib/contexts/AuthContext';
 import Navbar from '@/components/UI/navbar/navbar';
 import { ROUTES } from '@/lib/Routes';
 import {
@@ -43,30 +44,32 @@ export default function RootLayout() {
 	}
 
 	return (
-		<QueryClientProvider client={new QueryClient()}>
-			<KeyboardAvoidingView
-				style={styles.container}
-				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-			>
-				<ScrollView
-					style={styles.scrollView}
-					contentContainerStyle={styles.scrollContent}
-					keyboardShouldPersistTaps="handled"
+		<QueryProvider>
+			<AuthProvider>
+				<KeyboardAvoidingView
+					style={styles.container}
+					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 				>
-					<View style={styles.mainContainer}>
-						{!path.includes(ROUTES.ITINERARY) && <Navbar />}
-						<Stack screenOptions={{ headerShown: false }}>
-							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-							<Stack.Screen
-								name="(accounts)"
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen name={'+not-found'} />
-						</Stack>
-					</View>
-				</ScrollView>
-			</KeyboardAvoidingView>
-		</QueryClientProvider>
+					<ScrollView
+						style={styles.scrollView}
+						contentContainerStyle={styles.scrollContent}
+						keyboardShouldPersistTaps="handled"
+					>
+						<View style={styles.mainContainer}>
+							{!path.includes(ROUTES.ITINERARY) && <Navbar />}
+							<Stack screenOptions={{ headerShown: false }}>
+								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+								<Stack.Screen
+									name="(accounts)"
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen name={'+not-found'} />
+							</Stack>
+						</View>
+					</ScrollView>
+				</KeyboardAvoidingView>
+			</AuthProvider>
+		</QueryProvider>
 	);
 }
 
