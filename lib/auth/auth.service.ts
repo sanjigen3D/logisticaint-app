@@ -1,3 +1,5 @@
+import { ROUTES } from '@/lib/Routes';
+
 interface LoginCredentials {
 	email: string;
 	password: string;
@@ -18,16 +20,13 @@ interface LoginResponse {
  * */
 export const authService = {
 	login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-		const response = await fetch(
-			'https://marines-services.vercel.app/auth/login',
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(credentials),
+		const response = await fetch(ROUTES.API_LOGIN_ROUTE, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
 			},
-		);
+			body: JSON.stringify(credentials),
+		});
 
 		if (!response.ok) {
 			const error = await response.json().catch(() => ({
