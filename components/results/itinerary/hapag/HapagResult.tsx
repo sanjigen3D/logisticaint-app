@@ -1,4 +1,4 @@
-import LoadingComp from '@/components/Loading';
+import LoadingComp from '@/components/UI/Loading';
 import ResultCard from '@/components/results/itinerary/ResultCard';
 import { HapagAPIResponse } from '@/lib/types/hapag/hapagTypes';
 import { mapHapagToUnified } from '@/lib/mappers/HapagMapper';

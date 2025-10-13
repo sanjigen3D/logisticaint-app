@@ -1,4 +1,4 @@
-import LoadingComp from '@/components/Loading';
+import LoadingComp from '@/components/UI/Loading';
 import ResultCard from '@/components/results/itinerary/ResultCard';
 import { MaerskAPIResponse } from '@/lib/types/maersk/maerskTypes';
 import { mapMaerskToUnified } from '@/lib/mappers/MaerskMapper';

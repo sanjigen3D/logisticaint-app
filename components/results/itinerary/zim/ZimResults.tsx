@@ -1,4 +1,4 @@
-import LoadingComp from '@/components/Loading';
+import LoadingComp from '@/components/UI/Loading';
 import ResultCard from '@/components/results/itinerary/ResultCard';
 import { ZimResponse } from '@/lib/types/zim/zimTypes';
 import { mapZimResponseToUnifiedRoutes } from '@/lib/mappers/ZimMapper';
