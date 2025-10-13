@@ -193,10 +193,18 @@ export const useAuthCheck = () => {
 	const { token, isAuthenticated, initializeAuth } = useAuthStore();
 	const { data: verifyData, isLoading, error } = useVerifyToken(token);
 
-	// Inicializar autenticación al montar el componente
+	// Inicializar autenticación solo una vez al montar
 	React.useEffect(() => {
-		initializeAuth();
-	}, [initializeAuth]);
+		let isMounted = true;
+
+		if (isMounted) {
+			initializeAuth();
+		}
+
+		return () => {
+			isMounted = false;
+		};
+	}, []); // Array vacío para que solo se ejecute una vez
 
 	// Si el token no es válido, limpiar autenticación
 	React.useEffect(() => {

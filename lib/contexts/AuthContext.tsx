@@ -22,10 +22,9 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const authState = useAuth();
 	const authActions = useAuthActions();
-	const { isLoading: isCheckingAuth } = useAuthCheck();
 
-	// Combinar el estado de carga
-	const isLoading = authState.isLoading || isCheckingAuth;
+	// Usar solo el estado de carga del store
+	const isLoading = authState.isLoading;
 
 	const contextValue: AuthContextType = {
 		...authState,
