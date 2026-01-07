@@ -9,14 +9,17 @@ import {
 	TextInput,
 	TouchableOpacity,
 	View,
-	Alert,
+	ActivityIndicator,
 } from 'react-native';
-
 import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useAuthStore } from '@/lib/stores/authStore';
+import { router } from 'expo-router';
+import { ROUTES } from '@/lib/Routes';
 
 export const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
+	const { login, isLoading, error, clearError } = useAuthStore();
 
 	const {
 		control,
@@ -34,15 +37,12 @@ export const LoginForm = () => {
 
 	const handleLogin = async (data: LoginFormData) => {
 		try {
-			reset(); // Limpiar el formulario
+			clearError();
+			await login(data.email, data.password);
+			reset();
+			router.replace(ROUTES.HOME);
 		} catch (error: any) {
-			// Mostrar error al usuario
-			Alert.alert(
-				'Error de autenticación',
-				error.message ||
-					'Credenciales inválidas. Por favor, verifica tu email y contraseña.',
-				[{ text: 'OK' }],
-			);
+			console.error('Error en login:', error);
 		}
 	};
 
@@ -57,6 +57,12 @@ export const LoginForm = () => {
 				<Text style={styles.formSubtitle}>
 					Ingresa tus credenciales para continuar
 				</Text>
+
+				{error && (
+					<View style={styles.errorContainer}>
+						<Text style={styles.errorMessage}>{error}</Text>
+					</View>
+				)}
 
 				{/* Email Input */}
 				<Controller
@@ -141,17 +147,30 @@ export const LoginForm = () => {
 
 				{/* Login Button */}
 				<TouchableOpacity
-					style={[styles.loginButton, !isValid && styles.loginButtonDisabled]}
+					style={[
+						styles.loginButton,
+						(!isValid || isLoading) && styles.loginButtonDisabled,
+					]}
 					onPress={handleSubmit(handleLogin)}
-					disabled={!isValid}
+					disabled={!isValid || isLoading}
 					activeOpacity={0.8}
 				>
 					<LinearGradient
-						colors={!isValid ? ['#94a3b8', '#64748b'] : ['#3b82f6', '#1e40af']}
+						colors={
+							!isValid || isLoading
+								? ['#94a3b8', '#64748b']
+								: ['#3b82f6', '#1e40af']
+						}
 						style={styles.loginButtonGradient}
 					>
-						<LogIn size={20} color="#ffffff" />
-						<Text style={styles.loginButtonText}>Iniciar sesión</Text>
+						{isLoading ? (
+							<ActivityIndicator size="small" color="#ffffff" />
+						) : (
+							<>
+								<LogIn size={20} color="#ffffff" />
+								<Text style={styles.loginButtonText}>Iniciar sesión</Text>
+							</>
+						)}
 					</LinearGradient>
 				</TouchableOpacity>
 
@@ -261,5 +280,19 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		fontFamily: 'Inter-Medium',
 		color: '#3b82f6',
+	},
+	errorContainer: {
+		backgroundColor: '#fef2f2',
+		borderRadius: 12,
+		padding: 16,
+		marginBottom: 20,
+		borderWidth: 1,
+		borderColor: '#fecaca',
+	},
+	errorMessage: {
+		fontSize: 14,
+		fontFamily: 'Inter-Medium',
+		color: '#ef4444',
+		textAlign: 'center',
 	},
 });
