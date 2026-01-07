@@ -40,4 +40,4 @@ app-example
 
 .vercel
 .env
-.idea
+.idea/
