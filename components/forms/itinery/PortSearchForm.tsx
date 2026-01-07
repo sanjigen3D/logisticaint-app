@@ -90,7 +90,7 @@ const PortSearchForm = () => {
 
 	// Efectos para buscar sugerencias
 	useEffect(() => {
-		// Solo hacer fetch si la query no coincide con el puerto ya seleccionado
+		// Solo hacer fetch si la query de origen no coincide con el puerto ya seleccionado
 		if (!isQueryMatchingSelectedPort(debouncedOrigin, originValue)) {
 			setLoadingOrigin(true);
 			fetchPorts(debouncedOrigin).then((results) => {
@@ -101,7 +101,7 @@ const PortSearchForm = () => {
 	}, [debouncedOrigin, originValue]);
 
 	useEffect(() => {
-		// Solo hacer fetch si la query no coincide con el puerto ya seleccionado
+		// Solo hacer fetch si la query de destino no coincide con el puerto ya seleccionado
 		if (!isQueryMatchingSelectedPort(debouncedDestination, destinationValue)) {
 			setLoadingDestination(true);
 			fetchPorts(debouncedDestination).then((results) => {

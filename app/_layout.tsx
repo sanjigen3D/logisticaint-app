@@ -10,7 +10,6 @@ import {
 } from '@expo-google-fonts/inter';
 import '@/assets/global.css';
 import { QueryProvider } from '@/lib/providers/QueryProvider';
-import { AuthProvider } from '@/lib/contexts/AuthContext';
 import Navbar from '@/components/UI/navbar/navbar';
 import { ROUTES } from '@/lib/Routes';
 import {
@@ -45,30 +44,28 @@ export default function RootLayout() {
 
 	return (
 		<QueryProvider>
-			<AuthProvider>
-				<KeyboardAvoidingView
-					style={styles.container}
-					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+			<KeyboardAvoidingView
+				style={styles.container}
+				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+			>
+				<ScrollView
+					style={styles.scrollView}
+					contentContainerStyle={styles.scrollContent}
+					keyboardShouldPersistTaps="handled"
 				>
-					<ScrollView
-						style={styles.scrollView}
-						contentContainerStyle={styles.scrollContent}
-						keyboardShouldPersistTaps="handled"
-					>
-						<View style={styles.mainContainer}>
-							{!path.includes(ROUTES.ITINERARY) && <Navbar />}
-							<Stack screenOptions={{ headerShown: false }}>
-								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-								<Stack.Screen
-									name="(accounts)"
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen name={'+not-found'} />
-							</Stack>
-						</View>
-					</ScrollView>
-				</KeyboardAvoidingView>
-			</AuthProvider>
+					<View style={styles.mainContainer}>
+						{!path.includes(ROUTES.ITINERARY) && <Navbar />}
+						<Stack screenOptions={{ headerShown: false }}>
+							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+							<Stack.Screen
+								name="(accounts)"
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen name={'+not-found'} />
+						</Stack>
+					</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
 		</QueryProvider>
 	);
 }

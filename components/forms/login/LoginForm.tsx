@@ -14,13 +14,9 @@ import {
 
 import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useLogin } from '@/lib/services/auth.service';
-import { useAuthContext } from '@/lib/contexts/AuthContext';
 
 export const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
-	const { clearError } = useAuthContext();
-	const loginMutation = useLogin();
 
 	const {
 		control,
@@ -38,16 +34,14 @@ export const LoginForm = () => {
 
 	const handleLogin = async (data: LoginFormData) => {
 		try {
-			clearError(); // Limpiar errores previos
-			await loginMutation.mutateAsync(data);
-			// El éxito se maneja automáticamente en el hook useLogin
 			reset(); // Limpiar el formulario
 		} catch (error: any) {
 			// Mostrar error al usuario
 			Alert.alert(
 				'Error de autenticación',
-				error.message || 'Credenciales inválidas. Por favor, verifica tu email y contraseña.',
-				[{ text: 'OK' }]
+				error.message ||
+					'Credenciales inválidas. Por favor, verifica tu email y contraseña.',
+				[{ text: 'OK' }],
 			);
 		}
 	};
@@ -149,7 +143,7 @@ export const LoginForm = () => {
 				<TouchableOpacity
 					style={[styles.loginButton, !isValid && styles.loginButtonDisabled]}
 					onPress={handleSubmit(handleLogin)}
-					disabled={!isValid || loginMutation.isPending}
+					disabled={!isValid}
 					activeOpacity={0.8}
 				>
 					<LinearGradient
@@ -157,9 +151,7 @@ export const LoginForm = () => {
 						style={styles.loginButtonGradient}
 					>
 						<LogIn size={20} color="#ffffff" />
-						<Text style={styles.loginButtonText}>
-							{loginMutation.isPending ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-						</Text>
+						<Text style={styles.loginButtonText}>Iniciar sesión</Text>
 					</LinearGradient>
 				</TouchableOpacity>
 
