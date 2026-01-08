@@ -40,7 +40,7 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
-				name="account-dummy"
+				name="account"
 				options={{
 					title: 'Cuenta',
 					tabBarIcon: ({ size, color }) => <User size={size} color={color} />,

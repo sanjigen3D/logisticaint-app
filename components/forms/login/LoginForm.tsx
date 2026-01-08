@@ -9,17 +9,12 @@ import {
 	TextInput,
 	TouchableOpacity,
 	View,
-	ActivityIndicator,
 } from 'react-native';
 import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAuthStore } from '@/lib/stores/authStore';
-import { router } from 'expo-router';
-import { ROUTES } from '@/lib/Routes';
 
 export const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
-	const { login, isLoading, error, clearError } = useAuthStore();
 
 	const {
 		control,
@@ -37,10 +32,7 @@ export const LoginForm = () => {
 
 	const handleLogin = async (data: LoginFormData) => {
 		try {
-			clearError();
-			await login(data.email, data.password);
 			reset();
-			router.replace(ROUTES.HOME);
 		} catch (error: any) {
 			console.error('Error en login:', error);
 		}
@@ -57,12 +49,6 @@ export const LoginForm = () => {
 				<Text style={styles.formSubtitle}>
 					Ingresa tus credenciales para continuar
 				</Text>
-
-				{error && (
-					<View style={styles.errorContainer}>
-						<Text style={styles.errorMessage}>{error}</Text>
-					</View>
-				)}
 
 				{/* Email Input */}
 				<Controller
@@ -147,30 +133,19 @@ export const LoginForm = () => {
 
 				{/* Login Button */}
 				<TouchableOpacity
-					style={[
-						styles.loginButton,
-						(!isValid || isLoading) && styles.loginButtonDisabled,
-					]}
+					style={[styles.loginButton, !isValid && styles.loginButtonDisabled]}
 					onPress={handleSubmit(handleLogin)}
-					disabled={!isValid || isLoading}
+					disabled={!isValid}
 					activeOpacity={0.8}
 				>
 					<LinearGradient
-						colors={
-							!isValid || isLoading
-								? ['#94a3b8', '#64748b']
-								: ['#3b82f6', '#1e40af']
-						}
+						colors={!isValid ? ['#94a3b8', '#64748b'] : ['#3b82f6', '#1e40af']}
 						style={styles.loginButtonGradient}
 					>
-						{isLoading ? (
-							<ActivityIndicator size="small" color="#ffffff" />
-						) : (
-							<>
-								<LogIn size={20} color="#ffffff" />
-								<Text style={styles.loginButtonText}>Iniciar sesión</Text>
-							</>
-						)}
+						<>
+							<LogIn size={20} color="#ffffff" />
+							<Text style={styles.loginButtonText}>Iniciar sesión</Text>
+						</>
 					</LinearGradient>
 				</TouchableOpacity>
 

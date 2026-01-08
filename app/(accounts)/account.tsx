@@ -1,12 +1,8 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { ExternalPathString, RelativePathString, router } from 'expo-router';
 import { quickActions } from '@/lib/constants';
-import { useAuth } from '@/lib/hooks/useAuth';
-import { LogOut, User as UserIcon, Mail, Shield } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function AccountHomeScreen() {
-	const { isAuthenticated, user, logout, isAdmin, isManager } = useAuth();
 
 	const handleQuickAction = (
 		route: ExternalPathString | RelativePathString,
@@ -15,60 +11,8 @@ export default function AccountHomeScreen() {
 	};
 
 	const handleLogout = async () => {
-		await logout();
 		router.replace('/');
 	};
-
-	if (isAuthenticated && user) {
-		return (
-			<View style={styles.accountContainer}>
-				<View style={styles.profileCard}>
-					<View style={styles.profileHeader}>
-						<View style={styles.avatarContainer}>
-							<UserIcon size={48} color="#ffffff" />
-						</View>
-						<View style={styles.profileInfo}>
-							<Text style={styles.profileName}>{user.name}</Text>
-							<View style={styles.profileEmailContainer}>
-								<Mail size={16} color="#64748b" />
-								<Text style={styles.profileEmail}>{user.email}</Text>
-							</View>
-						</View>
-					</View>
-
-					<View style={styles.roleContainer}>
-						<Shield size={16} color="#3b82f6" />
-						<Text style={styles.roleText}>Rol: {user.type}</Text>
-					</View>
-
-					{(isAdmin || isManager) && (
-						<View style={styles.permissionsContainer}>
-							<Text style={styles.permissionsTitle}>Permisos especiales</Text>
-							<Text style={styles.permissionsText}>
-								{isAdmin
-									? 'Tienes acceso completo de administrador'
-									: 'Tienes permisos de gestión'}
-							</Text>
-						</View>
-					)}
-
-					<TouchableOpacity
-						style={styles.logoutButton}
-						onPress={handleLogout}
-						activeOpacity={0.8}
-					>
-						<LinearGradient
-							colors={['#ef4444', '#dc2626']}
-							style={styles.logoutButtonGradient}
-						>
-							<LogOut size={20} color="#ffffff" />
-							<Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
-						</LinearGradient>
-					</TouchableOpacity>
-				</View>
-			</View>
-		);
-	}
 
 	return (
 		<View style={styles.accountContainer}>
