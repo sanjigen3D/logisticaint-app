@@ -19,6 +19,7 @@ import {
 	StyleSheet,
 	View,
 } from 'react-native';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,12 +32,17 @@ export default function RootLayout() {
 	});
 
 	const path = usePathname();
+	const { verifyToken, isLoading } = useAuth();
 
 	useEffect(() => {
-		if (fontsLoaded || fontError) {
+		verifyToken();
+	}, []);
+
+	useEffect(() => {
+		if ((fontsLoaded || fontError) && !isLoading) {
 			SplashScreen.hideAsync();
 		}
-	}, [fontsLoaded, fontError]);
+	}, [fontsLoaded, fontError, isLoading]);
 
 	if (!fontsLoaded && !fontError) {
 		return null;
