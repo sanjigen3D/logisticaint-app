@@ -1,6 +1,6 @@
 import LocationInput from '@/components/forms/itinery/LocationInput';
 import { FormData, Port } from '@/lib/types/types';
-import useDebounce from '@/lib/useDebounce';
+import useDebounce from '@/lib/hooks/useDebounce';
 import { formSchema } from '@/lib/validations/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinearGradient } from 'expo-linear-gradient';

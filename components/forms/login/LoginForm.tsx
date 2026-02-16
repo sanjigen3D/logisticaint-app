@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { LoginFormData } from '@/lib/types/types';
+import { LoginFormData } from '@/lib/types/auth.types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/lib/validations/schemas';
 import {
@@ -12,9 +12,13 @@ import {
 } from 'react-native';
 import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { useRouter } from 'expo-router';
 
 export const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
+	const { login, error, isLoading, clearError } = useAuth();
+	const router = useRouter();
 
 	const {
 		control,
@@ -31,9 +35,12 @@ export const LoginForm = () => {
 	});
 
 	const handleLogin = async (data: LoginFormData) => {
+		clearError();
 		try {
+			await login(data.email, data.password);
 			reset();
-		} catch (error: any) {
+			router.replace('/(tabs)');
+		} catch (error) {
 			console.error('Error en login:', error);
 		}
 	};
@@ -49,6 +56,12 @@ export const LoginForm = () => {
 				<Text style={styles.formSubtitle}>
 					Ingresa tus credenciales para continuar
 				</Text>
+
+				{error && (
+					<View style={styles.errorContainer}>
+						<Text style={styles.errorMessage}>{error}</Text>
+					</View>
+				)}
 
 				{/* Email Input */}
 				<Controller
@@ -133,18 +146,27 @@ export const LoginForm = () => {
 
 				{/* Login Button */}
 				<TouchableOpacity
-					style={[styles.loginButton, !isValid && styles.loginButtonDisabled]}
+					style={[
+						styles.loginButton,
+						(!isValid || isLoading) && styles.loginButtonDisabled,
+					]}
 					onPress={handleSubmit(handleLogin)}
-					disabled={!isValid}
+					disabled={!isValid || isLoading}
 					activeOpacity={0.8}
 				>
 					<LinearGradient
-						colors={!isValid ? ['#94a3b8', '#64748b'] : ['#3b82f6', '#1e40af']}
+						colors={
+							!isValid || isLoading
+								? ['#94a3b8', '#64748b']
+								: ['#3b82f6', '#1e40af']
+						}
 						style={styles.loginButtonGradient}
 					>
 						<>
 							<LogIn size={20} color="#ffffff" />
-							<Text style={styles.loginButtonText}>Iniciar sesión</Text>
+							<Text style={styles.loginButtonText}>
+								{isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+							</Text>
 						</>
 					</LinearGradient>
 				</TouchableOpacity>
