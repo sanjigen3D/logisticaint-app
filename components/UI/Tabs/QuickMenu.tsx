@@ -1,59 +1,46 @@
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { MyRoute } from '@/lib/types/types';
-import {QuickAction} from '@/lib/constants';
+import { QuickAction } from '@/lib/constants';
 
 interface QuickMenuProps {
 	quickActions: QuickAction[];
 }
 
-export default function QuickMenu({quickActions}: QuickMenuProps) {
+export default function QuickMenu({ quickActions }: QuickMenuProps) {
 	const handleQuickAction = (route: MyRoute): void => {
 		router.push(route);
 	};
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.quickActionsContainer}>
-				<Text style={styles.quickActionsTitle}>Acceso Rápido</Text>
-				<View style={styles.quickActionsGrid}>
-					{quickActions.map((action) => (
-						<TouchableOpacity
-							key={action.id}
-							style={styles.quickActionCard}
-							onPress={() => handleQuickAction(action.route)}
-							activeOpacity={0.7}
+		<View style={styles.quickActionsContainer}>
+			<Text style={styles.quickActionsTitle}>Acceso Rápido</Text>
+			<View style={styles.quickActionsGrid}>
+				{quickActions.map((action) => (
+					<TouchableOpacity
+						key={action.id}
+						style={styles.quickActionCard}
+						onPress={() => handleQuickAction(action.route)}
+						activeOpacity={0.7}
+					>
+						<View
+							style={[
+								styles.quickActionIcon,
+								{ backgroundColor: `${action.color}20` },
+							]}
 						>
-							<View
-								style={[
-									styles.quickActionIcon,
-									{ backgroundColor: `${action.color}20` },
-								]}
-							>
-								<action.icon size={24} color={action.color} />
-							</View>
-							<Text style={styles.quickActionTitle}>
-								{action.title}
-							</Text>
-							<Text style={styles.quickActionSubtitle}>
-								{action.subtitle}
-							</Text>
-						</TouchableOpacity>
-					))}
-				</View>
+							<action.icon size={24} color={action.color} />
+						</View>
+						<Text style={styles.quickActionTitle}>{action.title}</Text>
+						<Text style={styles.quickActionSubtitle}>{action.subtitle}</Text>
+					</TouchableOpacity>
+				))}
 			</View>
 		</View>
 	);
 }
 
 export const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		width: '100%',
-		maxWidth: 1024,
-		alignSelf: 'center',
-		paddingHorizontal: 20,
-	},
 	quickActionsContainer: {
 		paddingTop: 20,
 		marginBottom: 24,

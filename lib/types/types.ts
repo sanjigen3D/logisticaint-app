@@ -5,7 +5,7 @@ import {
 	RequestNewUserSchema,
 	trackingSchema,
 } from '@/lib/validations/schemas';
-import { LoginFormData } from '@/lib/types/auth';
+
 import { ExternalPathString, RelativePathString } from 'expo-router';
 
 export type MyRoute = RelativePathString | ExternalPathString;
@@ -14,9 +14,9 @@ export type MyRoute = RelativePathString | ExternalPathString;
 // formData de itinerarios
 export type FormData = z.infer<typeof formSchema>;
 export type Port = { name: string; country: string; location?: string };
-
 export type TrackingFormData = z.infer<typeof trackingSchema>;
 export type RegisterFormData = z.infer<typeof RequestNewUserSchema>;
-export type { LoginFormData };
+export type LoginFormData = z.infer<typeof loginSchema>;
+
 
 export type Naviera = 'Zim' | 'Hapag' | 'Maersk';

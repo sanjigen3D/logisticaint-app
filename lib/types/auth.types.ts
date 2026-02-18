@@ -1,8 +1,3 @@
-import {z} from "zod";
-import {loginSchema} from '@/lib/validations/schemas';
-
-export type LoginFormData = z.infer<typeof loginSchema>;
-
 export interface User {
 	id: number;
 	email: string;

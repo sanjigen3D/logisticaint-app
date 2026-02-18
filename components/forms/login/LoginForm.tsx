@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { LoginFormData } from '@/lib/types/auth.types';
+import {LoginFormData} from '@/lib/types/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/lib/validations/schemas';
 import {
