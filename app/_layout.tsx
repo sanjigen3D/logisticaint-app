@@ -60,7 +60,7 @@ export default function RootLayout() {
 					keyboardShouldPersistTaps="handled"
 				>
 					<View style={styles.mainContainer}>
-						{!path.includes(ROUTES.ITINERARY) && <Navbar />}
+						{!path.includes(ROUTES.ITINERARY_RESULT) && <Navbar />}
 						<Stack screenOptions={{ headerShown: false }}>
 							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 							<Stack.Screen

@@ -8,7 +8,12 @@ import {
 import { JSX, useMemo } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft } from 'lucide-react-native';
-import { router, usePathname } from 'expo-router';
+import {
+	ExternalPathString,
+	RelativePathString,
+	router,
+	usePathname,
+} from 'expo-router';
 import { getNavbarProps } from '@/components/UI/navbar/getNavbarProps';
 import { ROUTES } from '@/lib/Routes';
 
@@ -32,7 +37,7 @@ const Navbar = ({
 	const navParams = getNavbarProps(pathname);
 
 	// esta ruta usa un navbar especial para mostrar más info
-	if (pathname === ROUTES.ITINERARY) {
+	if (pathname === ROUTES.ITINERARY_RESULT) {
 		navParams.title = title;
 		navParams.subtitle = subtitle;
 		navParams.icon = icon;
@@ -44,7 +49,6 @@ const Navbar = ({
 		if (colors?.length >= 2) {
 			return colors.slice(0, 2);
 		}
-		// De lo contrario, devolver los colores por defecto
 		return ['#07174c', '#0b3477'];
 	}, [colors]);
 
@@ -57,7 +61,7 @@ const Navbar = ({
 				{backButton && (
 					<TouchableOpacity
 						style={styles.backButton}
-						onPress={() => router.push('/')}
+						onPress={() => router.push(ROUTES.ITINERARY as RelativePathString | ExternalPathString)}
 					>
 						<ArrowLeft size={24} color="#ffffff" />
 					</TouchableOpacity>

@@ -1,4 +1,10 @@
-import { LogIn, LucideIcon, UserPlus } from 'lucide-react-native';
+import {
+	LogIn,
+	LucideIcon,
+	Package,
+	Search,
+	UserPlus,
+} from 'lucide-react-native';
 import { ROUTES } from '@/lib/Routes';
 import { ExternalPathString, RelativePathString } from 'expo-router';
 
@@ -27,8 +33,6 @@ export const CARRIERS: Carrier[] = [
 	},
 ];
 
-/************************  CONST de (accounts)  ***********************************/
-
 type QuickActionAccount = {
 	id: number;
 	title: string;
@@ -37,6 +41,31 @@ type QuickActionAccount = {
 	color: string;
 	route: ExternalPathString | RelativePathString;
 };
+
+/************************  CONST de (tabs)  ***********************************/
+export const homeQuickActions: QuickActionAccount[] = [
+	{
+		id: 1,
+		title: 'Itinerario',
+		subtitle: 'Descubre los próximos envíos.',
+		icon: Search,
+		color: '#3b82f6',
+		route: ROUTES.ITINERARY as ExternalPathString | RelativePathString,
+	},
+	{
+		id: 2,
+		title: 'Tracking',
+		subtitle: 'Sigue tu envío desde cualquier parte.',
+		icon: Package,
+		color: '#3b82f6',
+		route: ROUTES.TRACKING as ExternalPathString | RelativePathString,
+	},
+];
+
+
+/************************  CONST de (accounts)  ***********************************/
+
+
 
 export const quickActions: QuickActionAccount[] = [
 	{
