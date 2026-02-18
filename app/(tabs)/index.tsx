@@ -1,25 +1,7 @@
-import { StyleSheet, View } from 'react-native';
-import PortSearchForm from '@/components/forms/itinery/PortSearchForm';
+import { quickActionsHome } from '@/lib/constants';
+import QuickMenu from '@/components/UI/Tabs/QuickMenu';
 
 export default function Index() {
-	return (
-		<View style={styles.indexContainer}>
-			<View style={styles.indexContainer} className="md:pt-10">
-				<PortSearchForm />
-			</View>
-		</View>
-	);
+	return <QuickMenu quickActions={quickActionsHome} />;
 }
 
-const styles = StyleSheet.create({
-	indexContainer: {
-		flex: 1,
-		width: '100%',
-		maxWidth: 1024,
-		alignSelf: 'center',
-		paddingHorizontal: 20,
-	},
-	indexContent: {
-		paddingTop: 20,
-	},
-});

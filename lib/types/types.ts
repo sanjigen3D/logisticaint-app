@@ -6,6 +6,10 @@ import {
 	trackingSchema,
 } from '@/lib/validations/schemas';
 import { LoginFormData } from '@/lib/types/auth';
+import { ExternalPathString, RelativePathString } from 'expo-router';
+
+export type MyRoute = RelativePathString | ExternalPathString;
+
 
 // formData de itinerarios
 export type FormData = z.infer<typeof formSchema>;

@@ -33,7 +33,7 @@ export const CARRIERS: Carrier[] = [
 	},
 ];
 
-type QuickActionAccount = {
+export type QuickAction = {
 	id: number;
 	title: string;
 	subtitle: string;
@@ -43,7 +43,7 @@ type QuickActionAccount = {
 };
 
 /************************  CONST de (tabs)  ***********************************/
-export const homeQuickActions: QuickActionAccount[] = [
+export const quickActionsHome: QuickAction[] = [
 	{
 		id: 1,
 		title: 'Itinerario',
@@ -67,7 +67,7 @@ export const homeQuickActions: QuickActionAccount[] = [
 
 
 
-export const quickActions: QuickActionAccount[] = [
+export const quickActionsAccount: QuickAction[] = [
 	{
 		id: 1,
 		title: 'Iniciar Sesión',
