@@ -43,7 +43,7 @@ export default function TabLayout() {
 				<Tabs.Screen
 					name="register"
 					options={{
-						title: 'Crear Cuenta',
+						title: 'Solicitar Cuenta',
 						tabBarIcon: ({ size, color }) => (
 							<UserPlus size={size} color={color} />
 						),

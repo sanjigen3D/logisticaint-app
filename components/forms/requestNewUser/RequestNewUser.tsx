@@ -14,6 +14,19 @@ import { RequestNewUserSchema } from '@/lib/validations/schemas';
 import { ROUTES } from '@/lib/Routes';
 import { LinearGradient } from 'expo-linear-gradient';
 
+const RequestNewUSerText = {
+	Title: 'Información Personal',
+	SubTitle: 'Completa todos los campos para solicitar tu cuenta',
+	Name: 'Nombre',
+	NamePlaceholder: 'Tu Nombre',
+	LastName: 'Apellido',
+	LastNamePlaceholder: 'Tu Apellido',
+	Company: 'Empresa',
+	CompanyPlaceholder: 'Nombre de la Empresa',
+	Email: 'Email',
+	EmailPlaceholder: 'tu@empresa.com',
+};
+
 export const RequestNewUser = ({
 	setRegisteredUserData,
 	setShowSuccessModal,
@@ -76,10 +89,8 @@ export const RequestNewUser = ({
 	return (
 		<View style={styles.formContainer}>
 			<View style={styles.formCard}>
-				<Text style={styles.formTitle}>Información Personal</Text>
-				<Text style={styles.formSubtitle}>
-					Completa todos los campos para crear tu cuenta
-				</Text>
+				<Text style={styles.formTitle}>{RequestNewUSerText.Title}</Text>
+				<Text style={styles.formSubtitle}>{RequestNewUSerText.SubTitle}</Text>
 
 				{/* First Name Input */}
 				<Controller
@@ -87,7 +98,7 @@ export const RequestNewUser = ({
 					name="firstName"
 					render={({ field: { onChange, onBlur, value } }) => (
 						<View style={styles.inputWrapper}>
-							<Text style={styles.inputLabel}>Nombre</Text>
+							<Text style={styles.inputLabel}>{RequestNewUSerText.Name}</Text>
 							<View
 								style={[
 									styles.inputContainer,
@@ -99,7 +110,7 @@ export const RequestNewUser = ({
 								</View>
 								<TextInput
 									style={styles.textInput}
-									placeholder="Tu nombre"
+									placeholder={RequestNewUSerText.NamePlaceholder}
 									value={value}
 									onChangeText={onChange}
 									onBlur={onBlur}
@@ -120,7 +131,9 @@ export const RequestNewUser = ({
 					name="lastName"
 					render={({ field: { onChange, onBlur, value } }) => (
 						<View style={styles.inputWrapper}>
-							<Text style={styles.inputLabel}>Apellido</Text>
+							<Text style={styles.inputLabel}>
+								{RequestNewUSerText.LastName}
+							</Text>
 							<View
 								style={[
 									styles.inputContainer,
@@ -132,7 +145,7 @@ export const RequestNewUser = ({
 								</View>
 								<TextInput
 									style={styles.textInput}
-									placeholder="Tu apellido"
+									placeholder={RequestNewUSerText.LastNamePlaceholder}
 									value={value}
 									onChangeText={onChange}
 									onBlur={onBlur}
@@ -153,7 +166,9 @@ export const RequestNewUser = ({
 					name="company"
 					render={({ field: { onChange, onBlur, value } }) => (
 						<View style={styles.inputWrapper}>
-							<Text style={styles.inputLabel}>Empresa</Text>
+							<Text style={styles.inputLabel}>
+								{RequestNewUSerText.Company}
+							</Text>
 							<View
 								style={[
 									styles.inputContainer,
@@ -165,7 +180,7 @@ export const RequestNewUser = ({
 								</View>
 								<TextInput
 									style={styles.textInput}
-									placeholder="Nombre de tu empresa"
+									placeholder={RequestNewUSerText.CompanyPlaceholder}
 									value={value}
 									onChangeText={onChange}
 									onBlur={onBlur}
@@ -186,7 +201,7 @@ export const RequestNewUser = ({
 					name="email"
 					render={({ field: { onChange, onBlur, value } }) => (
 						<View style={styles.inputWrapper}>
-							<Text style={styles.inputLabel}>Email</Text>
+							<Text style={styles.inputLabel}>{RequestNewUSerText.Email}</Text>
 							<View
 								style={[
 									styles.inputContainer,
@@ -198,7 +213,7 @@ export const RequestNewUser = ({
 								</View>
 								<TextInput
 									style={styles.textInput}
-									placeholder="tu@empresa.com"
+									placeholder={RequestNewUSerText.EmailPlaceholder}
 									value={value}
 									onChangeText={onChange}
 									onBlur={onBlur}
@@ -231,15 +246,15 @@ export const RequestNewUser = ({
 					>
 						<UserPlus size={20} color="#ffffff" />
 						<Text style={styles.registerButtonText}>
-							{isLoading ? 'Creando cuenta...' : 'Crear Cuenta'}
+							{isLoading ? 'Solicitando cuenta...' : 'Solicitar Cuenta'}
 						</Text>
 					</LinearGradient>
 				</TouchableOpacity>
 
 				{/* INFO */}
 				<Text style={styles.termsText}>
-					Al crear una cuenta, uno de nuestros ejecutivos se contactara contigo
-					al correo ingresado.
+					Al solicitar una cuenta, uno de nuestros ejecutivos se contactara
+					contigo al correo ingresado.
 				</Text>
 			</View>
 		</View>

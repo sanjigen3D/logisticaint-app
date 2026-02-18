@@ -62,10 +62,7 @@ export const quickActionsHome: QuickAction[] = [
 	},
 ];
 
-
 /************************  CONST de (accounts)  ***********************************/
-
-
 
 export const quickActionsAccount: QuickAction[] = [
 	{
@@ -78,7 +75,7 @@ export const quickActionsAccount: QuickAction[] = [
 	},
 	{
 		id: 2,
-		title: 'Crear Cuenta',
+		title: 'Solicitar Cuenta',
 		subtitle: 'Regístrate gratis',
 		icon: UserPlus,
 		color: '#10b981',
