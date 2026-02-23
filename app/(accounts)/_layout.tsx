@@ -1,7 +1,10 @@
-import { Tabs } from 'expo-router';
-import { Home, UserPlus, LogIn } from 'lucide-react-native';
+import { Tabs, usePathname } from 'expo-router';
+import { Home, UserPlus, LogIn, User } from 'lucide-react-native';
+import { ROUTES } from '@/lib/Routes';
 
 export default function TabLayout() {
+	const pathname = usePathname();
+
 	return (
 		<>
 			<Tabs
@@ -31,15 +34,33 @@ export default function TabLayout() {
 						tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
 					}}
 				/>
-				<Tabs.Screen
-					name="login"
-					options={{
-						title: 'Ingresar',
-						tabBarIcon: ({ size, color }) => (
-							<LogIn size={size} color={color} />
-						),
-					}}
-				/>
+				{pathname !== ROUTES.ACCOUNT ? (
+					<Tabs.Screen
+						name="account"
+						options={{
+							title: 'Cuenta',
+							tabBarIcon: ({ size, color }) => (
+								<User size={size} color={color} />
+							),
+						}}
+					/>
+				) : (
+					<Tabs.Screen name="account" options={{ href: null }} />
+				)}
+
+				{pathname !== ROUTES.LOGIN ? (
+					<Tabs.Screen
+						name="login"
+						options={{
+							title: 'Ingresar',
+							tabBarIcon: ({ size, color }) => (
+								<LogIn size={size} color={color} />
+							),
+						}}
+					/>
+				) : (
+					<Tabs.Screen name="login" options={{ href: null }} />
+				)}
 				<Tabs.Screen
 					name="register"
 					options={{
@@ -49,9 +70,6 @@ export default function TabLayout() {
 						),
 					}}
 				/>
-
-				{/* oculta en el menu */}
-				<Tabs.Screen name="account" options={{ href: null }} />
 			</Tabs>
 		</>
 	);

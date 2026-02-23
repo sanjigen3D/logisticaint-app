@@ -4,6 +4,7 @@ import {
 	Package,
 	Search,
 	UserPlus,
+	LogOut,
 } from 'lucide-react-native';
 import { ROUTES } from '@/lib/Routes';
 import { ExternalPathString, RelativePathString } from 'expo-router';
@@ -39,7 +40,8 @@ export type QuickAction = {
 	subtitle: string;
 	icon: LucideIcon;
 	color: string;
-	route: ExternalPathString | RelativePathString;
+	route?: ExternalPathString | RelativePathString;
+	isLogOut?: boolean;
 };
 
 /************************  CONST de (tabs)  ***********************************/
@@ -63,6 +65,17 @@ export const quickActionsHome: QuickAction[] = [
 ];
 
 /************************  CONST de (accounts)  ***********************************/
+
+export const quickActionLogOut: QuickAction[] = [
+	{
+		id: 46554,
+		title: 'LogOut',
+		subtitle: 'Cerrar Sesión',
+		icon: LogOut,
+		color: '#3b82f6',
+		isLogOut: true,
+	},
+];
 
 export const quickActionsAccount: QuickAction[] = [
 	{
