@@ -1,9 +1,13 @@
-import { Tabs, usePathname } from 'expo-router';
-import { Home, UserPlus, LogIn, User } from 'lucide-react-native';
 import { ROUTES } from '@/lib/Routes';
+import { Tabs, usePathname } from 'expo-router';
+import { Home, LogIn, User, UserPlus } from 'lucide-react-native';
 
 export default function TabLayout() {
 	const pathname = usePathname();
+
+	const isAccount = pathname === ROUTES.ACCOUNT;
+	const isLogin = pathname === ROUTES.LOGIN;
+	const isRegister = pathname === ROUTES.REGISTER;
 
 	return (
 		<>
@@ -34,41 +38,44 @@ export default function TabLayout() {
 						tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
 					}}
 				/>
-				{pathname !== ROUTES.ACCOUNT ? (
-					<Tabs.Screen
-						name="account"
-						options={{
-							title: 'Cuenta',
-							tabBarIcon: ({ size, color }) => (
-								<User size={size} color={color} />
-							),
-						}}
-					/>
-				) : (
-					<Tabs.Screen name="account" options={{ href: null }} />
-				)}
-
-				{pathname !== ROUTES.LOGIN ? (
-					<Tabs.Screen
-						name="login"
-						options={{
-							title: 'Ingresar',
-							tabBarIcon: ({ size, color }) => (
-								<LogIn size={size} color={color} />
-							),
-						}}
-					/>
-				) : (
-					<Tabs.Screen name="login" options={{ href: null }} />
-				)}
+				<Tabs.Screen
+					name="account"
+					options={
+						isAccount
+							? { href: null }
+							: {
+								title: 'Cuenta',
+								tabBarIcon: ({ size, color }) => (
+									<User size={size} color={color} />
+								),
+							}
+					}
+				/>
+				<Tabs.Screen
+					name="login"
+					options={
+						isLogin
+							? { href: null }
+							: {
+								title: 'Ingresar',
+								tabBarIcon: ({ size, color }) => (
+									<LogIn size={size} color={color} />
+								),
+							}
+					}
+				/>
 				<Tabs.Screen
 					name="register"
-					options={{
-						title: 'Solicitar Cuenta',
-						tabBarIcon: ({ size, color }) => (
-							<UserPlus size={size} color={color} />
-						),
-					}}
+					options={
+						isRegister
+							? { href: null }
+							: {
+								title: 'Solicitar Cuenta',
+								tabBarIcon: ({ size, color }) => (
+									<UserPlus size={size} color={color} />
+								),
+							}
+					}
 				/>
 			</Tabs>
 		</>

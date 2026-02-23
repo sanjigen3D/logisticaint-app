@@ -1,7 +1,15 @@
-import { Tabs } from 'expo-router';
+import { ROUTES } from '@/lib/Routes';
+import { Tabs, usePathname } from 'expo-router';
 import { Home, Package, Search, User } from 'lucide-react-native';
 
 export default function TabLayout() {
+	const pathname = usePathname();
+
+	const isHome = pathname === ROUTES.HOME;
+	const isItinerary = pathname === ROUTES.ITINERARY;
+	const isTrack = pathname === ROUTES.TRACKING;
+	const isAccount = pathname === ROUTES.ACCOUNT;
+
 	return (
 		<Tabs
 			screenOptions={{
@@ -25,36 +33,50 @@ export default function TabLayout() {
 		>
 			<Tabs.Screen
 				name="index"
-				options={{
-					title: 'Home',
-					tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
-				}}
+				options={
+					isHome
+						? { href: null }
+						: {
+							title: 'Home',
+							tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
+						}
+				}
 			/>
 			<Tabs.Screen
 				name="itinerary"
-				options={{
-					title: 'Buscar Itinerario',
-					tabBarIcon: ({ size, color }) => <Search size={size} color={color} />,
-				}}
+				options={
+					isItinerary
+						? { href: null }
+						: {
+							title: 'Buscar Itinerario',
+							tabBarIcon: ({ size, color }) => <Search size={size} color={color} />,
+						}
+				}
 			/>
 			<Tabs.Screen
 				name="track"
-				options={{
-					title: 'Seguimiento',
-					tabBarIcon: ({ size, color }) => (
-						<Package size={size} color={color} />
-					),
-				}}
+				options={
+					isTrack
+						? { href: null }
+						: {
+							title: 'Seguimiento',
+							tabBarIcon: ({ size, color }) => (
+								<Package size={size} color={color} />
+							),
+						}
+				}
 			/>
 			<Tabs.Screen
 				name="account"
-				options={{
-					title: 'Cuenta',
-					tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
-				}}
+				options={
+					isAccount
+						? { href: null }
+						: {
+							title: 'Cuenta',
+							tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
+						}
+				}
 			/>
-			{/* oculta en el menu */}
-			{/*<Tabs.Screen name="results" options={{ href: null }} />*/}
 		</Tabs>
 	);
 }
