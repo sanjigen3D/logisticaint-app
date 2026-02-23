@@ -1,8 +1,13 @@
+import { useAuth } from '@/lib/hooks/useAuth';
+import { useToastStore } from '@/lib/stores/useToastStore';
+import { LoginFormData } from '@/lib/types/types';
+import { loginSchema } from '@/lib/validations/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react-native';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {LoginFormData} from '@/lib/types/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from '@/lib/validations/schemas';
 import {
 	StyleSheet,
 	Text,
@@ -10,15 +15,12 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '@/lib/hooks/useAuth';
-import { useRouter } from 'expo-router';
 
 export const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const { login, error, isLoading, clearError } = useAuth();
 	const router = useRouter();
+	const { showToast } = useToastStore();
 
 	const {
 		control,
@@ -39,9 +41,22 @@ export const LoginForm = () => {
 		try {
 			await login(data.email, data.password);
 			reset();
+
+			// Se muestra el Toast general para Web y Mobile
+			showToast({
+				type: 'success',
+				message: '¡Bienvenido!',
+				description: 'Has iniciado sesión exitosamente. 👋',
+			});
+
 			router.replace('/(tabs)');
 		} catch (error) {
 			console.error('Error en login:', error);
+			showToast({
+				type: 'error',
+				message: 'Error de autenticación',
+				description: error instanceof Error ? error.message : 'Verifica tus credenciales.',
+			});
 		}
 	};
 

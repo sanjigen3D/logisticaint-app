@@ -1,17 +1,19 @@
-import { Stack, usePathname } from 'expo-router';
-import { useEffect } from 'react';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+import '@/assets/global.css';
+import Navbar from '@/components/UI/navbar/navbar';
+import { GlobalToast } from '@/components/UI/toast/GlobalToast';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { QueryProvider } from '@/lib/providers/QueryProvider';
+import { ROUTES } from '@/lib/Routes';
 import {
 	Inter_400Regular,
 	Inter_500Medium,
 	Inter_600SemiBold,
 	Inter_700Bold,
 } from '@expo-google-fonts/inter';
-import '@/assets/global.css';
-import { QueryProvider } from '@/lib/providers/QueryProvider';
-import Navbar from '@/components/UI/navbar/navbar';
-import { ROUTES } from '@/lib/Routes';
+import { useFonts } from 'expo-font';
+import { Stack, usePathname } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 import {
 	KeyboardAvoidingView,
 	Platform,
@@ -19,7 +21,6 @@ import {
 	StyleSheet,
 	View,
 } from 'react-native';
-import { useAuth } from '@/lib/hooks/useAuth';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -72,6 +73,7 @@ export default function RootLayout() {
 					</View>
 				</ScrollView>
 			</KeyboardAvoidingView>
+			<GlobalToast />
 		</QueryProvider>
 	);
 }
