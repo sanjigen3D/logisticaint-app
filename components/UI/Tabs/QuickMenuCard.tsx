@@ -1,9 +1,10 @@
-import { MyRoute } from '@/lib/types/types';
 import { QuickAction } from '@/lib/constants';
-import { router } from 'expo-router';
-import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import { useAuthStore } from '@/lib/stores/authStore';
 import { ROUTES } from '@/lib/Routes';
+import { useAuthStore } from '@/lib/stores/authStore';
+import { useToastStore } from '@/lib/stores/useToastStore';
+import { MyRoute } from '@/lib/types/types';
+import { router } from 'expo-router';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export const QuickMenuCard = ({
 	quickAction,
@@ -12,6 +13,7 @@ export const QuickMenuCard = ({
 }) => {
 	const { id, route, color, title, subtitle, isLogOut } = quickAction;
 	const { logout } = useAuthStore();
+	const { showToast } = useToastStore();
 
 	const handleQuickAction = (route?: MyRoute): void => {
 		if (route) {
@@ -19,7 +21,14 @@ export const QuickMenuCard = ({
 		}
 
 		if (isLogOut) {
-			logout().then(() => router.push(ROUTES.HOME as MyRoute));
+			logout().then(() => {
+				showToast({
+					type: 'info',
+					message: 'Sesión finalizada',
+					description: 'Has cerrado sesión correctamente. ¡Hasta pronto!',
+				});
+				router.push(ROUTES.HOME as MyRoute);
+			});
 		}
 	};
 

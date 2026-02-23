@@ -5,12 +5,13 @@ import { Animated, Platform, StyleSheet, Text, View } from 'react-native';
 
 export const GlobalToast = () => {
     const { visible, message, description, type, hideToast } = useToastStore();
-    const translateY = useRef(new Animated.Value(-150)).current;
+    const isWeb = Platform.OS === 'web';
+    const translateY = useRef(new Animated.Value(isWeb ? 150 : -150)).current;
 
     useEffect(() => {
         if (visible) {
             Animated.spring(translateY, {
-                toValue: Platform.OS === 'ios' ? 60 : 40,
+                toValue: isWeb ? -20 : (Platform.OS === 'ios' ? 60 : 40),
                 useNativeDriver: true,
                 speed: 12,
                 bounciness: 4,
@@ -23,12 +24,12 @@ export const GlobalToast = () => {
             return () => clearTimeout(timer);
         } else {
             Animated.timing(translateY, {
-                toValue: -150,
+                toValue: isWeb ? 150 : -150,
                 duration: 250,
                 useNativeDriver: true,
             }).start();
         }
-    }, [visible, translateY, hideToast]);
+    }, [visible, translateY, hideToast, isWeb]);
 
     const getIcon = () => {
         switch (type) {
@@ -65,9 +66,6 @@ export const GlobalToast = () => {
 const styles = StyleSheet.create({
     toastContainer: {
         position: 'absolute',
-        top: 0,
-        left: 20,
-        right: 20,
         backgroundColor: '#ffffff',
         borderRadius: 12,
         padding: 16,
@@ -78,11 +76,23 @@ const styles = StyleSheet.create({
         elevation: 8,
         flexDirection: 'row',
         zIndex: 9999,
-        maxWidth: 500,
-        alignSelf: 'center',
-        width: '90%',
         borderLeftWidth: 4,
         borderLeftColor: '#3b82f6',
+        ...(Platform.OS === 'web'
+            ? {
+                bottom: 0,
+                right: 20,
+                width: 400,
+                maxWidth: '90%',
+            }
+            : {
+                top: 0,
+                left: 20,
+                right: 20,
+                alignSelf: 'center',
+                width: '90%',
+                maxWidth: 500,
+            }),
     },
     contentContainer: {
         flexDirection: 'row',
