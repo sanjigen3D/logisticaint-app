@@ -1,11 +1,10 @@
-import {ROUTES} from '@/lib/Routes';
-import {AuthResponse, User} from '@/lib/types/auth.types';
+import { ROUTES } from '@/lib/Routes';
+import { AuthResponse, User } from '@/lib/types/auth.types';
 
 const API_URL = ROUTES.API_ROUTE;
 const LOGIN_URL = `${API_URL}${ROUTES.API_LOGIN}`;
 const USER_VERIFY = `${API_URL}${ROUTES.API_USER_VERIFY}`
 const GET_PROFILE = `${API_URL}${ROUTES.API_GET_PROFILE}`
-const LOGOUT_URL = `${API_URL}${ROUTES.API_LOGOUT}`
 
 export const authService = {
 	async login(email: string, password: string): Promise<AuthResponse> {
@@ -14,7 +13,7 @@ export const authService = {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({email, password}),
+			body: JSON.stringify({ email, password }),
 		});
 
 		const data: AuthResponse = await response.json();
@@ -28,7 +27,7 @@ export const authService = {
 		try {
 			const response = await fetch(USER_VERIFY, {
 				method: "POST",
-				headers:{
+				headers: {
 					'Content-Type': 'application/json',
 					'Authorization': `Bearer ${token}`
 				}
@@ -63,19 +62,5 @@ export const authService = {
 			return null;
 		}
 	},
-
-	async logout(token: string): Promise<void> {
-		try {
-			await fetch(LOGOUT_URL, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Authorization": `Bearer ${token}`
-				},
-			});
-		} catch {
-			console.log("Error al realizar logout por parte del servidor");
-		}
-	}
 };
 

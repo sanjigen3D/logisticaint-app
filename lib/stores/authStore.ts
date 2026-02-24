@@ -1,7 +1,7 @@
-import {create} from 'zustand';
-import {AuthStore} from '@/lib/types/auth.types';
-import {authService} from '@/services/authService';
-import {storage} from '@/lib/storage';
+import { storage } from '@/lib/storage';
+import { AuthStore } from '@/lib/types/auth.types';
+import { authService } from '@/services/authService';
+import { create } from 'zustand';
 
 const STORAGE_KEYS = {
 	TOKEN: "auth_token",
@@ -16,7 +16,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 	error: null,
 
 	login: async (email: string, password: string) => {
-		set({isLoading: true, error: null});
+		set({ isLoading: true, error: null });
 
 		try {
 			const response = await authService.login(email, password);
@@ -50,14 +50,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 		}
 	},
 
-	logout: async() => {
-		const {token} = get();
-
+	logout: async () => {
 		try {
-			if (token){
-				await authService.logout(token);
-			}
-
 			await storage.removeItem(STORAGE_KEYS.TOKEN);
 			await storage.removeItem(STORAGE_KEYS.USER);
 
@@ -69,12 +63,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 			});
 		} catch (e) {
 			const errorMessage = e instanceof Error ? e.message : "Intento de Logout fallido";
-			set({error: errorMessage});
+			set({ error: errorMessage });
 			throw e;
 		}
 	},
 	verifyToken: async () => {
-		set({isLoading: true});
+		set({ isLoading: true });
 
 		try {
 			const token = await storage.getItem(STORAGE_KEYS.TOKEN);
@@ -91,7 +85,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 			}
 
 			// hidrato el User con lo guardado para mejora en UX
-			if (storedUser){
+			if (storedUser) {
 				set({
 					user: JSON.parse(storedUser),
 					token,
@@ -102,7 +96,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 			}
 
 			const user = await authService.verifyToken(token);
-			if(!user) {
+			if (!user) {
 
 				await storage.removeItem(STORAGE_KEYS.TOKEN);
 				await storage.removeItem(STORAGE_KEYS.USER);
@@ -137,9 +131,9 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 	},
 
 	clearError: () => {
-		set({error: null});
+		set({ error: null });
 	},
 
-	setLoading: (loading: boolean) => set({isLoading: loading}),
+	setLoading: (loading: boolean) => set({ isLoading: loading }),
 
 }))
