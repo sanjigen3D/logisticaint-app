@@ -1,10 +1,11 @@
-import { z } from 'zod';
 import {
+	createUserSchema,
 	formSchema,
 	loginSchema,
 	RequestNewUserSchema,
 	trackingSchema,
 } from '@/lib/validations/schemas';
+import { z } from 'zod';
 
 import { ExternalPathString, RelativePathString } from 'expo-router';
 
@@ -20,3 +21,5 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 
 
 export type Naviera = 'Zim' | 'Hapag' | 'Maersk';
+export type CreateUserFormData = z.infer<typeof createUserSchema>;
+

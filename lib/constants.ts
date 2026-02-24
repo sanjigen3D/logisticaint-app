@@ -1,13 +1,14 @@
+import { ROUTES } from '@/lib/Routes';
+import { MyRoute } from "@/lib/types/types";
 import {
 	LogIn,
+	LogOut,
 	LucideIcon,
 	Package,
 	Search,
+	ShieldPlus,
 	UserPlus,
-	LogOut,
 } from 'lucide-react-native';
-import { ROUTES } from '@/lib/Routes';
-import { ExternalPathString, RelativePathString } from 'expo-router';
 
 type Carrier = {
 	id: 'Hapag' | 'Zim';
@@ -40,7 +41,7 @@ export type QuickAction = {
 	subtitle: string;
 	icon: LucideIcon;
 	color: string;
-	route?: ExternalPathString | RelativePathString;
+	route?: MyRoute;
 	isLogOut?: boolean;
 };
 
@@ -52,7 +53,7 @@ export const quickActionsHome: QuickAction[] = [
 		subtitle: 'Descubre los próximos envíos.',
 		icon: Search,
 		color: '#3b82f6',
-		route: ROUTES.ITINERARY as ExternalPathString | RelativePathString,
+		route: ROUTES.ITINERARY as MyRoute,
 	},
 	{
 		id: 2,
@@ -60,7 +61,7 @@ export const quickActionsHome: QuickAction[] = [
 		subtitle: 'Sigue tu envío desde cualquier parte.',
 		icon: Package,
 		color: '#3b82f6',
-		route: ROUTES.TRACKING as ExternalPathString | RelativePathString,
+		route: ROUTES.TRACKING as MyRoute,
 	},
 ];
 
@@ -84,7 +85,7 @@ export const quickActionsAccount: QuickAction[] = [
 		subtitle: 'Accede a tu cuenta',
 		icon: LogIn,
 		color: '#3b82f6',
-		route: ROUTES.LOGIN as ExternalPathString | RelativePathString,
+		route: ROUTES.LOGIN as MyRoute,
 	},
 	{
 		id: 2,
@@ -92,6 +93,20 @@ export const quickActionsAccount: QuickAction[] = [
 		subtitle: 'Regístrate gratis',
 		icon: UserPlus,
 		color: '#10b981',
-		route: ROUTES.REGISTER as ExternalPathString | RelativePathString,
+		route: ROUTES.REGISTER as MyRoute,
 	},
 ];
+
+/************************  CONST de (admin)  ***********************************/
+
+export const quickActionsAdmin: QuickAction[] = [
+	{
+		id: 100,
+		title: 'Crear Usuario',
+		subtitle: 'Registrar nuevo usuario',
+		icon: ShieldPlus,
+		color: '#7c3aed',
+		route: ROUTES.ADMIN as MyRoute,
+	},
+];
+

@@ -69,3 +69,19 @@ export const loginSchema = z.object({
 		.toLowerCase(),
 	password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 });
+
+// formulario de creación de usuario (admin)
+export const createUserSchema = z.object({
+	name: z
+		.string()
+		.min(2, 'El nombre debe tener al menos 2 caracteres')
+		.max(100, 'El nombre no puede exceder 100 caracteres'),
+	email: z
+		.string()
+		.min(1, 'El email es requerido')
+		.email('Ingresa un email válido')
+		.toLowerCase(),
+	password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+	type_id: z.number({ required_error: 'Debe seleccionar un tipo de usuario' }).int().min(1).max(3),
+	active: z.boolean(),
+});

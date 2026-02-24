@@ -1,10 +1,10 @@
 import QuickMenu from '@/components/UI/Tabs/QuickMenu';
-import { quickActionLogOut, quickActionsAccount } from '@/lib/constants';
-import { useAuthStore } from '@/lib/stores/authStore';
+import { quickActionLogOut, quickActionsAccount, quickActionsAdmin } from '@/lib/constants';
+import { useAuth } from '@/lib/hooks/useAuth';
 import { StyleSheet, View } from 'react-native';
 
 export default function AccountHomeScreen() {
-	const { isAuthenticated } = useAuthStore();
+	const { isAuthenticated, isManagerOrHigher } = useAuth();
 
 	const currentActions = isAuthenticated
 		? quickActionsAccount.map(action => action.title === 'Iniciar Sesión' ? quickActionLogOut[0] : action)
@@ -13,6 +13,9 @@ export default function AccountHomeScreen() {
 	return (
 		<View style={[styles.container]}>
 			<QuickMenu quickActions={currentActions} type="quick" />
+			{isAuthenticated && isManagerOrHigher() && (
+				<QuickMenu quickActions={quickActionsAdmin} type="admin" />
+			)}
 		</View>
 	);
 }

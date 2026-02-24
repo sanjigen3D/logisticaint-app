@@ -7,11 +7,13 @@ export const ROUTES = {
 	ITINERARY: '/itinerary',
 	ITINERARY_RESULT: '/itineraries',
 	TRACKING: '/track',
+	ADMIN: '/admin',
 	API_RESEND_REGISTER: 'https://marines-services.vercel.app/email/register',
 	API_LOGIN: '/auth/login',
 	API_REGISTER_NEW_USER: '/auth/register',
 	API_USER_VERIFY: '/auth/verify',
 	API_GET_PROFILE: '/auth/profile',
 	API_LOGOUT: '/auth/logout',
+	API_CREATE_USER: '/users',
 	API_ROUTE: 'https://marines-services.vercel.app',
 };

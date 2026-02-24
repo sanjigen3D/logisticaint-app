@@ -6,13 +6,13 @@ import { Animated, Platform, StyleSheet, Text, View } from 'react-native';
 export const GlobalToast = () => {
     const { visible, message, description, type, hideToast } = useToastStore();
     const isWeb = Platform.OS === 'web';
-    const translateY = useRef(new Animated.Value(isWeb ? 150 : -150)).current;
+    const translateY = useRef(new Animated.Value(isWeb ? 250 : -150)).current;
 
     useEffect(() => {
         if (visible) {
             Animated.spring(translateY, {
                 toValue: isWeb ? -20 : (Platform.OS === 'ios' ? 60 : 40),
-                useNativeDriver: true,
+                useNativeDriver: !isWeb,
                 speed: 12,
                 bounciness: 4,
             }).start();
@@ -24,9 +24,9 @@ export const GlobalToast = () => {
             return () => clearTimeout(timer);
         } else {
             Animated.timing(translateY, {
-                toValue: isWeb ? 150 : -150,
+                toValue: isWeb ? 250 : -150,
                 duration: 250,
-                useNativeDriver: true,
+                useNativeDriver: !isWeb,
             }).start();
         }
     }, [visible, translateY, hideToast, isWeb]);
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         borderLeftColor: '#3b82f6',
         ...(Platform.OS === 'web'
             ? {
-                bottom: 0,
+                bottom: 100,
                 right: 20,
                 width: 400,
                 maxWidth: '90%',
