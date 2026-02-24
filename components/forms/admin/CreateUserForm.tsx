@@ -18,19 +18,18 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
     ActivityIndicator,
-    Platform,
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 
 const ALL_TYPE_OPTIONS = [
-    { label: 'Admin', value: 1 },
+    { label: 'Administrador', value: 1 },
     { label: 'Manager', value: 2 },
-    { label: 'User', value: 3 },
+    { label: 'Usuario', value: 3 },
 ];
 
 // Options for user type
@@ -251,52 +250,29 @@ export const CreateUserForm = () => {
                                 <View style={styles.inputIconContainer}>
                                     <ShieldPlus size={20} color="#3b82f6" />
                                 </View>
-                                {Platform.OS === 'web' ? (
-                                    <select
-                                        value={value}
-                                        onChange={(e) => onChange(Number(e.target.value))}
-                                        style={{
-                                            flex: 1,
-                                            backgroundColor: 'transparent',
-                                            border: 'none',
-                                            outline: 'none',
-                                            fontSize: 16,
-                                            fontFamily: 'Inter-Regular',
-                                            color: '#1e293b',
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        {typeOptions.map((opt) => (
-                                            <option key={opt.value} value={opt.value}>
-                                                {opt.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    /* for mobile: inline selection tabs */
-                                    <View style={styles.typeTabsContainer}>
-                                        {typeOptions.map((opt) => (
-                                            <TouchableOpacity
-                                                key={opt.value}
+                                <View style={styles.typeTabsContainer}>
+                                    {typeOptions.map((opt) => (
+                                        <TouchableOpacity
+                                            key={opt.value}
+                                            style={[
+                                                styles.typeTab,
+                                                value === opt.value && styles.typeTabActive,
+                                            ]}
+                                            onPress={() => onChange(opt.value)}
+                                            activeOpacity={0.7}
+                                        >
+                                            <Text
                                                 style={[
-                                                    styles.typeTab,
-                                                    value === opt.value && styles.typeTabActive,
+                                                    styles.typeTabText,
+                                                    value === opt.value && styles.typeTabTextActive,
                                                 ]}
-                                                onPress={() => onChange(opt.value)}
-                                                activeOpacity={0.7}
                                             >
-                                                <Text
-                                                    style={[
-                                                        styles.typeTabText,
-                                                        value === opt.value && styles.typeTabTextActive,
-                                                    ]}
-                                                >
-                                                    {opt.label}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        ))}
-                                    </View>
-                                )}
+                                                {opt.label}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+
                             </View>
                             {errors.type_id && (
                                 <Text style={styles.errorText}>{errors.type_id.message}</Text>
