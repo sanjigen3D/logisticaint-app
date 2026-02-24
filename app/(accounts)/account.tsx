@@ -12,7 +12,7 @@ export default function AccountHomeScreen() {
 
 	return (
 		<View style={[styles.container]}>
-			<QuickMenu quickActions={currentActions} type="quick" />5566
+			<QuickMenu quickActions={currentActions} type="quick" />
 		</View>
 	);
 }
