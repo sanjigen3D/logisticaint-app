@@ -1,4 +1,3 @@
-import '@/assets/global.css';
 import Navbar from '@/components/UI/navbar/navbar';
 import { GlobalToast } from '@/components/UI/toast/GlobalToast';
 import { useAuth } from '@/lib/hooks/useAuth';
