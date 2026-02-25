@@ -2,7 +2,7 @@ import QuickMenu from '@/components/UI/Tabs/QuickMenu';
 import { quickActionsAdmin } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useToastStore } from '@/lib/stores/useToastStore';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { Shield } from 'lucide-react-native';
 import { useEffect } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -21,9 +21,12 @@ export default function AdminScreen() {
                 message: 'Acceso restringido',
                 description: 'No tienes permisos para acceder a esta sección.',
             });
-            router.replace('/(tabs)');
         }
-    }, []);
+    }, [isManagerOrHigher, showToast]);
+
+    if (!isManagerOrHigher()) {
+        return <Redirect href="/(tabs)" />;
+    }
 
     return (
         <ScrollView

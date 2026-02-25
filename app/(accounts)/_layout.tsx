@@ -1,6 +1,6 @@
 import { ROUTES } from '@/lib/Routes';
 import { Tabs, usePathname } from 'expo-router';
-import { Home, LogIn, User, UserPlus } from 'lucide-react-native';
+import { Home, LogIn, ShieldAlert, User, UserPlus } from 'lucide-react-native';
 import { Platform, StyleSheet, View } from 'react-native';
 
 // Matches the design of the main (tabs) layout
@@ -108,6 +108,25 @@ export default function AccountsLayout() {
 							tabBarIcon: ({ size, color, focused }) => (
 								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
 									<UserPlus size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+								</View>
+							),
+						}
+				}
+			/>
+			<Tabs.Screen
+				name="adminDummy"
+				options={
+					pathname.startsWith('/(admin)') || pathname.startsWith('/admin')
+						? { href: null }
+						: {
+							title: 'Admin',
+							tabBarIcon: ({ size, color, focused }) => (
+								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+									<ShieldAlert
+										size={focused ? size : size - 2}
+										color={color}
+										strokeWidth={focused ? 2.4 : 1.8}
+									/>
 								</View>
 							),
 						}

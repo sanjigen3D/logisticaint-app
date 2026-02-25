@@ -123,7 +123,6 @@ export default function ResultsPage() {
 				title={'Resultados de Calendario'}
 				subtitle={`${origin}(${originCode}) → ${destination}(${destinationCode})`}
 				icon={<Ship size={32} color="#ffffff" />}
-				backButton={true}
 			/>
 
 			<ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>

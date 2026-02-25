@@ -1,6 +1,6 @@
 import { ROUTES } from '@/lib/Routes';
 import { Tabs, usePathname } from 'expo-router';
-import { Home, Package, Search, User } from 'lucide-react-native';
+import { Home, Package, Search, ShieldAlert, User } from 'lucide-react-native';
 import { Platform, StyleSheet, View } from 'react-native';
 
 // Frosted glass colors — semi-transparent dark navy
@@ -131,10 +131,27 @@ export default function TabLayout() {
 				}
 			/>
 
-			<Tabs.Screen name="admin" options={{ href: null }} />
-			<Tabs.Screen name="admin/create-user" options={{ href: null }} />
-			<Tabs.Screen name="admin/create-company" options={{ href: null }} />
-			<Tabs.Screen name="admin/create-contact" options={{ href: null }} />
+			<Tabs.Screen
+				name="adminDummy"
+				options={
+					pathname.startsWith('/(admin)') || pathname.startsWith('/admin')
+						? { href: null }
+						: {
+							title: 'Admin',
+							tabBarIcon: ({ size, color, focused }) => (
+								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+									<ShieldAlert
+										size={focused ? size : size - 2}
+										color={color}
+										strokeWidth={focused ? 2.4 : 1.8}
+									/>
+								</View>
+							),
+						}
+				}
+			/>
+
+			<Tabs.Screen name="itineraries/index" options={{ href: null }} />
 		</Tabs>
 	);
 }

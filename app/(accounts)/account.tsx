@@ -1,5 +1,5 @@
 import QuickMenu from '@/components/UI/Tabs/QuickMenu';
-import { quickActionLogOut, quickActionsAccount, quickActionsAdmin } from '@/lib/constants';
+import { quickActionLogOut, quickActionsAccount } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -82,9 +82,6 @@ export default function AccountHomeScreen() {
 			) : null}
 
 			<QuickMenu quickActions={currentActions} type="quick" />
-			{isAuthenticated && isManagerOrHigher() && (
-				<QuickMenu quickActions={quickActionsAdmin} type="admin" />
-			)}
 		</ScrollView>
 	);
 }

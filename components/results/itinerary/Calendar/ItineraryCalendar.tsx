@@ -60,11 +60,35 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
         return map;
     }, [routes]);
 
+    // Calculate available years from data
+    const availableYears = useMemo(() => {
+        const years = new Set<number>();
+        routes.forEach(route => {
+            if (!route.legs || route.legs.length === 0) return;
+            const depDateStr = route.legs[0].departure.dateTime;
+            if (depDateStr) {
+                const year = new Date(depDateStr).getFullYear();
+                if (!isNaN(year)) years.add(year);
+            }
+        });
+
+        // Ensure current year is always included as fallback
+        years.add(new Date().getFullYear());
+        return Array.from(years).sort((a, b) => a - b);
+    }, [routes]);
+
     const changeMonth = (delta: number) => {
         const newDate = new Date(currentDate);
         newDate.setMonth(newDate.getMonth() + delta);
         setCurrentDate(newDate);
     };
+
+    const changeYear = (year: number) => {
+        const newDate = new Date(currentDate);
+        newDate.setFullYear(year);
+        setCurrentDate(newDate);
+    };
+
 
     const monthName = currentDate.toLocaleString('es-ES', { month: 'long' });
     const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
@@ -74,18 +98,40 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
 
     return (
         <View style={styles.container}>
+            {/* Year Selector */}
+            <View style={styles.yearSelector}>
+                {availableYears.map(year => (
+                    <Pressable
+                        key={year}
+                        style={[
+                            styles.yearChip,
+                            currentDate.getFullYear() === year && styles.yearChipActive
+                        ]}
+                        onPress={() => changeYear(year)}
+                    >
+                        <Text style={[
+                            styles.yearChipText,
+                            currentDate.getFullYear() === year && styles.yearChipTextActive
+                        ]}>
+                            {year}
+                        </Text>
+                    </Pressable>
+                ))}
+            </View>
+
             {/* Calendar Header */}
             <View style={styles.header}>
                 <Pressable onPress={() => changeMonth(-1)} style={styles.navButton}>
                     <ChevronLeft size={24} color="#0f172a" />
                 </Pressable>
                 <Text style={styles.monthTitle}>
-                    {capitalizedMonth} {currentDate.getFullYear()}
+                    {capitalizedMonth}
                 </Text>
                 <Pressable onPress={() => changeMonth(1)} style={styles.navButton}>
                     <ChevronRight size={24} color="#0f172a" />
                 </Pressable>
             </View>
+
 
             {/* Days of Week */}
             <View style={styles.weekDays}>
@@ -114,8 +160,9 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
                             key={dateKey}
                             style={[
                                 styles.dayCell,
+                                dayRoutes.length > 0 && styles.hasRoutesDayCell,
+                                isToday && !isSelected && styles.todayCell,
                                 isSelected && styles.selectedDayCell,
-                                isToday && !isSelected && styles.todayCell
                             ]}
                             onPress={() => setSelectedDate(dateKey)}
                         >
@@ -190,6 +237,33 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#f1f5f9',
     },
+    yearSelector: {
+        flexDirection: 'row',
+        gap: 8,
+        marginBottom: 24,
+        flexWrap: 'wrap',
+    },
+    yearChip: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        backgroundColor: '#f1f5f9',
+        borderWidth: 1,
+        borderColor: 'transparent',
+    },
+    yearChipActive: {
+        backgroundColor: '#e0e7ff',
+        borderColor: '#c7d2fe',
+    },
+    yearChipText: {
+        fontFamily: 'Inter-Medium',
+        fontSize: 14,
+        color: '#64748b',
+    },
+    yearChipTextActive: {
+        color: '#4338ca',
+        fontFamily: 'Inter-Bold',
+    },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -229,10 +303,16 @@ const styles = StyleSheet.create({
         borderColor: '#f8fafc',
         alignItems: 'center',
     },
+    hasRoutesDayCell: {
+        backgroundColor: '#dcfce7', // Lighter green highlighting cells with departures
+        borderColor: '#bbf7d0',
+        borderRadius: 12,
+    },
     selectedDayCell: {
         backgroundColor: '#eff6ff',
         borderColor: '#bfdbfe',
         borderRadius: 12,
+        borderWidth: 2,
     },
     todayCell: {
         backgroundColor: '#f8fafc',

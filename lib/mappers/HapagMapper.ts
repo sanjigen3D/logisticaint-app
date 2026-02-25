@@ -3,8 +3,8 @@ import {
 	UnifiedTrackingData,
 	UnifiedTrackingEvent,
 } from '@/lib/types/unifiedInterfaces';
-import { HapagEvent } from '../types/hapag/hapagTypes';
 import { formatDate, getEventTypeDescription } from '@/lib/utils';
+import { HapagEvent } from '../types/hapag/hapagTypes';
 
 export function mapHapagToUnified(hapagData: any[]): UnifiedRoute[] {
 	return hapagData.map((route, index) => {
@@ -63,8 +63,8 @@ export const convertHapagToUnified = (
 		status: getEventTypeDescription(
 			event.eventType,
 			event.transportEventTypeCode ||
-				event.shipmentEventTypeCode ||
-				event.equipmentEventTypeCode,
+			event.shipmentEventTypeCode ||
+			event.equipmentEventTypeCode,
 		),
 		location:
 			event.transportCall?.location.locationName ||
@@ -78,7 +78,9 @@ export const convertHapagToUnified = (
 			| 'shipment'
 			| 'equipment',
 		completed: true,
-	}));
+	})).filter(e =>
+		!e.status.toLowerCase().includes('documento')
+	);
 
 	return {
 		trackingNumber: trackingNum,
