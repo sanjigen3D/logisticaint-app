@@ -1,20 +1,20 @@
 import SuggestionsModal from '@/components/forms/itinery/SuggestModal';
+import { FormData, Port } from '@/lib/types/types';
 import { MapPin } from 'lucide-react-native';
 import {
 	Controller,
-	type Control,
 	FieldError,
-	Merge,
 	FieldErrorsImpl,
+	Merge,
+	type Control,
 } from 'react-hook-form';
 import {
 	ActivityIndicator,
+	StyleSheet,
+	Text,
 	TextInput,
 	View,
-	Text,
-	StyleSheet,
 } from 'react-native';
-import { FormData, Port } from '@/lib/types/types';
 
 type LocationInputProps = {
 	control: Control<FormData>;
@@ -26,9 +26,9 @@ type LocationInputProps = {
 	setSuggestions: (suggestions: Port[]) => void;
 	setQuery: (query: string) => void;
 	error?:
-		| FieldError
-		| Merge<FieldError, FieldErrorsImpl<{ name: string; country: string }>>
-		| undefined;
+	| FieldError
+	| Merge<FieldError, FieldErrorsImpl<{ name: string; country: string }>>
+	| undefined;
 };
 
 const LocationInput = ({
@@ -47,20 +47,18 @@ const LocationInput = ({
 			control={control}
 			name={name}
 			render={({ field: { onChange, value } }) => (
-				<View className="relative">
+				<View>
 					<View
-						style={styles.inputWrapper}
-						className="items-center bg-[#f8fafc] flex flex-row"
+						style={[
+							styles.inputWrapper,
+							error ? styles.inputWrapperError : null,
+						]}
 					>
-						<View style={{ marginRight: 12 }}>
-							<MapPin size={20} color={iconColor} />
+						<View style={styles.iconWrap}>
+							<MapPin size={18} color={iconColor} />
 						</View>
 						<TextInput
-							style={{
-								fontFamily: 'Inter-Regular',
-								outline: 'none',
-							}}
-							className="flex flex-1 text-base text-[#1e293b] placeholder:text-foreground pl-4"
+							style={styles.textInput}
 							onChangeText={(text) => {
 								if (!text) {
 									onChange({ name: '', country: '' });
@@ -71,20 +69,22 @@ const LocationInput = ({
 							}}
 							value={value.name}
 							placeholder={placeholder}
+							placeholderTextColor="#94a3b8"
 							autoCorrect={false}
 							autoCapitalize="none"
 						/>
-						{loading && <ActivityIndicator size="small" color="#5a8ce8" />}
+						{loading && (
+							<ActivityIndicator size="small" color="#3b82f6" style={{ marginLeft: 8 }} />
+						)}
 					</View>
 					{error && (
-						<Text className="text-error font-semibold">
+						<Text style={styles.errorText}>
 							{error.message?.toString()}
 						</Text>
 					)}
 					<SuggestionsModal
 						suggestions={suggestions}
 						onSelectItem={(item: Port) => {
-							// Pasamos el objeto Port completo a onChange
 							onChange(item);
 							setQuery(item.name);
 						}}
@@ -101,10 +101,33 @@ export default LocationInput;
 
 const styles = StyleSheet.create({
 	inputWrapper: {
-		borderRadius: 12,
-		borderWidth: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: '#f8fafc',
+		borderRadius: 14,
+		borderWidth: 1.5,
 		borderColor: '#e2e8f0',
 		paddingVertical: 14,
-		paddingHorizontal: 12,
+		paddingHorizontal: 14,
+	},
+	inputWrapperError: {
+		borderColor: '#ef4444',
+		backgroundColor: '#fef2f2',
+	},
+	iconWrap: {
+		marginRight: 10,
+	},
+	textInput: {
+		flex: 1,
+		fontFamily: 'Inter-Regular',
+		fontSize: 15,
+		color: '#0f172a',
+	},
+	errorText: {
+		fontFamily: 'Inter-Regular',
+		fontSize: 12,
+		color: '#ef4444',
+		marginTop: 4,
+		marginLeft: 2,
 	},
 });

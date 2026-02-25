@@ -1,6 +1,6 @@
 import LocationInput from '@/components/forms/itinery/LocationInput';
-import { FormData, Port } from '@/lib/types/types';
 import useDebounce from '@/lib/hooks/useDebounce';
+import { FormData, Port } from '@/lib/types/types';
 import { formSchema } from '@/lib/validations/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -126,17 +126,22 @@ const PortSearchForm = () => {
 	};
 
 	return (
-		<View style={styles.cardShadow} className="bg-white rounded-2xl p-6">
-			<View className="text-center py-4 px-2 gap-3">
+		<View style={styles.cardShadow}>
+			<View style={{ paddingBottom: 16 }}>
 				<Text
-					style={{ fontFamily: 'Inter-SemiBold' }}
-					className="text-primary text-xl md:text-3xl self-center mb-6 text-center"
+					style={{
+						fontFamily: 'Inter-SemiBold',
+						fontSize: 18,
+						color: '#0f172a',
+						letterSpacing: 0.2,
+						marginBottom: 4,
+					}}
 				>
 					Buscar Itinerario
 				</Text>
 			</View>
 
-			<View id="inputsWrapper" className="grid gap-6 md:grid-cols-2 mb-6">
+			<View style={{ gap: 14, marginBottom: 20 }}>
 				{/* Origen */}
 				<LocationInput
 					control={control}
@@ -166,7 +171,6 @@ const PortSearchForm = () => {
 
 			<Pressable
 				style={isValid ? styles.buttonActive : styles.buttonDisabled}
-				className="overflow-hidden z-[1]"
 				onPress={handleSubmit(onSubmit)}
 				disabled={!isValid}
 			>
@@ -191,27 +195,38 @@ export default PortSearchForm;
 
 const styles = StyleSheet.create({
 	cardShadow: {
-		boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-		borderRadius: 16,
+		backgroundColor: '#ffffff',
+		borderRadius: 24,
+		padding: 24,
+		shadowColor: '#0f172a',
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.1,
+		shadowRadius: 16,
+		elevation: 6,
+		borderWidth: 1,
+		borderColor: '#f1f5f9',
 	},
 	buttonActive: {
-		borderRadius: 12,
+		borderRadius: 16,
+		overflow: 'hidden',
 	},
 	buttonDisabled: {
-		borderRadius: 12,
+		borderRadius: 16,
+		overflow: 'hidden',
 		opacity: 0.5,
 	},
 	searchButtonGradient: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
-		paddingVertical: 16,
+		paddingVertical: 17,
 		paddingHorizontal: 24,
+		gap: 8,
 	},
 	searchButtonText: {
-		fontSize: 16,
+		fontSize: 15,
 		fontFamily: 'Inter-SemiBold',
 		color: '#ffffff',
-		marginLeft: 8,
+		letterSpacing: 0.3,
 	},
 });

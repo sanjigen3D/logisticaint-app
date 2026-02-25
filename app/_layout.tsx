@@ -49,6 +49,12 @@ export default function RootLayout() {
 		return null;
 	}
 
+	// Determines whether the current route is a main tab (not accounts/login/etc.)
+	const isTabRoute =
+		!path.includes('accounts') &&
+		!path.includes('login') &&
+		!path.includes('register');
+
 	return (
 		<QueryProvider>
 			<KeyboardAvoidingView
@@ -57,7 +63,12 @@ export default function RootLayout() {
 			>
 				<ScrollView
 					style={styles.scrollView}
-					contentContainerStyle={styles.scrollContent}
+					contentContainerStyle={[
+						styles.scrollContent,
+						// Add extra bottom padding when on tab routes so content doesn't
+						// hide behind the floating tab bar (68px bar + 16px bottom + buffer)
+						isTabRoute && styles.scrollContentTabPadding,
+					]}
 					keyboardShouldPersistTaps="handled"
 				>
 					<View style={styles.mainContainer}>
@@ -81,13 +92,17 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#f8fafc',
+		backgroundColor: '#f1f5f9',
 	},
 	scrollView: {
 		flex: 1,
 	},
 	scrollContent: {
 		flexGrow: 1,
+	},
+	// Adds bottom padding when floating tab bar is visible
+	scrollContentTabPadding: {
+		paddingBottom: 104,
 	},
 	mainContainer: {
 		flex: 1,

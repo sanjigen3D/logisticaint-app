@@ -1,20 +1,20 @@
-import { Controller, useForm } from 'react-hook-form';
-import { Naviera, TrackingFormData } from '@/lib/types/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { trackingSchema } from '@/lib/validations/schemas';
-import { fetchTrackingData } from '@/lib/trackHelpers';
-import { Dispatch, SetStateAction } from 'react';
-import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
 import { CARRIERS } from '@/lib/constants';
-import {
-	View,
-	Text,
-	TouchableOpacity,
-	TextInput,
-	StyleSheet,
-} from 'react-native';
-import { Search, Ship } from 'lucide-react-native';
+import { fetchTrackingData } from '@/lib/trackHelpers';
+import { Naviera, TrackingFormData } from '@/lib/types/types';
+import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
+import { trackingSchema } from '@/lib/validations/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Search, Ship } from 'lucide-react-native';
+import { Dispatch, SetStateAction } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import {
+	StyleSheet,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	View,
+} from 'react-native';
 
 export const TrackingForm = ({
 	isTracking,
@@ -95,7 +95,7 @@ export const TrackingForm = ({
 												style={[
 													styles.radioButtonInner,
 													value === carrier.id &&
-														styles.radioButtonInnerSelected,
+													styles.radioButtonInnerSelected,
 													value === carrier.id && {
 														backgroundColor: carrier.color,
 													},
@@ -225,72 +225,81 @@ const styles = StyleSheet.create({
 	},
 	formCard: {
 		backgroundColor: '#ffffff',
-		borderRadius: 16,
+		borderRadius: 24,
 		padding: 24,
-		boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+		// Modern shadow
+		shadowColor: '#0f172a',
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.1,
+		shadowRadius: 16,
+		elevation: 6,
+		borderWidth: 1,
+		borderColor: '#f1f5f9',
 	},
 	formTitle: {
-		fontSize: 20,
+		fontSize: 18,
 		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
+		color: '#0f172a',
 		marginBottom: 24,
-		textAlign: 'center',
+		letterSpacing: 0.2,
 	},
 	inputWrapper: {
-		marginBottom: 16,
+		marginBottom: 18,
 	},
 	inputContainer: {
 		backgroundColor: '#f8fafc',
-		borderRadius: 12,
-		borderWidth: 1,
+		borderRadius: 14,
+		borderWidth: 1.5,
 		borderColor: '#e2e8f0',
 		paddingHorizontal: 16,
-		paddingVertical: 12,
+		paddingVertical: 14,
 	},
 	inputContainerError: {
 		borderColor: '#ef4444',
 		backgroundColor: '#fef2f2',
 	},
 	textInput: {
-		fontSize: 16,
+		fontSize: 15,
 		fontFamily: 'Inter-Regular',
-		color: '#1e293b',
+		color: '#0f172a',
 	},
 	errorText: {
-		fontSize: 14,
+		fontSize: 13,
 		fontFamily: 'Inter-Regular',
 		color: '#ef4444',
-		marginTop: 8,
+		marginTop: 6,
 		marginLeft: 4,
 	},
 	inputLabel: {
-		fontSize: 14,
-		fontFamily: 'Inter-Medium',
-		color: '#374151',
-		marginBottom: 8,
+		fontSize: 13,
+		fontFamily: 'Inter-SemiBold',
+		color: '#475569',
+		marginBottom: 10,
+		letterSpacing: 0.3,
+		textTransform: 'uppercase',
 	},
 	radioGroupContainer: {
-		gap: 12,
+		gap: 10,
 	},
 	radioOption: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		backgroundColor: '#f8fafc',
-		borderRadius: 12,
-		borderWidth: 1,
+		borderRadius: 16,
+		borderWidth: 1.5,
 		borderColor: '#e2e8f0',
-		padding: 16,
+		padding: 14,
 	},
 	radioOptionSelected: {
-		borderColor: '#3b82f6',
-		backgroundColor: '#f0f9ff',
+		borderColor: '#1e40af',
+		backgroundColor: '#eff6ff',
 	},
 	radioButton: {
 		width: 20,
 		height: 20,
 		borderRadius: 10,
 		borderWidth: 2,
-		borderColor: '#d1d5db',
+		borderColor: '#cbd5e1',
 		alignItems: 'center',
 		justifyContent: 'center',
 		marginRight: 12,
@@ -302,76 +311,83 @@ const styles = StyleSheet.create({
 		backgroundColor: 'transparent',
 	},
 	radioButtonInnerSelected: {
-		backgroundColor: '#3b82f6',
+		backgroundColor: '#1e40af',
 	},
 	carrierIconContainer: {
-		width: 40,
-		height: 40,
-		borderRadius: 20,
+		width: 44,
+		height: 44,
+		borderRadius: 14,
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginRight: 12,
+		marginRight: 14,
 	},
 	carrierContent: {
 		flex: 1,
 	},
 	carrierName: {
-		fontSize: 16,
+		fontSize: 15,
 		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
+		color: '#0f172a',
 		marginBottom: 2,
 	},
 	carrierNameSelected: {
 		color: '#1e40af',
 	},
 	carrierDescription: {
-		fontSize: 14,
+		fontSize: 12,
 		fontFamily: 'Inter-Regular',
 		color: '#64748b',
 	},
 	examplesContainer: {
-		marginTop: 12,
+		marginTop: 14,
 		marginBottom: 8,
+		backgroundColor: '#f8fafc',
+		borderRadius: 12,
+		padding: 12,
 	},
 	examplesTitle: {
-		fontSize: 14,
-		fontFamily: 'Inter-Medium',
-		color: '#374151',
-		marginBottom: 8,
+		fontSize: 12,
+		fontFamily: 'Inter-SemiBold',
+		color: '#64748b',
+		marginBottom: 10,
+		letterSpacing: 0.4,
+		textTransform: 'uppercase',
 	},
 	exampleItem: {
-		backgroundColor: '#f8fafc',
+		backgroundColor: '#ffffff',
 		borderRadius: 8,
 		paddingHorizontal: 12,
 		paddingVertical: 8,
-		marginBottom: 4,
+		marginBottom: 6,
 		borderWidth: 1,
 		borderColor: '#e2e8f0',
 	},
 	exampleText: {
-		fontSize: 14,
-		fontFamily: 'Inter-Regular',
-		color: '#3b82f6',
+		fontSize: 13,
+		fontFamily: 'Inter-Medium',
+		color: '#1e40af',
+		letterSpacing: 0.5,
 	},
 	trackButton: {
 		marginTop: 24,
-		borderRadius: 12,
+		borderRadius: 16,
 		overflow: 'hidden',
 	},
 	trackButtonDisabled: {
-		opacity: 0.6,
+		opacity: 0.55,
 	},
 	trackButtonGradient: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
-		paddingVertical: 16,
+		paddingVertical: 17,
 		paddingHorizontal: 24,
+		gap: 8,
 	},
 	trackButtonText: {
-		fontSize: 16,
+		fontSize: 15,
 		fontFamily: 'Inter-SemiBold',
 		color: '#ffffff',
-		marginLeft: 8,
+		letterSpacing: 0.3,
 	},
 });

@@ -1,6 +1,20 @@
 import { ROUTES } from '@/lib/Routes';
 import { Tabs, usePathname } from 'expo-router';
 import { Home, Package, Search, User } from 'lucide-react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+
+// Design tokens
+const COLORS = {
+	navyDeep: '#07174c',
+	navyMid: '#0b2a6b',
+	blue: '#1e40af',
+	accent: '#3b82f6',
+	accentLight: '#60a5fa',
+	inactive: '#94a3b8',
+	tabBg: '#0d1f4e',
+	tabBorder: 'rgba(59,130,246,0.25)',
+	white: '#ffffff',
+};
 
 export default function TabLayout() {
 	const pathname = usePathname();
@@ -14,21 +28,40 @@ export default function TabLayout() {
 		<Tabs
 			screenOptions={{
 				headerShown: false,
-				tabBarActiveTintColor: '#1e40af',
-				tabBarInactiveTintColor: '#64748b',
+				tabBarActiveTintColor: COLORS.accentLight,
+				tabBarInactiveTintColor: COLORS.inactive,
 				tabBarStyle: {
-					backgroundColor: '#fff',
-					borderTopWidth: 1,
-					borderTopColor: '#e2e8f0',
-					paddingBottom: 20,
-					paddingTop: 10,
-					height: 90,
+					position: 'absolute',
+					bottom: Platform.OS === 'ios' ? 28 : 16,
+					left: 20,
+					right: 20,
+					backgroundColor: COLORS.tabBg,
+					borderRadius: 28,
+					borderWidth: 1,
+					borderColor: COLORS.tabBorder,
+					height: 68,
+					paddingBottom: 0,
+					paddingTop: 0,
+					// Elevation / shadow for Android & Web
+					elevation: 20,
+					shadowColor: COLORS.navyDeep,
+					shadowOffset: { width: 0, height: 8 },
+					shadowOpacity: 0.55,
+					shadowRadius: 20,
+				},
+				tabBarItemStyle: {
+					paddingVertical: 10,
+					borderRadius: 20,
 				},
 				tabBarLabelStyle: {
-					fontSize: 12,
+					fontSize: 11,
 					fontFamily: 'Inter-Medium',
-					marginTop: 4,
+					marginTop: 2,
+					letterSpacing: 0.3,
 				},
+				tabBarBackground: () => (
+					<View style={styles.tabBarBackground} />
+				),
 			}}
 		>
 			<Tabs.Screen
@@ -37,8 +70,12 @@ export default function TabLayout() {
 					isHome
 						? { href: null }
 						: {
-							title: 'Home',
-							tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
+							title: 'Inicio',
+							tabBarIcon: ({ size, color, focused }) => (
+								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+									<Home size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+								</View>
+							),
 						}
 				}
 			/>
@@ -48,8 +85,12 @@ export default function TabLayout() {
 					isItinerary
 						? { href: null }
 						: {
-							title: 'Buscar Itinerario',
-							tabBarIcon: ({ size, color }) => <Search size={size} color={color} />,
+							title: 'Itinerario',
+							tabBarIcon: ({ size, color, focused }) => (
+								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+									<Search size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+								</View>
+							),
 						}
 				}
 			/>
@@ -59,9 +100,11 @@ export default function TabLayout() {
 					isTrack
 						? { href: null }
 						: {
-							title: 'Seguimiento',
-							tabBarIcon: ({ size, color }) => (
-								<Package size={size} color={color} />
+							title: 'Tracking',
+							tabBarIcon: ({ size, color, focused }) => (
+								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+									<Package size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+								</View>
 							),
 						}
 				}
@@ -73,27 +116,38 @@ export default function TabLayout() {
 						? { href: null }
 						: {
 							title: 'Cuenta',
-							tabBarIcon: ({ size, color }) => <User size={size} color={color} />,
+							tabBarIcon: ({ size, color, focused }) => (
+								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+									<User size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+								</View>
+							),
 						}
 				}
 			/>
 
-			<Tabs.Screen
-				name="admin"
-				options={{ href: null }}
-			/>
-			<Tabs.Screen
-				name="admin/create-user"
-				options={{ href: null }}
-			/>
-			<Tabs.Screen
-				name="admin/create-company"
-				options={{ href: null }}
-			/>
-			<Tabs.Screen
-				name="admin/create-contact"
-				options={{ href: null }}
-			/>
+			<Tabs.Screen name="admin" options={{ href: null }} />
+			<Tabs.Screen name="admin/create-user" options={{ href: null }} />
+			<Tabs.Screen name="admin/create-company" options={{ href: null }} />
+			<Tabs.Screen name="admin/create-contact" options={{ href: null }} />
 		</Tabs>
 	);
 }
+
+const styles = StyleSheet.create({
+	tabBarBackground: {
+		flex: 1,
+		borderRadius: 28,
+		overflow: 'hidden',
+		backgroundColor: '#0d1f4e',
+	},
+	iconWrap: {
+		width: 36,
+		height: 28,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 14,
+	},
+	iconWrapActive: {
+		backgroundColor: 'rgba(59,130,246,0.18)',
+	},
+});
