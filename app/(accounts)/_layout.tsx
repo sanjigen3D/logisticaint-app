@@ -8,7 +8,7 @@ const COLORS = {
 	tabBg: 'rgba(7,23,76,0.72)',
 	tabBorder: 'rgba(96,165,250,0.25)',
 	active: '#60a5fa',
-	inactive: '#94a3b8',
+	inactive: '#e2e8f0', // Lighter for better contrast
 };
 
 export default function AccountsLayout() {

@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
 		paddingBottom: TAB_BAR_HEIGHT,
 	},
 	heroCard: {
-		backgroundColor: '#07174c',
+		backgroundColor: '#0f2d6b', // Matches lighter part of navbar gradient
 		borderRadius: 24,
 		padding: 22,
 		marginBottom: 28,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		overflow: 'hidden',
-		shadowColor: '#07174c',
+		shadowColor: '#0f2d6b',
 		shadowOffset: { width: 0, height: 8 },
 		shadowOpacity: 0.35,
 		shadowRadius: 18,

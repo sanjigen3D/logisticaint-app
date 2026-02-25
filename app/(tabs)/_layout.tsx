@@ -20,7 +20,7 @@ export default function TabLayout() {
 			screenOptions={{
 				headerShown: false,
 				tabBarActiveTintColor: '#93c5fd',
-				tabBarInactiveTintColor: '#64748b',
+				tabBarInactiveTintColor: '#e2e8f0', // Lighter for better contrast
 				tabBarStyle: {
 					position: 'absolute',
 					bottom: Platform.OS === 'ios' ? 28 : 16,
