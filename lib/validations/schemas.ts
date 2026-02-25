@@ -83,5 +83,6 @@ export const createUserSchema = z.object({
 		.toLowerCase(),
 	password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 	type_id: z.number({ required_error: 'Debe seleccionar un tipo de usuario' }).int().min(1).max(3),
+	company_id: z.number({ required_error: 'Debe seleccionar una empresa' }).int().positive('Empresa inválida'),
 	active: z.boolean(),
 });

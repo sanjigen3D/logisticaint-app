@@ -23,3 +23,12 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 export type Naviera = 'Zim' | 'Hapag' | 'Maersk';
 export type CreateUserFormData = z.infer<typeof createUserSchema>;
 
+export interface Company {
+	id: number;
+	name: string;
+	razon_social: string;
+	rut: string;
+	direccion: string;
+	alias: string;
+	contacts?: any[];
+}

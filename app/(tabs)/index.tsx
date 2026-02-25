@@ -1,7 +1,7 @@
-import { quickActionsHome } from '@/lib/constants';
 import QuickMenu from '@/components/UI/Tabs/QuickMenu';
-import { View, Text, StyleSheet } from 'react-native';
+import { quickActionsHome } from '@/lib/constants';
 import { useAuthStore } from '@/lib/stores/authStore';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function Index() {
 	const { user, isAuthenticated } = useAuthStore();
@@ -11,7 +11,7 @@ export default function Index() {
 			<Text style={styles.welcomeText}>
 				Bienvenido: {isAuthenticated && user ? user.name : ''}
 			</Text>
-			<QuickMenu quickActions={quickActionsHome} />
+			<QuickMenu quickActions={quickActionsHome} type="quick" />
 		</View>
 	);
 }

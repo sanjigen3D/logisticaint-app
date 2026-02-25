@@ -1,18 +1,22 @@
+import { SelectDropdown } from '@/components/UI/SelectDropdown';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useToastStore } from '@/lib/stores/useToastStore';
-import { CreateUserFormData } from '@/lib/types/types';
+import { Company, CreateUserFormData } from '@/lib/types/types';
 import { createUserSchema } from '@/lib/validations/schemas';
+import { companyService } from '@/services/companyService';
 import { userService } from '@/services/userService';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import {
+    Building2,
     Eye,
     EyeOff,
     Lock,
     Mail,
     ShieldPlus,
     User,
+    UserCog,
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -23,13 +27,14 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    View
+    View,
 } from 'react-native';
 
+
 const ALL_TYPE_OPTIONS = [
-    { label: 'Administrador', value: 1 },
-    { label: 'Manager', value: 2 },
-    { label: 'Usuario', value: 3 },
+    { label: 'Administrador', value: 1, icon: <UserCog size={18} color="#64748b" /> },
+    { label: 'Manager', value: 2, icon: <UserCog size={18} color="#64748b" /> },
+    { label: 'Usuario', value: 3, icon: <UserCog size={18} color="#64748b" /> },
 ];
 
 // Options for user type
@@ -40,6 +45,9 @@ export const CreateUserForm = () => {
     const { token, isAdmin, isManagerOrHigher } = useAuth();
     const { showToast } = useToastStore();
     const router = useRouter();
+
+    const [companies, setCompanies] = useState<Company[]>([]);
+    const [loadingCompanies, setLoadingCompanies] = useState(false);
 
     // Options for user type
     const typeOptions = isAdmin() ? ALL_TYPE_OPTIONS : MANAGER_TYPE_OPTIONS;
@@ -53,8 +61,28 @@ export const CreateUserForm = () => {
                 description: 'No tienes permisos para acceder a esta sección.',
             });
             router.replace('/(tabs)');
+        } else {
+            fetchCompanies();
         }
     }, []);
+
+    const fetchCompanies = async () => {
+        if (!token) return;
+        setLoadingCompanies(true);
+        try {
+            const data = await companyService.getCompanies(token);
+            setCompanies(data);
+        } catch (error) {
+            showToast({
+                type: 'error',
+                message: 'Error al cargar empresas',
+                description: 'No se pudieron cargar las empresas disponibles.',
+            });
+        } finally {
+            setLoadingCompanies(false);
+        }
+    };
+
 
     const {
         control,
@@ -234,48 +262,50 @@ export const CreateUserForm = () => {
                     )}
                 />
 
-                {/* User Type - Select/Picker */}
+                {/* User Type - SelectDropdown */}
                 <Controller
                     control={control}
                     name="type_id"
                     render={({ field: { onChange, value } }) => (
                         <View style={styles.inputWrapper}>
                             <Text style={styles.inputLabel}>Tipo de usuario</Text>
-                            <View
-                                style={[
-                                    styles.inputContainer,
-                                    errors.type_id && styles.inputContainerError,
-                                ]}
-                            >
-                                <View style={styles.inputIconContainer}>
-                                    <ShieldPlus size={20} color="#3b82f6" />
-                                </View>
-                                <View style={styles.typeTabsContainer}>
-                                    {typeOptions.map((opt) => (
-                                        <TouchableOpacity
-                                            key={opt.value}
-                                            style={[
-                                                styles.typeTab,
-                                                value === opt.value && styles.typeTabActive,
-                                            ]}
-                                            onPress={() => onChange(opt.value)}
-                                            activeOpacity={0.7}
-                                        >
-                                            <Text
-                                                style={[
-                                                    styles.typeTabText,
-                                                    value === opt.value && styles.typeTabTextActive,
-                                                ]}
-                                            >
-                                                {opt.label}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    ))}
-                                </View>
-
-                            </View>
+                            <SelectDropdown
+                                options={typeOptions}
+                                selectedValue={value}
+                                onSelect={(val) => onChange(Number(val))}
+                                placeholder="Seleccionar tipo de usuario"
+                                error={!!errors.type_id}
+                                icon={<UserCog size={20} color="#3b82f6" />}
+                            />
                             {errors.type_id && (
                                 <Text style={styles.errorText}>{errors.type_id.message}</Text>
+                            )}
+                        </View>
+                    )}
+                />
+
+                {/* Company - SelectDropdown */}
+                <Controller
+                    control={control}
+                    name="company_id"
+                    render={({ field: { onChange, value } }) => (
+                        <View style={styles.inputWrapper}>
+                            <Text style={styles.inputLabel}>Empresa asignada</Text>
+                            <SelectDropdown
+                                options={companies.map(c => ({
+                                    label: c.name,
+                                    value: c.id,
+                                    icon: <Building2 size={18} color="#64748b" /> // Icon for each option
+                                }))}
+                                selectedValue={value}
+                                onSelect={(val) => onChange(Number(val))}
+                                placeholder={loadingCompanies ? 'Cargando empresas...' : 'Seleccionar empresa'}
+                                disabled={loadingCompanies || companies.length === 0}
+                                error={!!errors.company_id}
+                                icon={<Building2 size={20} color="#3b82f6" />}
+                            />
+                            {errors.company_id && (
+                                <Text style={styles.errorText}>{errors.company_id.message}</Text>
                             )}
                         </View>
                     )}
