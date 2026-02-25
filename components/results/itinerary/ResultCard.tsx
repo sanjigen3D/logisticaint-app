@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from 'react-native';
-import React from 'react';
+import { UnifiedRoute } from '@/lib/types/unifiedInterfaces';
+import { formatDate } from '@/lib/utils';
 import {
 	Anchor,
 	ArrowDown,
@@ -8,8 +8,8 @@ import {
 	MapPin,
 	Ship,
 } from 'lucide-react-native';
-import { UnifiedRoute } from '@/lib/types/unifiedInterfaces';
-import { formatDate } from '@/lib/utils';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 type Props = {
 	route: UnifiedRoute;
@@ -17,7 +17,7 @@ type Props = {
 
 const ResultCard = ({ route }: Props) => {
 	return (
-		<View style={styles.routeCard} className={'mt-6'}>
+		<View style={styles.routeCard}>
 			{/* Carrier Header */}
 			<View style={styles.carrierHeader}>
 				<View style={styles.carrierInfo}>
@@ -139,10 +139,16 @@ export default ResultCard;
 const styles = StyleSheet.create({
 	routeCard: {
 		backgroundColor: '#ffffff',
-		borderRadius: 16,
+		borderRadius: 20,
 		padding: 20,
 		marginBottom: 16,
-		boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+		shadowColor: '#0f172a',
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.08,
+		shadowRadius: 14,
+		elevation: 5,
+		borderWidth: 1,
+		borderColor: '#f1f5f9',
 	},
 	carrierHeader: {
 		flexDirection: 'row',

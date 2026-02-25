@@ -1,9 +1,8 @@
 import QuickMenu from '@/components/UI/Tabs/QuickMenu';
 import { quickActionsHome } from '@/lib/constants';
 import { useAuthStore } from '@/lib/stores/authStore';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-// Role display helpers
 const ROLE_LABELS: Record<string, string> = {
 	Admin: 'Administrador',
 	Manager: 'Gerente',
@@ -15,6 +14,9 @@ const ROLE_COLORS: Record<string, { bg: string; text: string }> = {
 	Manager: { bg: '#dbeafe', text: '#1d4ed8' },
 	User: { bg: '#f0fdf4', text: '#15803d' },
 };
+
+// Height of floating tab bar + gap
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export default function Index() {
 	const { user, isAuthenticated } = useAuthStore();
@@ -32,7 +34,11 @@ export default function Index() {
 		: '?';
 
 	return (
-		<View style={styles.container}>
+		<ScrollView
+			style={styles.scroll}
+			contentContainerStyle={styles.content}
+			showsVerticalScrollIndicator={false}
+		>
 			{/* Hero Greeting Card */}
 			<View style={styles.heroCard}>
 				<View style={styles.heroLeft}>
@@ -61,25 +67,28 @@ export default function Index() {
 					<Text style={styles.avatarText}>{initials}</Text>
 				</View>
 
-				{/* Background decoration */}
+				{/* Background blobs */}
 				<View style={styles.heroBlobTop} pointerEvents="none" />
 				<View style={styles.heroBlobBottom} pointerEvents="none" />
 			</View>
 
 			{/* Quick actions */}
 			<QuickMenu quickActions={quickActionsHome} type="quick" />
-		</View>
+		</ScrollView>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
+	scroll: {
 		flex: 1,
+	},
+	content: {
 		width: '100%',
 		maxWidth: 1024,
 		alignSelf: 'center',
 		paddingHorizontal: 20,
 		paddingTop: 20,
+		paddingBottom: TAB_BAR_HEIGHT,
 	},
 	heroCard: {
 		backgroundColor: '#07174c',
@@ -90,7 +99,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		overflow: 'hidden',
-		// Shadow
 		shadowColor: '#07174c',
 		shadowOffset: { width: 0, height: 8 },
 		shadowOpacity: 0.35,
@@ -106,14 +114,12 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		color: 'rgba(191,219,254,0.8)',
 		marginBottom: 4,
-		letterSpacing: 0.2,
 	},
 	userName: {
 		fontFamily: 'Inter-Bold',
 		fontSize: 22,
 		color: '#ffffff',
 		marginBottom: 4,
-		letterSpacing: 0.2,
 	},
 	companyName: {
 		fontFamily: 'Inter-Medium',
@@ -148,7 +154,6 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		color: '#93c5fd',
 	},
-	// Decoration blobs
 	heroBlobTop: {
 		position: 'absolute',
 		top: -30,

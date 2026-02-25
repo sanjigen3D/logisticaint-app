@@ -1,17 +1,17 @@
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
+import { formatDate } from '@/lib/utils';
 import {
 	Box,
 	Calendar,
+	CircleCheck as CheckCircle,
 	ChevronDown,
 	ChevronUp,
-	CircleCheck as CheckCircle,
 	Clock,
 	MapPin,
 	Ship,
 } from 'lucide-react-native';
-import { formatDate } from '@/lib/utils';
 import { Dispatch, SetStateAction } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export const TrackingResult = ({
 	trackingData,
@@ -218,23 +218,31 @@ export const TrackingResult = ({
 
 const styles = StyleSheet.create({
 	carrierName: {
-		fontSize: 16,
+		fontSize: 15,
 		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
+		color: '#0f172a',
 		marginBottom: 2,
 	},
 	resultsCard: {
 		backgroundColor: '#ffffff',
-		borderRadius: 16,
+		borderRadius: 24,
 		padding: 24,
-		marginTop: 20,
-		boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+		marginTop: 16,
+		marginHorizontal: 20,
+		shadowColor: '#0f172a',
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.1,
+		shadowRadius: 16,
+		elevation: 6,
+		borderWidth: 1,
+		borderColor: '#f1f5f9',
 	},
 	resultsTitle: {
-		fontSize: 20,
+		fontSize: 17,
 		fontFamily: 'Inter-SemiBold',
-		color: '#1e293b',
+		color: '#0f172a',
 		marginBottom: 16,
+		letterSpacing: 0.2,
 	},
 	statusContainer: {
 		alignItems: 'center',

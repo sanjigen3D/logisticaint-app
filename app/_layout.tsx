@@ -17,7 +17,6 @@ import { useEffect } from 'react';
 import {
 	KeyboardAvoidingView,
 	Platform,
-	ScrollView,
 	StyleSheet,
 	View,
 } from 'react-native';
@@ -49,40 +48,20 @@ export default function RootLayout() {
 		return null;
 	}
 
-	// Determines whether the current route is a main tab (not accounts/login/etc.)
-	const isTabRoute =
-		!path.includes('accounts') &&
-		!path.includes('login') &&
-		!path.includes('register');
-
 	return (
 		<QueryProvider>
 			<KeyboardAvoidingView
 				style={styles.container}
 				behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 			>
-				<ScrollView
-					style={styles.scrollView}
-					contentContainerStyle={[
-						styles.scrollContent,
-						// Add extra bottom padding when on tab routes so content doesn't
-						// hide behind the floating tab bar (68px bar + 16px bottom + buffer)
-						isTabRoute && styles.scrollContentTabPadding,
-					]}
-					keyboardShouldPersistTaps="handled"
-				>
-					<View style={styles.mainContainer}>
-						{!path.includes(ROUTES.ITINERARY_RESULT) && <Navbar />}
-						<Stack screenOptions={{ headerShown: false }}>
-							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-							<Stack.Screen
-								name="(accounts)"
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen name={'+not-found'} />
-						</Stack>
-					</View>
-				</ScrollView>
+				<View style={styles.main}>
+					{!path.includes(ROUTES.ITINERARY_RESULT) && <Navbar />}
+					<Stack screenOptions={{ headerShown: false }}>
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						<Stack.Screen name="(accounts)" options={{ headerShown: false }} />
+						<Stack.Screen name={'+not-found'} />
+					</Stack>
+				</View>
 			</KeyboardAvoidingView>
 			<GlobalToast />
 		</QueryProvider>
@@ -94,17 +73,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: '#f1f5f9',
 	},
-	scrollView: {
-		flex: 1,
-	},
-	scrollContent: {
-		flexGrow: 1,
-	},
-	// Adds bottom padding when floating tab bar is visible
-	scrollContentTabPadding: {
-		paddingBottom: 104,
-	},
-	mainContainer: {
+	main: {
 		flex: 1,
 		width: '100%',
 		alignSelf: 'center',

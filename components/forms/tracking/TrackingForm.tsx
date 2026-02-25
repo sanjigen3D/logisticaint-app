@@ -217,9 +217,6 @@ export const TrackingForm = ({
 
 const styles = StyleSheet.create({
 	formContainer: {
-		width: '100%',
-		maxWidth: 1024,
-		alignSelf: 'center',
 		paddingHorizontal: 20,
 		paddingTop: 20,
 	},

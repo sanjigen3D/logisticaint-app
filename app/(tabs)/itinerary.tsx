@@ -1,27 +1,33 @@
-import {View, StyleSheet} from 'react-native';
 import PortSearchForm from '@/components/forms/itinery/PortSearchForm';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
+
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export const Itinerary = () => {
 	return (
-		<View style={styles.indexContainer}>
-			<View style={styles.indexContainer} className="md:pt-10">
-				<PortSearchForm />
-			</View>
-		</View>
+		<ScrollView
+			style={styles.scroll}
+			contentContainerStyle={styles.content}
+			showsVerticalScrollIndicator={false}
+			keyboardShouldPersistTaps="handled"
+		>
+			<PortSearchForm />
+		</ScrollView>
 	);
-}
+};
 
 export default Itinerary;
 
 const styles = StyleSheet.create({
-	indexContainer: {
+	scroll: {
 		flex: 1,
+	},
+	content: {
 		width: '100%',
 		maxWidth: 1024,
 		alignSelf: 'center',
 		paddingHorizontal: 20,
-	},
-	indexContent: {
 		paddingTop: 20,
+		paddingBottom: TAB_BAR_HEIGHT,
 	},
 });

@@ -1,36 +1,37 @@
-import { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
 import { TrackingForm } from '@/components/forms/tracking/TrackingForm';
 import { TrackingResult } from '@/components/results/tracking/TrackingResult';
+import { UnifiedTrackingData } from '@/lib/types/unifiedInterfaces';
+import { useState } from 'react';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
+
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export const Track = () => {
 	const [isTracking, setIsTracking] = useState(false);
-	const [trackingData, setTrackingData] = useState<UnifiedTrackingData | null>(
-		null,
-	);
-	const [expandedContainers, setExpandedContainers] = useState<Set<string>>(
-		new Set(),
-	);
+	const [trackingData, setTrackingData] = useState<UnifiedTrackingData | null>(null);
+	const [expandedContainers, setExpandedContainers] = useState<Set<string>>(new Set());
 
 	return (
-		<ScrollView>
-			{/* tracking form */}
+		<ScrollView
+			style={styles.scroll}
+			contentContainerStyle={styles.content}
+			showsVerticalScrollIndicator={false}
+			keyboardShouldPersistTaps="handled"
+		>
+			{/* Tracking form */}
 			<TrackingForm
 				isTracking={isTracking}
 				setIsTracking={setIsTracking}
 				setTrackingData={setTrackingData}
 			/>
 
-			{/*  Tracking Result */}
+			{/* Tracking Result */}
 			{trackingData && (
-				<View style={styles.resultContainer}>
-					<TrackingResult
-						trackingData={trackingData}
-						expandedContainers={expandedContainers}
-						setExpandedContainers={setExpandedContainers}
-					/>
-				</View>
+				<TrackingResult
+					trackingData={trackingData}
+					expandedContainers={expandedContainers}
+					setExpandedContainers={setExpandedContainers}
+				/>
 			)}
 		</ScrollView>
 	);
@@ -38,12 +39,13 @@ export const Track = () => {
 export default Track;
 
 const styles = StyleSheet.create({
-	resultContainer: {
+	scroll: {
 		flex: 1,
+	},
+	content: {
 		width: '100%',
 		maxWidth: 1024,
 		alignSelf: 'center',
-		paddingHorizontal: 20,
-		paddingTop: 20,
+		paddingBottom: TAB_BAR_HEIGHT,
 	},
 });

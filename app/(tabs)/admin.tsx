@@ -5,7 +5,9 @@ import { useToastStore } from '@/lib/stores/useToastStore';
 import { useRouter } from 'expo-router';
 import { Shield } from 'lucide-react-native';
 import { useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export default function AdminScreen() {
     const { isManagerOrHigher } = useAuth();
@@ -31,7 +33,6 @@ export default function AdminScreen() {
         >
             {/* Header accent card */}
             <View style={styles.headerCard}>
-                {/* Deco blobs */}
                 <View style={styles.blobRight} pointerEvents="none" />
                 <View style={styles.blobLeft} pointerEvents="none" />
 
@@ -44,7 +45,6 @@ export default function AdminScreen() {
                 </Text>
             </View>
 
-            {/* Admin actions */}
             <QuickMenu quickActions={quickActionsAdmin} type="admin" />
         </ScrollView>
     );
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingHorizontal: 20,
         paddingTop: 20,
-        paddingBottom: 40,
+        paddingBottom: TAB_BAR_HEIGHT,
     },
     headerCard: {
         backgroundColor: '#1e1b4b',

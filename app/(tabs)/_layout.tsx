@@ -3,18 +3,9 @@ import { Tabs, usePathname } from 'expo-router';
 import { Home, Package, Search, User } from 'lucide-react-native';
 import { Platform, StyleSheet, View } from 'react-native';
 
-// Design tokens
-const COLORS = {
-	navyDeep: '#07174c',
-	navyMid: '#0b2a6b',
-	blue: '#1e40af',
-	accent: '#3b82f6',
-	accentLight: '#60a5fa',
-	inactive: '#94a3b8',
-	tabBg: '#0d1f4e',
-	tabBorder: 'rgba(59,130,246,0.25)',
-	white: '#ffffff',
-};
+// Frosted glass colors — semi-transparent dark navy
+const GLASS_BG = 'rgba(7,23,76,0.72)';
+const GLASS_BORDER = 'rgba(96,165,250,0.22)';
 
 export default function TabLayout() {
 	const pathname = usePathname();
@@ -28,40 +19,39 @@ export default function TabLayout() {
 		<Tabs
 			screenOptions={{
 				headerShown: false,
-				tabBarActiveTintColor: COLORS.accentLight,
-				tabBarInactiveTintColor: COLORS.inactive,
+				tabBarActiveTintColor: '#93c5fd',
+				tabBarInactiveTintColor: '#64748b',
 				tabBarStyle: {
 					position: 'absolute',
 					bottom: Platform.OS === 'ios' ? 28 : 16,
 					left: 20,
 					right: 20,
-					backgroundColor: COLORS.tabBg,
+					// Frosted glass effect
+					backgroundColor: GLASS_BG,
 					borderRadius: 28,
 					borderWidth: 1,
-					borderColor: COLORS.tabBorder,
+					borderColor: GLASS_BORDER,
 					height: 68,
 					paddingBottom: 0,
 					paddingTop: 0,
-					// Elevation / shadow for Android & Web
-					elevation: 20,
-					shadowColor: COLORS.navyDeep,
-					shadowOffset: { width: 0, height: 8 },
-					shadowOpacity: 0.55,
-					shadowRadius: 20,
+					elevation: 24,
+					shadowColor: '#000',
+					shadowOffset: { width: 0, height: 12 },
+					shadowOpacity: 0.4,
+					shadowRadius: 24,
 				},
 				tabBarItemStyle: {
 					paddingVertical: 10,
 					borderRadius: 20,
+					marginHorizontal: 2,
 				},
 				tabBarLabelStyle: {
-					fontSize: 11,
+					fontSize: 10,
 					fontFamily: 'Inter-Medium',
 					marginTop: 2,
 					letterSpacing: 0.3,
 				},
-				tabBarBackground: () => (
-					<View style={styles.tabBarBackground} />
-				),
+				tabBarBackground: () => <View style={styles.tabBarGlass} />,
 			}}
 		>
 			<Tabs.Screen
@@ -73,7 +63,11 @@ export default function TabLayout() {
 							title: 'Inicio',
 							tabBarIcon: ({ size, color, focused }) => (
 								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<Home size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+									<Home
+										size={focused ? size : size - 2}
+										color={color}
+										strokeWidth={focused ? 2.4 : 1.8}
+									/>
 								</View>
 							),
 						}
@@ -88,7 +82,11 @@ export default function TabLayout() {
 							title: 'Itinerario',
 							tabBarIcon: ({ size, color, focused }) => (
 								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<Search size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+									<Search
+										size={focused ? size : size - 2}
+										color={color}
+										strokeWidth={focused ? 2.4 : 1.8}
+									/>
 								</View>
 							),
 						}
@@ -103,7 +101,11 @@ export default function TabLayout() {
 							title: 'Tracking',
 							tabBarIcon: ({ size, color, focused }) => (
 								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<Package size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+									<Package
+										size={focused ? size : size - 2}
+										color={color}
+										strokeWidth={focused ? 2.4 : 1.8}
+									/>
 								</View>
 							),
 						}
@@ -118,7 +120,11 @@ export default function TabLayout() {
 							title: 'Cuenta',
 							tabBarIcon: ({ size, color, focused }) => (
 								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<User size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+									<User
+										size={focused ? size : size - 2}
+										color={color}
+										strokeWidth={focused ? 2.4 : 1.8}
+									/>
 								</View>
 							),
 						}
@@ -134,20 +140,20 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-	tabBarBackground: {
+	tabBarGlass: {
 		flex: 1,
 		borderRadius: 28,
 		overflow: 'hidden',
-		backgroundColor: '#0d1f4e',
+		backgroundColor: GLASS_BG,
 	},
 	iconWrap: {
-		width: 36,
+		width: 38,
 		height: 28,
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderRadius: 14,
 	},
 	iconWrapActive: {
-		backgroundColor: 'rgba(59,130,246,0.18)',
+		backgroundColor: 'rgba(59,130,246,0.2)',
 	},
 });

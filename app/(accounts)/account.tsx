@@ -2,7 +2,7 @@ import QuickMenu from '@/components/UI/Tabs/QuickMenu';
 import { quickActionLogOut, quickActionsAccount, quickActionsAdmin } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useAuthStore } from '@/lib/stores/authStore';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const ROLE_LABELS: Record<string, string> = {
 	Admin: 'Administrador',
@@ -15,6 +15,8 @@ const ROLE_COLORS: Record<string, { bg: string; text: string; border: string }> 
 	Manager: { bg: '#dbeafe', text: '#1d4ed8', border: '#93c5fd' },
 	User: { bg: '#f0fdf4', text: '#15803d', border: '#86efac' },
 };
+
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export default function AccountHomeScreen() {
 	const { isAuthenticated, isManagerOrHigher } = useAuth();
@@ -39,28 +41,24 @@ export default function AccountHomeScreen() {
 		: '?';
 
 	return (
-		<View style={styles.container}>
-			{/* Profile card — only shown when authenticated */}
+		<ScrollView
+			style={styles.scroll}
+			contentContainerStyle={styles.content}
+			showsVerticalScrollIndicator={false}
+		>
+			{/* Profile card — only when authenticated */}
 			{isAuthenticated && user ? (
 				<View style={styles.profileCard}>
-					{/* Deco blobs */}
 					<View style={styles.blobTR} pointerEvents="none" />
 					<View style={styles.blobBL} pointerEvents="none" />
 
 					<View style={styles.profileRow}>
-						{/* Avatar */}
 						<View style={styles.avatarWrap}>
 							<Text style={styles.avatarText}>{initials}</Text>
 						</View>
-
-						{/* Info */}
 						<View style={styles.profileInfo}>
-							<Text style={styles.profileName} numberOfLines={1}>
-								{user.name}
-							</Text>
-							<Text style={styles.profileEmail} numberOfLines={1}>
-								{user.email}
-							</Text>
+							<Text style={styles.profileName} numberOfLines={1}>{user.name}</Text>
+							<Text style={styles.profileEmail} numberOfLines={1}>{user.email}</Text>
 							{user.company_name ? (
 								<Text style={styles.profileCompany} numberOfLines={1}>
 									{user.company_name}
@@ -69,16 +67,13 @@ export default function AccountHomeScreen() {
 						</View>
 					</View>
 
-					{/* Role badge */}
 					<View
 						style={[
 							styles.roleBadge,
 							{ backgroundColor: roleStyle.bg, borderColor: roleStyle.border },
 						]}
 					>
-						<View
-							style={[styles.roleDot, { backgroundColor: roleStyle.text }]}
-						/>
+						<View style={[styles.roleDot, { backgroundColor: roleStyle.text }]} />
 						<Text style={[styles.roleText, { color: roleStyle.text }]}>
 							{ROLE_LABELS[role] ?? role}
 						</Text>
@@ -86,25 +81,26 @@ export default function AccountHomeScreen() {
 				</View>
 			) : null}
 
-			{/* Actions */}
 			<QuickMenu quickActions={currentActions} type="quick" />
 			{isAuthenticated && isManagerOrHigher() && (
 				<QuickMenu quickActions={quickActionsAdmin} type="admin" />
 			)}
-		</View>
+		</ScrollView>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
+	scroll: {
 		flex: 1,
+	},
+	content: {
 		width: '100%',
 		maxWidth: 1024,
 		alignSelf: 'center',
 		paddingHorizontal: 20,
 		paddingTop: 20,
+		paddingBottom: TAB_BAR_HEIGHT,
 	},
-	// ---- Profile Card ----
 	profileCard: {
 		backgroundColor: '#07174c',
 		borderRadius: 24,
