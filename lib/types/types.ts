@@ -1,4 +1,6 @@
 import {
+	createCompanySchema,
+	createContactSchema,
 	createUserSchema,
 	formSchema,
 	loginSchema,
@@ -22,6 +24,8 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 
 export type Naviera = 'Zim' | 'Hapag' | 'Maersk';
 export type CreateUserFormData = z.infer<typeof createUserSchema>;
+export type CreateCompanyFormData = z.infer<typeof createCompanySchema>;
+export type CreateContactFormData = z.infer<typeof createContactSchema>;
 
 export interface Company {
 	id: number;
@@ -30,5 +34,13 @@ export interface Company {
 	rut: string;
 	direccion: string;
 	alias: string;
-	contacts?: any[];
+	contacts?: Contact[];
+}
+
+export interface Contact {
+	id: number;
+	name: string;
+	phone: string;
+	email: string;
+	company_id: number;
 }

@@ -1,6 +1,8 @@
 import { ROUTES } from '@/lib/Routes';
 import { MyRoute } from "@/lib/types/types";
 import {
+	Building2,
+	Contact2,
 	LogIn,
 	LogOut,
 	LucideIcon,
@@ -106,7 +108,23 @@ export const quickActionsAdmin: QuickAction[] = [
 		subtitle: 'Registrar nuevo usuario',
 		icon: ShieldPlus,
 		color: '#7c3aed',
-		route: ROUTES.ADMIN as MyRoute,
+		route: ROUTES.CREATE_USER as MyRoute,
+	},
+	{
+		id: 101,
+		title: 'Crear Empresa',
+		subtitle: 'Registrar nueva empresa',
+		icon: Building2,
+		color: '#059669',
+		route: ROUTES.CREATE_COMPANY as MyRoute,
+	},
+	{
+		id: 102,
+		title: 'Crear Contacto',
+		subtitle: 'Agregar contacto a empresa',
+		icon: Contact2,
+		color: '#0284c7',
+		route: ROUTES.CREATE_CONTACT as MyRoute,
 	},
 ];
 

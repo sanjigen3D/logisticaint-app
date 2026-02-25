@@ -1,11 +1,11 @@
 import { ROUTES } from '@/lib/Routes';
-import { Company, CreateCompanyFormData } from '@/lib/types/types';
+import { Contact, CreateContactFormData } from '@/lib/types/types';
 
 const API_URL = ROUTES.API_ROUTE;
 
-export const companyService = {
-    getCompanies: async (token: string): Promise<Company[]> => {
-        const response = await fetch(`${API_URL}/companies`, {
+export const contactService = {
+    getContacts: async (token: string): Promise<Contact[]> => {
+        const response = await fetch(`${API_URL}/contacts`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -15,27 +15,27 @@ export const companyService = {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || 'Error al obtener las empresas');
+            throw new Error(errorData.message || 'Error al obtener los contactos');
         }
 
         const data = await response.json();
         return data.data || [];
     },
 
-    createCompany: async (companyData: CreateCompanyFormData, token: string): Promise<{ company?: Company }> => {
-        const response = await fetch(`${API_URL}/companies`, {
+    createContact: async (contactData: CreateContactFormData, token: string): Promise<{ contact?: Contact }> => {
+        const response = await fetch(`${API_URL}/contacts`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(companyData),
+            body: JSON.stringify(contactData),
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || 'Error al crear la empresa');
+            throw new Error(data.message || 'Error al crear el contacto');
         }
 
         return data;

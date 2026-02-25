@@ -4,6 +4,8 @@ export interface User {
 	name: string;
 	type: "Admin" | "Manager" | "User";
 	active: boolean;
+	company_id?: number;
+	company_name?: string;
 }
 
 export interface AuthResponse {

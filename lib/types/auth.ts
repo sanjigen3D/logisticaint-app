@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { loginSchema } from '@/lib/validations/schemas';
+import { z } from 'zod';
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -9,6 +9,8 @@ export interface User {
 	name: string;
 	type: 'Admin' | 'Manager' | 'User';
 	active: boolean;
+	company_id?: number;
+	company_name?: string;
 }
 
 export interface AuthResponse {

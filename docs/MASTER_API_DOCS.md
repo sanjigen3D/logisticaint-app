@@ -21,6 +21,23 @@ Autentica un usuario y devuelve un token.
       "password": "contraseña123"
   }
   ```
+* **Respuesta exitosa (200):**
+  ```json
+  {
+    "success": true,
+    "message": "Login exitoso",
+    "token": "<jwt_token>",
+    "user": {
+      "id": 1,
+      "email": "usuario@ejemplo.com",
+      "name": "Juan Pérez",
+      "type": "Manager",
+      "active": true,
+      "company_id": 3,
+      "company_name": "Marines SA"
+    }
+  }
+  ```
 
 #### **Registro (Solo Admin/Manager)**
 Crea un nuevo usuario desde el módulo de autenticación. (También puedes usar el CRUD de Users).
@@ -33,6 +50,23 @@ Crea un nuevo usuario desde el módulo de autenticación. (También puedes usar 
       "name": "Juan Pérez",
       "type": "User",
       "company_id": 1
+  }
+  ```
+* **Respuesta exitosa (201):**
+  ```json
+  {
+    "success": true,
+    "message": "Usuario registrado exitosamente",
+    "token": "<jwt_token>",
+    "user": {
+      "id": 5,
+      "email": "nuevo@ejemplo.com",
+      "name": "Juan Pérez",
+      "type": "User",
+      "active": true,
+      "company_id": 1,
+      "company_name": "Marines SA"
+    }
   }
   ```
 
@@ -61,7 +95,7 @@ Las eliminaciones son **lógicas** (Soft Delete), cambiando el estado `active` a
   * Body (opcional): `name`, `email`, `password`, `type_id`, `active`, `company_id`
 * **Desactivar Usuario (Soft Delete)**: `DELETE /users/:id`
 
-Ejemplo GET /users/:id:
+Ejemplo de respuesta (aplica a `GET /users`, `GET /users/:id`, `GET /users/company/:companyId`, `POST /users`, `PUT /users/:id`):
 ```json
 {
   "success": true,
@@ -71,10 +105,13 @@ Ejemplo GET /users/:id:
     "email": "admin@empresa.com",
     "active": true,
     "type": "Admin",
-    "company_id": 1
+    "company_id": 1,
+    "company_name": "Marines SA"
   }
 }
 ```
+
+> **Nota:** `company_name` se incluye en todas las respuestas de usuario para evitar peticiones adicionales al endpoint de empresas.
 
 ---
 

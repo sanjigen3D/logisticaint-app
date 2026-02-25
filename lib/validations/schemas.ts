@@ -86,3 +86,45 @@ export const createUserSchema = z.object({
 	company_id: z.number({ required_error: 'Debe seleccionar una empresa' }).int().positive('Empresa inválida'),
 	active: z.boolean(),
 });
+
+// formulario de creación de empresa (solo Admin)
+export const createCompanySchema = z.object({
+	name: z
+		.string()
+		.min(2, 'El nombre debe tener al menos 2 caracteres')
+		.max(150, 'El nombre no puede exceder 150 caracteres'),
+	razon_social: z
+		.string()
+		.min(2, 'La razón social debe tener al menos 2 caracteres')
+		.max(200, 'La razón social no puede exceder 200 caracteres'),
+	rut: z
+		.string()
+		.min(3, 'El RUT es requerido')
+		.max(20, 'El RUT no puede exceder 20 caracteres'),
+	direccion: z
+		.string()
+		.min(5, 'La dirección debe tener al menos 5 caracteres')
+		.max(250, 'La dirección no puede exceder 250 caracteres'),
+	alias: z
+		.string()
+		.min(2, 'El alias debe tener al menos 2 caracteres')
+		.max(50, 'El alias no puede exceder 50 caracteres'),
+});
+
+// formulario de creación de contacto (Manager o superior)
+export const createContactSchema = z.object({
+	name: z
+		.string()
+		.min(2, 'El nombre debe tener al menos 2 caracteres')
+		.max(150, 'El nombre no puede exceder 150 caracteres'),
+	phone: z
+		.string()
+		.min(6, 'El teléfono debe tener al menos 6 caracteres')
+		.max(30, 'El teléfono no puede exceder 30 caracteres'),
+	email: z
+		.string()
+		.min(1, 'El email es requerido')
+		.email('Ingresa un email válido')
+		.toLowerCase(),
+	company_id: z.number({ required_error: 'Debe seleccionar una empresa' }).int().positive('Empresa inválida'),
+});
