@@ -12,6 +12,7 @@ export function mapHapagToUnified(hapagData: any[]): UnifiedRoute[] {
 		const servicePartner = firstLeg.transport.servicePartners[0];
 
 		const carrier = servicePartner?.carrierCode || 'Hapag-Lloyd';
+		const company = 'Hapag-Lloyd';
 		const serviceName = servicePartner?.carrierServiceName;
 		const serviceCode = servicePartner?.carrierServiceCode;
 
@@ -44,6 +45,7 @@ export function mapHapagToUnified(hapagData: any[]): UnifiedRoute[] {
 		return {
 			id: `hapag-${route.solutionNumber ?? index}`,
 			carrier,
+			company,
 			serviceName,
 			serviceCode,
 			transitTime: route.transitTime,

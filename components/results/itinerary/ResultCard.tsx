@@ -15,22 +15,46 @@ type Props = {
 	route: UnifiedRoute;
 };
 
+// Brand identity per carrier
+const CARRIER_BRAND: Record<string, { bg: string; text: string; border: string }> = {
+	ZIM: { bg: '#1e4fc2', text: '#ffffff', border: '#3b6de0' },
+	'Hapag-Lloyd': { bg: '#f26e21', text: '#ffffff', border: '#c2560e' },
+	Maersk: { bg: '#2d9cdb', text: '#ffffff', border: '#1a6fa3' },
+	default: { bg: '#1e293b', text: '#ffffff', border: '#334155' },
+};
+
+function getBrand(carrier: string) {
+	// Try exact match first, then partial
+	if (CARRIER_BRAND[carrier]) return CARRIER_BRAND[carrier];
+	const key = Object.keys(CARRIER_BRAND).find(k =>
+		carrier?.toLowerCase().includes(k.toLowerCase())
+	);
+	return key ? CARRIER_BRAND[key] : CARRIER_BRAND.default;
+}
+
 const ResultCard = ({ route }: Props) => {
+	const brand = getBrand(route.company);
+
 	return (
 		<View style={styles.routeCard}>
-			{/* Carrier Header */}
-			<View style={styles.carrierHeader}>
-				<View style={styles.carrierInfo}>
-					<Anchor size={20} color="#1e40af" />
-					<Text style={styles.carrierName}>{route.carrier}</Text>
-				</View>
+			{/* Company Brand Banner */}
+			<View style={[styles.carrierBanner, { backgroundColor: brand.bg, borderColor: brand.border }]}>
+				<Ship size={16} color={brand.text} strokeWidth={2} />
+				<Text style={[styles.carrierBannerText, { color: brand.text }]}>
+					{route.company}
+				</Text>
 				<View style={styles.transitBadge}>
-					<Clock size={14} color="#059669" />
-					<Text style={styles.transitTime}>{route.transitTime} días</Text>
+					<Clock size={12} color={brand.bg} />
+					<Text style={[styles.transitTime, { color: brand.bg }]}>{route.transitTime} días</Text>
 				</View>
 			</View>
 
-			{/* Service Info (si existe) */}
+			<View style={styles.carrierInfo}>
+				<Anchor size={20} color="#1e40af" />
+				<Text style={styles.carrierName}>{route.carrier}</Text>
+			</View>
+
+			{/* Service Info */}
 			{route.serviceName && (
 				<View style={styles.serviceInfo}>
 					<Text style={styles.serviceName}>{route.serviceName}</Text>
@@ -150,16 +174,24 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: '#f1f5f9',
 	},
-	carrierHeader: {
+	carrierBanner: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginBottom: 12,
+		gap: 8,
+		paddingHorizontal: 14,
+		paddingVertical: 10,
+		marginHorizontal: -20,
+		marginTop: -20,
+		marginBottom: 16,
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		borderBottomWidth: 1,
 	},
 	carrierInfo: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		flex: 1,
+		marginBottom: 8,
 	},
 	carrierName: {
 		fontSize: 18,
@@ -167,22 +199,33 @@ const styles = StyleSheet.create({
 		color: '#1e293b',
 		marginLeft: 8,
 	},
+	carrierBannerText: {
+		flex: 1,
+		fontSize: 17,
+		fontFamily: 'Inter-Bold',
+		letterSpacing: 0.3,
+	},
 	transitBadge: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		backgroundColor: '#dcfce7',
-		paddingHorizontal: 12,
-		paddingVertical: 6,
-		borderRadius: 12,
+		backgroundColor: '#ffffff',
+		paddingHorizontal: 10,
+		paddingVertical: 4,
+		borderRadius: 20,
+		gap: 4,
 	},
 	transitTime: {
-		fontSize: 14,
+		fontSize: 13,
 		fontFamily: 'Inter-SemiBold',
-		color: '#059669',
-		marginLeft: 4,
 	},
 	serviceInfo: {
 		marginBottom: 16,
+	},
+	operatedBy: {
+		fontSize: 12,
+		fontFamily: 'Inter-Medium',
+		color: '#94a3b8',
+		marginBottom: 4,
 	},
 	serviceName: {
 		fontSize: 16,

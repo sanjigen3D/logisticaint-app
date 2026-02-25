@@ -1,7 +1,8 @@
 import { ROUTES } from '@/lib/Routes';
+import { useAuth } from '@/lib/hooks/useAuth';
 import { Tabs, usePathname } from 'expo-router';
-import { Home, LogIn, ShieldAlert, User, UserPlus } from 'lucide-react-native';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Home, LogIn, ShieldAlert, User } from 'lucide-react-native';
+import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 // Matches the design of the main (tabs) layout
 const COLORS = {
@@ -13,43 +14,50 @@ const COLORS = {
 
 export default function AccountsLayout() {
 	const pathname = usePathname();
+	const { width } = useWindowDimensions();
+	const { isAuthenticated } = useAuth();
+
+	const BAR_MAX_WIDTH = 400;
+	const barWidth = Math.min(width * 0.9, BAR_MAX_WIDTH);
+	const barOffset = (width - barWidth) / 2;
+	const showLabels = width >= 480;
+	const barHeight = showLabels ? 72 : 58;
 
 	const isAccount = pathname === ROUTES.ACCOUNT;
-	const isLogin = pathname === ROUTES.LOGIN;
-	const isRegister = pathname === ROUTES.REGISTER;
+	const isInAdmin = pathname.startsWith('/(admin)') || pathname.startsWith('/admin');
 
 	return (
 		<Tabs
 			screenOptions={{
 				headerShown: false,
+				tabBarShowLabel: showLabels,
 				tabBarActiveTintColor: COLORS.active,
 				tabBarInactiveTintColor: COLORS.inactive,
 				tabBarStyle: {
 					position: 'absolute',
-					bottom: Platform.OS === 'ios' ? 28 : 16,
-					left: 20,
-					right: 20,
+					bottom: Platform.OS === 'ios' ? 28 : Platform.OS === 'web' ? 36 : 16,
+					left: barOffset,
+					right: barOffset,
+					width: barWidth,
 					backgroundColor: COLORS.tabBg,
 					borderRadius: 28,
 					borderWidth: 1,
 					borderColor: COLORS.tabBorder,
-					height: 68,
-					paddingBottom: 0,
-					paddingTop: 0,
+					height: barHeight,
+					paddingBottom: showLabels ? 6 : 0,
+					paddingTop: showLabels ? 2 : 0,
 					elevation: 20,
 					shadowColor: '#07174c',
 					shadowOffset: { width: 0, height: 8 },
 					shadowOpacity: 0.55,
 					shadowRadius: 20,
-					maxWidth: 400,
-					alignSelf: 'center',
-					width: '100%',
 				},
 				tabBarItemStyle: {
 					paddingVertical: 10,
 					borderRadius: 20,
 				},
 				tabBarLabelStyle: {
+					display: showLabels ? 'flex' : 'none',
 					fontSize: 11,
 					fontFamily: 'Inter-Medium',
 					marginTop: 2,
@@ -64,9 +72,9 @@ export default function AccountsLayout() {
 				name="backToHome"
 				options={{
 					title: 'Inicio',
-					tabBarIcon: ({ size, color, focused }) => (
-						<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-							<Home size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+					tabBarIcon: ({ size, color }) => (
+						<View style={styles.iconWrap}>
+							<Home size={size} color={color} strokeWidth={2.4} />
 						</View>
 					),
 				}}
@@ -74,28 +82,26 @@ export default function AccountsLayout() {
 			<Tabs.Screen
 				name="account"
 				options={
-					isAccount
-						? { href: null }
-						: {
-							title: 'Mi Cuenta',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<User size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
-								</View>
-							),
-						}
+					{
+						title: 'Mi Cuenta',
+						tabBarIcon: ({ size, color }) => (
+							<View style={styles.iconWrap}>
+								<User size={size} color={color} strokeWidth={2.4} />
+							</View>
+						),
+					}
 				}
 			/>
 			<Tabs.Screen
 				name="login"
 				options={
-					isLogin
+					isAuthenticated
 						? { href: null }
 						: {
 							title: 'Ingresar',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<LogIn size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
+							tabBarIcon: ({ size, color }) => (
+								<View style={styles.iconWrap}>
+									<LogIn size={size} color={color} strokeWidth={2.4} />
 								</View>
 							),
 						}
@@ -103,33 +109,18 @@ export default function AccountsLayout() {
 			/>
 			<Tabs.Screen
 				name="register"
-				options={
-					isRegister
-						? { href: null }
-						: {
-							title: 'Registrarse',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<UserPlus size={focused ? size : size - 2} color={color} strokeWidth={focused ? 2.4 : 1.8} />
-								</View>
-							),
-						}
-				}
+				options={{ href: null }}
 			/>
 			<Tabs.Screen
 				name="adminDummy"
 				options={
-					pathname.startsWith('/(admin)') || pathname.startsWith('/admin')
+					!isAuthenticated || isInAdmin
 						? { href: null }
 						: {
 							title: 'Admin',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<ShieldAlert
-										size={focused ? size : size - 2}
-										color={color}
-										strokeWidth={focused ? 2.4 : 1.8}
-									/>
+							tabBarIcon: ({ size, color }) => (
+								<View style={styles.iconWrap}>
+									<ShieldAlert size={size} color={color} strokeWidth={2.4} />
 								</View>
 							),
 						}

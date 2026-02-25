@@ -14,6 +14,7 @@ export function mapZimResponseToUnifiedRoutes(
 	return data.response.routes.map((route) => ({
 		id: `ZIM-${route.routeSequence}`,
 		carrier: 'ZIM',
+		company: 'ZIM',
 		transitTime: route.transitTime,
 		legs: route.routeLegs.map((leg) => {
 			return {

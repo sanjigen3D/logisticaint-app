@@ -3,8 +3,9 @@ import { UnifiedRoute } from '@/lib/types/unifiedInterfaces'; // Usa tu ruta cor
 export function mapMaerskToUnified(maerskJson: any): UnifiedRoute[] {
 	return maerskJson.oceanProducts.map((product: any, index: number) => {
 		const carrier = product.vesselOperatorCarrierCode || 'Maersk';
+		const company = 'Maersk';
 		const transitTime =
-			parseInt(product.transportSchedules[0].transitTime, 10) / 60; // de minutos a horas/días, ajusta según necesites
+			parseInt(product.transportSchedules[0].transitTime, 10) / 60;
 
 		const legs = product.transportSchedules.flatMap((schedule: any) => {
 			return schedule.transportLegs.map((leg: any) => ({
@@ -32,6 +33,7 @@ export function mapMaerskToUnified(maerskJson: any): UnifiedRoute[] {
 		return {
 			id: `${carrier}-${index}`,
 			carrier,
+			company,
 			serviceName:
 				product.transportSchedules[0].transportLegs[0].transport
 					.carrierServiceName,

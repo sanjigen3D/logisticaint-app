@@ -80,12 +80,6 @@ const Navbar = ({
 						<Text style={styles.brandText}>LOGISTICAINST</Text>
 					</View>
 				)}
-				{/* Accent dot row for decoration */}
-				<View style={styles.accentDots}>
-					<View style={[styles.dot, styles.dotLg]} />
-					<View style={[styles.dot, styles.dotMd]} />
-					<View style={[styles.dot, styles.dotSm]} />
-				</View>
 			</View>
 
 			{/* Main content */}

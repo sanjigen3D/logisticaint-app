@@ -8,8 +8,7 @@ import {
 	LucideIcon,
 	Package,
 	Search,
-	ShieldPlus,
-	UserPlus,
+	UserPlus
 } from 'lucide-react-native';
 
 type Carrier = {
@@ -106,7 +105,7 @@ export const quickActionsAdmin: QuickAction[] = [
 		id: 100,
 		title: 'Crear Usuario',
 		subtitle: 'Registrar nuevo usuario',
-		icon: ShieldPlus,
+		icon: UserPlus,
 		color: '#7c3aed',
 		route: ROUTES.CREATE_USER as MyRoute,
 	},

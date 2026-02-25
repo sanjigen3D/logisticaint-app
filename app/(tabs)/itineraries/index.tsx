@@ -48,37 +48,25 @@ export default function ResultsPage() {
 		destLocation,
 	} = useGlobalSearchParams();
 
-	if (!origin || !destination) {
-		return (
-			<View style={styles.itineraryContainer}>
-				<Navbar
-					title={'Resultados de Búsqueda'}
-					subtitle={'No se encontraron resultados'}
-					icon={<Ship size={32} color="#ffffff" />}
-				/>
-			</View>
-		);
-	}
-
-	const originCode = `${originCountry}${oriLocation}`;
-	const destinationCode = `${destinationCountry}${destLocation}`;
+	const originCode = `${originCountry ?? ''}${oriLocation ?? ''}`;
+	const destinationCode = `${destinationCountry ?? ''}${destLocation ?? ''}`;
 
 	const results = useQueries({
 		queries: [
 			{
 				queryKey: ['zimResults', originCode, destinationCode],
 				queryFn: () => fetchZimData(originCode, destinationCode),
-				enabled: !!originCode && !!destinationCode,
+				enabled: !!origin && !!destination && !!originCode && !!destinationCode,
 			},
 			{
 				queryKey: ['maerskResults', originCode, destinationCode],
 				queryFn: () => fetchMaerskData(originCode, destinationCode),
-				enabled: !!originCode && !!destinationCode,
+				enabled: !!origin && !!destination && !!originCode && !!destinationCode,
 			},
 			{
 				queryKey: ['hapagResults', originCode, destinationCode],
 				queryFn: () => fetchHapagData(originCode, destinationCode),
-				enabled: !!originCode && !!destinationCode,
+				enabled: !!origin && !!destination && !!originCode && !!destinationCode,
 			},
 		],
 	});
@@ -116,6 +104,18 @@ export default function ResultsPage() {
 
 		return combined;
 	}, [results]);
+
+	if (!origin || !destination) {
+		return (
+			<View style={styles.itineraryContainer}>
+				<Navbar
+					title={'Resultados de Búsqueda'}
+					subtitle={'No se encontraron resultados'}
+					icon={<Ship size={32} color="#ffffff" />}
+				/>
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.itineraryContainer}>

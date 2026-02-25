@@ -4,23 +4,28 @@ import { useAuthStore } from '@/lib/stores/authStore';
 import { useToastStore } from '@/lib/stores/useToastStore';
 import { MyRoute } from '@/lib/types/types';
 import { router } from 'expo-router';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
 	Animated,
+	Platform,
+	Pressable,
 	StyleSheet,
 	Text,
-	TouchableWithoutFeedback,
 	View,
 } from 'react-native';
 
 export const QuickMenuCard = ({
 	quickAction,
+	cardWidth,
 }: {
 	quickAction: QuickAction;
+	cardWidth: number;
 }) => {
 	const { id, route, color, title, subtitle, isLogOut } = quickAction;
 	const { logout } = useAuthStore();
 	const { showToast } = useToastStore();
+
+	const [isHovered, setIsHovered] = useState(false);
 
 	// Press scale animation
 	const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -66,10 +71,16 @@ export const QuickMenuCard = ({
 	const iconBg = `${color}18`;
 
 	return (
-		<TouchableWithoutFeedback
+		<Pressable
 			onPressIn={handlePressIn}
 			onPressOut={handlePressOut}
 			onPress={() => handleQuickAction(route)}
+			onHoverIn={() => setIsHovered(true)}
+			onHoverOut={() => setIsHovered(false)}
+			style={[
+				{ width: cardWidth },
+				Platform.OS === 'web' ? ({ cursor: 'pointer' } as any) : undefined,
+			]}
 		>
 			<Animated.View
 				style={[
@@ -79,14 +90,9 @@ export const QuickMenuCard = ({
 						shadowColor: color,
 						transform: [{ scale: scaleAnim }],
 					},
+					isHovered && styles.cardHovered,
 				]}
 			>
-				{/* Subtle top-left glow blob */}
-				<View
-					style={[styles.glowBlob, { backgroundColor: glowColor }]}
-					pointerEvents="none"
-				/>
-
 				{/* Icon container */}
 				<View style={[styles.iconContainer, { backgroundColor: iconBg, borderColor }]}>
 					<quickAction.icon size={22} color={color} strokeWidth={2} />
@@ -98,32 +104,31 @@ export const QuickMenuCard = ({
 				{/* Bottom accent line */}
 				<View style={[styles.accentLine, { backgroundColor: color }]} />
 			</Animated.View>
-		</TouchableWithoutFeedback>
+		</Pressable>
 	);
 };
 
 const styles = StyleSheet.create({
 	card: {
 		flex: 1,
+		minHeight: 140,
 		backgroundColor: '#ffffff',
 		borderRadius: 20,
 		padding: 18,
 		alignItems: 'center',
 		borderWidth: 1,
 		overflow: 'hidden',
-		// Elevation
 		shadowOffset: { width: 0, height: 6 },
 		shadowOpacity: 0.18,
 		shadowRadius: 14,
 		elevation: 6,
 	},
-	glowBlob: {
-		position: 'absolute',
-		top: -10,
-		left: -10,
-		width: 60,
-		height: 60,
-		borderRadius: 30,
+	cardHovered: {
+		shadowOpacity: 0.32,
+		shadowRadius: 20,
+		elevation: 12,
+		// @ts-ignore — valid on RN Web
+		outline: 'none',
 	},
 	iconContainer: {
 		width: 52,

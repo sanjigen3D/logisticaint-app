@@ -1,13 +1,12 @@
+import { NavbarProps } from '@/components/UI/navbar/navbar';
 import { ROUTES } from '@/lib/Routes';
 import {
-	Home,
-	UserPlus,
-	LogIn,
-	User,
-	Ship,
 	Package,
+	Shield,
+	Ship,
+	User,
+	UserPlus
 } from 'lucide-react-native';
-import { NavbarProps } from '@/components/UI/navbar/navbar';
 
 export function getNavbarProps(path: string): NavbarProps {
 	if (path.includes(ROUTES.LOGIN)) {
@@ -27,6 +26,12 @@ export function getNavbarProps(path: string): NavbarProps {
 			title: 'Mi Cuenta',
 			subtitle: 'Gestiona tu cuenta y accede a funciones avanzadas',
 			icon: <User size={40} color="#ffffff" />,
+		};
+	} else if (path.includes('/admin')) {
+		return {
+			title: 'Panel de Administración',
+			subtitle: 'Gestiona usuarios, empresas y contactos desde aquí',
+			icon: <Shield size={36} color="#ffffff" />,
 		};
 	} else if (path.includes(ROUTES.ITINERARY)) {
 		return {

@@ -22,7 +22,8 @@ interface UnifiedLeg {
 }
 export interface UnifiedRoute {
 	id: string;
-	carrier: string;
+	carrier: string;   // SCAC/API code of who operates the vessel (MAEU, HLCU, ZIM...)
+	company: string;   // Human-readable commercial name (Hapag-Lloyd, Maersk, ZIM)
 	serviceName?: string;
 	serviceCode?: string;
 	transitTime: number;

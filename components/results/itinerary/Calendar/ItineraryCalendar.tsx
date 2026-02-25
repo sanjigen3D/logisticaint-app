@@ -1,6 +1,6 @@
-import ResultCard from '@/components/results/itinerary/ResultCard';
+import DaySheet from '@/components/results/itinerary/Calendar/DaySheet';
 import { UnifiedRoute } from '@/lib/types/unifiedInterfaces';
-import { ChevronLeft, ChevronRight, Ship } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -9,11 +9,12 @@ type ItineraryCalendarProps = {
 };
 
 const DAYS_OF_WEEK = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 const CARRIER_COLORS: Record<string, string> = {
-    'ZIM': '#07174c',     // Navy
-    'Maersk': '#2d9cdb',  // Light Blue
-    'Hapag-Lloyd': '#f26e21', // Orange
+    'ZIM': '#07174c',
+    'Maersk': '#2d9cdb',
+    'Hapag-Lloyd': '#f26e21',
     'default': '#64748b'
 };
 
@@ -29,14 +30,8 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
         const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
 
         const days = [];
-        // Padding previous month
-        for (let i = 0; i < firstDay; i++) {
-            days.push(null);
-        }
-        // Current month days
-        for (let i = 1; i <= daysInCurrentMonth; i++) {
-            days.push(new Date(year, month, i));
-        }
+        for (let i = 0; i < firstDay; i++) days.push(null);
+        for (let i = 1; i <= daysInCurrentMonth; i++) days.push(new Date(year, month, i));
         return days;
     }, [currentDate]);
 
@@ -47,20 +42,16 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
             if (!route.legs || route.legs.length === 0) return;
             const depDateStr = route.legs[0].departure.dateTime;
             if (!depDateStr) return;
-
             const dateObj = new Date(depDateStr);
             if (isNaN(dateObj.getTime())) return;
-
-            // Format YYYY-MM-DD in local time to avoid timezone shifts
             const dateKey = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
-
             if (!map[dateKey]) map[dateKey] = [];
             map[dateKey].push(route);
         });
         return map;
     }, [routes]);
 
-    // Calculate available years from data
+    // Available years from data
     const availableYears = useMemo(() => {
         const years = new Set<number>();
         routes.forEach(route => {
@@ -71,11 +62,20 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
                 if (!isNaN(year)) years.add(year);
             }
         });
-
-        // Ensure current year is always included as fallback
         years.add(new Date().getFullYear());
         return Array.from(years).sort((a, b) => a - b);
     }, [routes]);
+
+    // Months that have data for the selected year
+    const monthsWithData = useMemo(() => {
+        const activeYear = currentDate.getFullYear();
+        const months = new Set<number>();
+        Object.keys(routesByDate).forEach(dateKey => {
+            const [y, m] = dateKey.split('-').map(Number);
+            if (y === activeYear) months.add(m - 1); // 0-indexed
+        });
+        return months;
+    }, [routesByDate, currentDate]);
 
     const changeMonth = (delta: number) => {
         const newDate = new Date(currentDate);
@@ -89,134 +89,153 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
         setCurrentDate(newDate);
     };
 
+    const changeMonthDirect = (monthIdx: number) => {
+        const newDate = new Date(currentDate);
+        newDate.setMonth(monthIdx);
+        setCurrentDate(newDate);
+    };
 
     const monthName = currentDate.toLocaleString('es-ES', { month: 'long' });
     const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
 
-    // Routes for selected date
     const selectedRoutes = selectedDate ? (routesByDate[selectedDate] || []) : [];
 
     return (
-        <View style={styles.container}>
-            {/* Year Selector */}
-            <View style={styles.yearSelector}>
-                {availableYears.map(year => (
-                    <Pressable
-                        key={year}
-                        style={[
-                            styles.yearChip,
-                            currentDate.getFullYear() === year && styles.yearChipActive
-                        ]}
-                        onPress={() => changeYear(year)}
-                    >
-                        <Text style={[
-                            styles.yearChipText,
-                            currentDate.getFullYear() === year && styles.yearChipTextActive
-                        ]}>
-                            {year}
-                        </Text>
-                    </Pressable>
-                ))}
-            </View>
-
-            {/* Calendar Header */}
-            <View style={styles.header}>
-                <Pressable onPress={() => changeMonth(-1)} style={styles.navButton}>
-                    <ChevronLeft size={24} color="#0f172a" />
-                </Pressable>
-                <Text style={styles.monthTitle}>
-                    {capitalizedMonth}
-                </Text>
-                <Pressable onPress={() => changeMonth(1)} style={styles.navButton}>
-                    <ChevronRight size={24} color="#0f172a" />
-                </Pressable>
-            </View>
-
-
-            {/* Days of Week */}
-            <View style={styles.weekDays}>
-                {DAYS_OF_WEEK.map((day, idx) => (
-                    <Text key={idx} style={styles.weekDayText}>{day}</Text>
-                ))}
-            </View>
-
-            {/* Grid */}
-            <View style={styles.grid}>
-                {daysInMonth.map((date, idx) => {
-                    if (!date) {
-                        return <View key={`empty-${idx}`} style={styles.dayCell} />;
-                    }
-
-                    const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-                    const dayRoutes = routesByDate[dateKey] || [];
-                    const isSelected = selectedDate === dateKey;
-                    const isToday = new Date().toDateString() === date.toDateString();
-
-                    // Group carriers for pill indicators
-                    const carriersPresent = Array.from(new Set(dayRoutes.map(r => r.carrier)));
-
-                    return (
+        <View>
+            <View style={styles.container}>
+                {/* Year Selector */}
+                <View style={styles.yearSelector}>
+                    {availableYears.map(year => (
                         <Pressable
-                            key={dateKey}
+                            key={year}
                             style={[
-                                styles.dayCell,
-                                dayRoutes.length > 0 && styles.hasRoutesDayCell,
-                                isToday && !isSelected && styles.todayCell,
-                                isSelected && styles.selectedDayCell,
+                                styles.yearChip,
+                                currentDate.getFullYear() === year && styles.yearChipActive
                             ]}
-                            onPress={() => setSelectedDate(dateKey)}
+                            onPress={() => changeYear(year)}
                         >
                             <Text style={[
-                                styles.dayNumber,
-                                isSelected && styles.selectedDayText,
-                                isToday && !isSelected && styles.todayText
+                                styles.yearChipText,
+                                currentDate.getFullYear() === year && styles.yearChipTextActive
                             ]}>
-                                {date.getDate()}
+                                {year}
                             </Text>
-
-                            <View style={styles.indicators}>
-                                {carriersPresent.slice(0, 3).map((carrier, cIdx) => (
-                                    <View
-                                        key={cIdx}
-                                        style={[
-                                            styles.carrierDot,
-                                            { backgroundColor: CARRIER_COLORS[carrier] || CARRIER_COLORS['default'] }
-                                        ]}
-                                    />
-                                ))}
-                                {carriersPresent.length > 3 && (
-                                    <Text style={styles.moreIndicators}>+</Text>
-                                )}
-                            </View>
                         </Pressable>
-                    );
-                })}
+                    ))}
+                </View>
+
+                {/* Month Selector */}
+                <View style={styles.monthSelector}>
+                    {MONTH_NAMES.map((name, idx) => {
+                        const hasData = monthsWithData.has(idx);
+                        const isActive = currentDate.getMonth() === idx;
+                        return (
+                            <Pressable
+                                key={idx}
+                                style={[
+                                    styles.monthChip,
+                                    hasData && styles.monthChipHasData,
+                                    isActive && styles.monthChipActive,
+                                ]}
+                                onPress={() => changeMonthDirect(idx)}
+                            >
+                                <Text style={[
+                                    styles.monthChipText,
+                                    hasData && styles.monthChipTextHasData,
+                                    isActive && styles.monthChipTextActive,
+                                ]}>
+                                    {name}
+                                </Text>
+                                {hasData && !isActive && (
+                                    <View style={styles.monthDot} />
+                                )}
+                            </Pressable>
+                        );
+                    })}
+                </View>
+
+                {/* Calendar Header */}
+                <View style={styles.header}>
+                    <Pressable onPress={() => changeMonth(-1)} style={styles.navButton}>
+                        <ChevronLeft size={24} color="#0f172a" />
+                    </Pressable>
+                    <Text style={styles.monthTitle}>
+                        {capitalizedMonth}
+                    </Text>
+                    <Pressable onPress={() => changeMonth(1)} style={styles.navButton}>
+                        <ChevronRight size={24} color="#0f172a" />
+                    </Pressable>
+                </View>
+
+                {/* Days of Week */}
+                <View style={styles.weekDays}>
+                    {DAYS_OF_WEEK.map((day, idx) => (
+                        <Text key={idx} style={styles.weekDayText}>{day}</Text>
+                    ))}
+                </View>
+
+                {/* Grid */}
+                <View style={styles.grid}>
+                    {daysInMonth.map((date, idx) => {
+                        if (!date) {
+                            return <View key={`empty-${idx}`} style={styles.dayCell} />;
+                        }
+
+                        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                        const dayRoutes = routesByDate[dateKey] || [];
+                        const isSelected = selectedDate === dateKey;
+                        const isToday = new Date().toDateString() === date.toDateString();
+                        const carriersPresent = Array.from(new Set(dayRoutes.map(r => r.carrier)));
+
+                        return (
+                            <Pressable
+                                key={dateKey}
+                                style={[
+                                    styles.dayCell,
+                                    dayRoutes.length > 0 && styles.hasRoutesDayCell,
+                                    isToday && !isSelected && styles.todayCell,
+                                    isSelected && styles.selectedDayCell,
+                                ]}
+                                onPress={() => {
+                                    if (dayRoutes.length > 0) {
+                                        setSelectedDate(dateKey);
+                                    }
+                                }}
+                            >
+                                <Text style={[
+                                    styles.dayNumber,
+                                    isSelected && styles.selectedDayText,
+                                    isToday && !isSelected && styles.todayText
+                                ]}>
+                                    {date.getDate()}
+                                </Text>
+
+                                <View style={styles.indicators}>
+                                    {carriersPresent.slice(0, 3).map((carrier, cIdx) => (
+                                        <View
+                                            key={cIdx}
+                                            style={[
+                                                styles.carrierDot,
+                                                { backgroundColor: CARRIER_COLORS[carrier] || CARRIER_COLORS['default'] }
+                                            ]}
+                                        />
+                                    ))}
+                                    {carriersPresent.length > 3 && (
+                                        <Text style={styles.moreIndicators}>+</Text>
+                                    )}
+                                </View>
+                            </Pressable>
+                        );
+                    })}
+                </View>
             </View>
 
-            {/* Detail View for Selected Date */}
-            {selectedDate && (
-                <View style={styles.detailContainer}>
-                    <View style={styles.detailHeader}>
-                        <Text style={styles.detailTitle}>
-                            Salidas para el {selectedDate.split('-').reverse().join('/')}
-                        </Text>
-                        <Text style={styles.detailBadge}>{selectedRoutes.length} viajes</Text>
-                    </View>
-
-                    {selectedRoutes.length === 0 ? (
-                        <View style={styles.emptyState}>
-                            <Ship size={48} color="#cbd5e1" />
-                            <Text style={styles.emptyText}>No hay salidas programadas para este día.</Text>
-                        </View>
-                    ) : (
-                        <View style={styles.resultsList}>
-                            {selectedRoutes.map((route, idx) => (
-                                <ResultCard key={route.id || idx} route={route} />
-                            ))}
-                        </View>
-                    )}
-                </View>
-            )}
+            {/* Bottom Sheet */}
+            <DaySheet
+                selectedDate={selectedDate}
+                routes={selectedRoutes}
+                onClose={() => setSelectedDate(null)}
+            />
         </View>
     );
 };
@@ -240,7 +259,7 @@ const styles = StyleSheet.create({
     yearSelector: {
         flexDirection: 'row',
         gap: 8,
-        marginBottom: 24,
+        marginBottom: 16,
         flexWrap: 'wrap',
     },
     yearChip: {
@@ -263,6 +282,51 @@ const styles = StyleSheet.create({
     yearChipTextActive: {
         color: '#4338ca',
         fontFamily: 'Inter-Bold',
+    },
+    // Month selector
+    monthSelector: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 6,
+        marginBottom: 20,
+    },
+    monthChip: {
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 16,
+        backgroundColor: '#f8fafc',
+        borderWidth: 1,
+        borderColor: 'transparent',
+        alignItems: 'center',
+        minWidth: 42,
+    },
+    monthChipHasData: {
+        backgroundColor: '#dcfce7',
+        borderColor: '#bbf7d0',
+    },
+    monthChipActive: {
+        backgroundColor: '#e0e7ff',
+        borderColor: '#c7d2fe',
+    },
+    monthChipText: {
+        fontFamily: 'Inter-Medium',
+        fontSize: 12,
+        color: '#94a3b8',
+    },
+    monthChipTextHasData: {
+        color: '#15803d',
+        fontFamily: 'Inter-SemiBold',
+    },
+    monthChipTextActive: {
+        color: '#4338ca',
+        fontFamily: 'Inter-Bold',
+    },
+    monthDot: {
+        width: 4,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: '#22c55e',
+        marginTop: 2,
     },
     header: {
         flexDirection: 'row',
@@ -304,7 +368,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     hasRoutesDayCell: {
-        backgroundColor: '#dcfce7', // Lighter green highlighting cells with departures
+        backgroundColor: '#dcfce7',
         borderColor: '#bbf7d0',
         borderRadius: 12,
     },
@@ -350,47 +414,4 @@ const styles = StyleSheet.create({
         color: '#64748b',
         fontFamily: 'Inter-Bold',
     },
-    detailContainer: {
-        marginTop: 32,
-        paddingTop: 32,
-        borderTopWidth: 1,
-        borderColor: '#e2e8f0',
-    },
-    detailHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    detailTitle: {
-        fontFamily: 'Inter-SemiBold',
-        fontSize: 18,
-        color: '#0f172a',
-    },
-    detailBadge: {
-        backgroundColor: '#e0e7ff',
-        color: '#4338ca',
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-        borderRadius: 16,
-        fontFamily: 'Inter-Medium',
-        fontSize: 13,
-        overflow: 'hidden',
-    },
-    emptyState: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 40,
-        backgroundColor: '#f8fafc',
-        borderRadius: 16,
-        gap: 12,
-    },
-    emptyText: {
-        fontFamily: 'Inter-Medium',
-        fontSize: 15,
-        color: '#64748b',
-    },
-    resultsList: {
-        gap: 16,
-    }
 });
