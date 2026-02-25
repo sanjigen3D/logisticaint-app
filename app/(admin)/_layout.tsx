@@ -33,6 +33,9 @@ export default function AdminLayout() {
                     shadowOffset: { width: 0, height: 12 },
                     shadowOpacity: 0.4,
                     shadowRadius: 24,
+                    maxWidth: 400,
+                    alignSelf: 'center',
+                    width: '100%',
                 },
                 tabBarItemStyle: {
                     paddingVertical: 10,

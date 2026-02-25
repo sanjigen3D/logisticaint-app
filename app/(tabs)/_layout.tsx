@@ -1,6 +1,6 @@
 import { ROUTES } from '@/lib/Routes';
 import { Tabs, usePathname } from 'expo-router';
-import { Home, Package, Search, ShieldAlert, User } from 'lucide-react-native';
+import { Home, ShieldAlert, User } from 'lucide-react-native';
 import { Platform, StyleSheet, View } from 'react-native';
 
 // Frosted glass colors — semi-transparent dark navy
@@ -11,8 +11,6 @@ export default function TabLayout() {
 	const pathname = usePathname();
 
 	const isHome = pathname === ROUTES.HOME;
-	const isItinerary = pathname === ROUTES.ITINERARY;
-	const isTrack = pathname === ROUTES.TRACKING;
 	const isAccount = pathname === ROUTES.ACCOUNT;
 
 	return (
@@ -39,6 +37,9 @@ export default function TabLayout() {
 					shadowOffset: { width: 0, height: 12 },
 					shadowOpacity: 0.4,
 					shadowRadius: 24,
+					maxWidth: 400,
+					alignSelf: 'center',
+					width: '100%', // Ensure it takes full width up to max
 				},
 				tabBarItemStyle: {
 					paddingVertical: 10,
@@ -57,77 +58,43 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="index"
 				options={
-					isHome
-						? { href: null }
-						: {
-							title: 'Inicio',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<Home
-										size={focused ? size : size - 2}
-										color={color}
-										strokeWidth={focused ? 2.4 : 1.8}
-									/>
-								</View>
-							),
-						}
+					{
+						title: 'Inicio',
+						tabBarIcon: ({ size, color }) => (
+							<View style={styles.iconWrap}>
+								<Home
+									size={size}
+									color={color}
+									strokeWidth={2.4}
+								/>
+							</View>
+						),
+					}
 				}
 			/>
 			<Tabs.Screen
 				name="itinerary"
-				options={
-					isItinerary
-						? { href: null }
-						: {
-							title: 'Itinerario',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<Search
-										size={focused ? size : size - 2}
-										color={color}
-										strokeWidth={focused ? 2.4 : 1.8}
-									/>
-								</View>
-							),
-						}
-				}
+				options={{ href: null }}
 			/>
 			<Tabs.Screen
 				name="track"
-				options={
-					isTrack
-						? { href: null }
-						: {
-							title: 'Tracking',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<Package
-										size={focused ? size : size - 2}
-										color={color}
-										strokeWidth={focused ? 2.4 : 1.8}
-									/>
-								</View>
-							),
-						}
-				}
+				options={{ href: null }}
 			/>
 			<Tabs.Screen
 				name="account"
 				options={
-					isAccount
-						? { href: null }
-						: {
-							title: 'Cuenta',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
-									<User
-										size={focused ? size : size - 2}
-										color={color}
-										strokeWidth={focused ? 2.4 : 1.8}
-									/>
-								</View>
-							),
-						}
+					{
+						title: 'Cuenta',
+						tabBarIcon: ({ size, color }) => (
+							<View style={styles.iconWrap}>
+								<User
+									size={size}
+									color={color}
+									strokeWidth={2.4}
+								/>
+							</View>
+						),
+					}
 				}
 			/>
 
@@ -138,12 +105,12 @@ export default function TabLayout() {
 						? { href: null }
 						: {
 							title: 'Admin',
-							tabBarIcon: ({ size, color, focused }) => (
-								<View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+							tabBarIcon: ({ size, color }) => (
+								<View style={styles.iconWrap}>
 									<ShieldAlert
-										size={focused ? size : size - 2}
+										size={size}
 										color={color}
-										strokeWidth={focused ? 2.4 : 1.8}
+										strokeWidth={2.4}
 									/>
 								</View>
 							),

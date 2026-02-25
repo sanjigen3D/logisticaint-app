@@ -41,6 +41,9 @@ export default function AccountsLayout() {
 					shadowOffset: { width: 0, height: 8 },
 					shadowOpacity: 0.55,
 					shadowRadius: 20,
+					maxWidth: 400,
+					alignSelf: 'center',
+					width: '100%',
 				},
 				tabBarItemStyle: {
 					paddingVertical: 10,
