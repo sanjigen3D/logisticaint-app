@@ -60,7 +60,7 @@ export default function AdminLayout() {
             }}
         >
             <Tabs.Screen
-                name="homeDummy"
+                name="toHome"
                 options={{
                     title: 'Inicio',
                     tabBarIcon: ({ size, color }) => (
@@ -75,7 +75,7 @@ export default function AdminLayout() {
                 }}
             />
             <Tabs.Screen
-                name="accountDummy"
+                name="toAccount"
                 options={{
                     title: 'Cuenta',
                     tabBarIcon: ({ size, color }) => (

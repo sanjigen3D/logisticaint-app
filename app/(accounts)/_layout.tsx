@@ -1,4 +1,3 @@
-import { ROUTES } from '@/lib/Routes';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Tabs, usePathname } from 'expo-router';
 import { Home, LogIn, ShieldAlert, User } from 'lucide-react-native';
@@ -23,7 +22,6 @@ export default function AccountsLayout() {
 	const showLabels = width >= 480;
 	const barHeight = showLabels ? 72 : 58;
 
-	const isAccount = pathname === ROUTES.ACCOUNT;
 	const isInAdmin = pathname.startsWith('/(admin)') || pathname.startsWith('/admin');
 
 	return (
@@ -69,7 +67,7 @@ export default function AccountsLayout() {
 			}}
 		>
 			<Tabs.Screen
-				name="backToHome"
+				name="toHome"
 				options={{
 					title: 'Inicio',
 					tabBarIcon: ({ size, color }) => (
@@ -112,7 +110,7 @@ export default function AccountsLayout() {
 				options={{ href: null }}
 			/>
 			<Tabs.Screen
-				name="adminDummy"
+				name="toAdmin"
 				options={
 					!isAuthenticated || isInAdmin
 						? { href: null }

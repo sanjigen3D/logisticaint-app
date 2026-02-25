@@ -106,7 +106,7 @@ export default function TabLayout() {
 			/>
 
 			<Tabs.Screen
-				name="adminDummy"
+				name="admin"
 				options={
 					!isAuthenticated || isInAdmin
 						? { href: null }
@@ -122,7 +122,7 @@ export default function TabLayout() {
 			/>
 
 			<Tabs.Screen
-				name="loginDummy"
+				name="toLogin"
 				options={
 					isAuthenticated
 						? { href: null }
