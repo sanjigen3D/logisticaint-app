@@ -2,14 +2,12 @@ import QuickMenu from '@/components/UI/Tabs/QuickMenu';
 import UserProfileCard from '@/components/UI/UserProfileCard';
 import { quickActionLogOut, quickActionsAccount } from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { useAuthStore } from '@/lib/stores/authStore';
 import { Platform, ScrollView, StyleSheet } from 'react-native';
 
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export default function AccountHomeScreen() {
 	const { isAuthenticated } = useAuth();
-	const { user } = useAuthStore();
 
 	const currentActions = isAuthenticated
 		? quickActionsAccount.map((action) =>
