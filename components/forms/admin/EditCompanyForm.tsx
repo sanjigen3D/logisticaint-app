@@ -10,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 import {
     ActivityIndicator,
     StyleSheet,
+    Switch,
     Text,
     TextInput,
     TouchableOpacity,
@@ -41,6 +42,7 @@ export const EditCompanyForm = ({ company, onSuccess }: EditCompanyFormProps) =>
             rut: company.rut,
             direccion: company.direccion,
             alias: company.alias,
+            active: company.active,
         },
     });
 
@@ -191,6 +193,23 @@ export const EditCompanyForm = ({ company, onSuccess }: EditCompanyFormProps) =>
                 )}
             />
 
+            {/* Active Status */}
+            <Controller
+                control={control}
+                name="active"
+                render={({ field: { onChange, value } }) => (
+                    <View style={styles.switchWrapper}>
+                        <Text style={styles.inputLabel}>Estado de la empresa (Activa)</Text>
+                        <Switch
+                            value={value}
+                            onValueChange={onChange}
+                            trackColor={{ false: '#cbd5e1', true: '#10b981' }}
+                            thumbColor={value ? '#ffffff' : '#f8fafc'}
+                        />
+                    </View>
+                )}
+            />
+
             {/* Submit Button */}
             <TouchableOpacity
                 style={[styles.submitButton, (!isValid || isSubmitting) && styles.submitButtonDisabled]}
@@ -222,6 +241,13 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         marginBottom: 20,
+    },
+    switchWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 24,
+        paddingVertical: 4,
     },
     inputLabel: {
         fontSize: 14,

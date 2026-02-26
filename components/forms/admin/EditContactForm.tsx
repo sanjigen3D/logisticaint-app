@@ -13,6 +13,7 @@ import { Controller, useForm } from 'react-hook-form';
 import {
     ActivityIndicator,
     StyleSheet,
+    Switch,
     Text,
     TextInput,
     TouchableOpacity,
@@ -68,6 +69,7 @@ export const EditContactForm = ({ contact, onSuccess }: EditContactFormProps) =>
             phone: contact.phone,
             email: contact.email,
             company_id: contact.company_id,
+            active: contact.active,
         },
     });
 
@@ -198,6 +200,23 @@ export const EditContactForm = ({ contact, onSuccess }: EditContactFormProps) =>
                 />
             )}
 
+            {/* Active Status */}
+            <Controller
+                control={control}
+                name="active"
+                render={({ field: { onChange, value } }) => (
+                    <View style={styles.switchWrapper}>
+                        <Text style={styles.inputLabel}>Estado del contacto (Activo)</Text>
+                        <Switch
+                            value={value}
+                            onValueChange={onChange}
+                            trackColor={{ false: '#cbd5e1', true: '#0284c7' }}
+                            thumbColor={value ? '#ffffff' : '#f8fafc'}
+                        />
+                    </View>
+                )}
+            />
+
             {/* Submit Button */}
             <TouchableOpacity
                 style={[styles.submitButton, (!isValid || isSubmitting) && styles.submitButtonDisabled]}
@@ -229,6 +248,13 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         marginBottom: 20,
+    },
+    switchWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 24,
+        paddingVertical: 4,
     },
     inputLabel: {
         fontSize: 14,

@@ -132,6 +132,11 @@ export default function ContactsScreen() {
                     <Contact2 size={20} color="#0284c7" style={{ marginRight: 8 }} />
                     <Text style={styles.name}>{item.name}</Text>
                 </View>
+                <View style={[styles.badge, item.active ? styles.badgeActive : styles.badgeInactive]}>
+                    <Text style={[styles.badgeText, item.active ? styles.badgeTextActive : styles.badgeTextInactive]}>
+                        {item.active ? 'Activo' : 'Inactivo'}
+                    </Text>
+                </View>
             </View>
             <View style={styles.cardBody}>
                 <Text style={styles.detail}>Email: {item.email}</Text>
@@ -277,6 +282,27 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Inter-SemiBold',
         color: '#0f172a',
+    },
+    badge: {
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    badgeActive: {
+        backgroundColor: '#dcfce7',
+    },
+    badgeInactive: {
+        backgroundColor: '#fee2e2',
+    },
+    badgeText: {
+        fontSize: 11,
+        fontFamily: 'Inter-Medium',
+    },
+    badgeTextActive: {
+        color: '#166534',
+    },
+    badgeTextInactive: {
+        color: '#991b1b',
     },
     cardBody: {
         marginBottom: 16,

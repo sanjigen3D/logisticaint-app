@@ -144,6 +144,7 @@ export const editCompanySchema = z.object({
 	rut: z.string().min(3).max(20).optional(),
 	direccion: z.string().min(5).max(250).optional(),
 	alias: z.string().min(2).max(50).optional(),
+	active: z.boolean().optional(),
 });
 
 export const editContactSchema = z.object({
@@ -151,4 +152,5 @@ export const editContactSchema = z.object({
 	phone: z.string().min(6).max(30).optional(),
 	email: z.string().email().toLowerCase().optional(),
 	company_id: z.number().int().positive().optional(),
+	active: z.boolean().optional(),
 });

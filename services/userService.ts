@@ -9,6 +9,7 @@ export interface CreateUserPayload {
     password: string;
     type_id: number;
     active: boolean;
+    company_id: number;
 }
 
 export interface CreateUserResponse {

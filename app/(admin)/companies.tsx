@@ -122,8 +122,15 @@ export default function CompaniesScreen() {
                     <Building size={20} color="#047857" style={{ marginRight: 8 }} />
                     <Text style={styles.name}>{item.name}</Text>
                 </View>
-                <View style={styles.badge}>
-                    <Text style={styles.badgeText}>{item.alias}</Text>
+                <View style={styles.badgeRow}>
+                    <View style={[styles.statusBadge, item.active ? styles.statusBadgeActive : styles.statusBadgeInactive]}>
+                        <Text style={[styles.statusBadgeText, item.active ? styles.statusBadgeTextActive : styles.statusBadgeTextInactive]}>
+                            {item.active ? 'Activa' : 'Inactiva'}
+                        </Text>
+                    </View>
+                    <View style={styles.aliasBadge}>
+                        <Text style={styles.aliasBadgeText}>{item.alias}</Text>
+                    </View>
                 </View>
             </View>
             <View style={styles.cardBody}>
@@ -279,6 +286,45 @@ const styles = StyleSheet.create({
         borderColor: '#e2e8f0',
     },
     badgeText: {
+        fontSize: 11,
+        fontFamily: 'Inter-Medium',
+        color: '#475569',
+    },
+    badgeRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    statusBadge: {
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    statusBadgeActive: {
+        backgroundColor: '#dcfce7',
+    },
+    statusBadgeInactive: {
+        backgroundColor: '#fee2e2',
+    },
+    statusBadgeText: {
+        fontSize: 11,
+        fontFamily: 'Inter-Medium',
+    },
+    statusBadgeTextActive: {
+        color: '#166534',
+    },
+    statusBadgeTextInactive: {
+        color: '#991b1b',
+    },
+    aliasBadge: {
+        backgroundColor: '#f1f5f9',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: '#e2e8f0',
+    },
+    aliasBadgeText: {
         fontSize: 11,
         fontFamily: 'Inter-Medium',
         color: '#475569',

@@ -34,6 +34,7 @@ export interface Company {
 	rut: string;
 	direccion: string;
 	alias: string;
+	active: boolean;
 	contacts?: Contact[];
 }
 
@@ -43,4 +44,5 @@ export interface Contact {
 	phone: string;
 	email: string;
 	company_id: number;
+	active: boolean;
 }

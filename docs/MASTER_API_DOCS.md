@@ -88,25 +88,33 @@ Las eliminaciones son **lógicas** (Soft Delete), cambiando el estado `active` a
 
 * **Crear Usuario**: `POST /users`
   * Body: `name`, `email`, `password`, `type_id`, `active`, `company_id`
-* **Obtener Todos**: `GET /users`
+* **Obtener Todos**: `GET /users?active=true&page=1&limit=10`
 * **Obtener por ID**: `GET /users/:id`
-* **Obtener por ID de Empresa**: `GET /users/company/:companyId`
+* **Obtener por ID de Empresa**: `GET /users/company/:companyId?active=true&page=1&limit=10`
 * **Actualizar Usuario**: `PUT /users/:id`
   * Body (opcional): `name`, `email`, `password`, `type_id`, `active`, `company_id`
-* **Desactivar Usuario (Soft Delete)**: `DELETE /users/:id`
+* **Desactivar Usuario (Soft Delete)**: `DELETE /users/:id` (Cambia `active` a `false`)
 
-Ejemplo de respuesta (aplica a `GET /users`, `GET /users/:id`, `GET /users/company/:companyId`, `POST /users`, `PUT /users/:id`):
+Ejemplo de respuesta paginada (aplica a `GET /users` y `GET /users/company/:companyId`):
 ```json
 {
   "success": true,
-  "data": {
-    "id": 1,
-    "name": "Admin Principal",
-    "email": "admin@empresa.com",
-    "active": true,
-    "type": "Admin",
-    "company_id": 1,
-    "company_name": "Marines SA"
+  "data": [
+    {
+      "id": 1,
+      "name": "Admin Principal",
+      "email": "admin@empresa.com",
+      "active": true,
+      "type": "Admin",
+      "company_id": 1,
+      "company_name": "Marines SA"
+    }
+  ],
+  "pagination": {
+    "total": 50,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 5
   }
 }
 ```
@@ -121,11 +129,11 @@ La creación de Empresas y Contactos ha sido **separada**. `POST /companies` sol
 
 * **Crear Empresa**: `POST /companies`
   * Body: `name`, `razon_social`, `rut`, `direccion`, `alias`
-* **Obtener Todas**: `GET /companies` (Retorna empresas + un array `contacts` con sus contactos asociados).
+* **Obtener Todas**: `GET /companies?active=true&page=1&limit=10` (Retorna empresas + un array `contacts` con sus contactos asociados).
 * **Obtener por ID**: `GET /companies/:id`
 * **Actualizar Empresa**: `PUT /companies/:id`
-  * Body (opcionales): `name`, `razon_social`, `rut`, `direccion`, `alias`
-* **Eliminar Empresa**: `DELETE /companies/:id` (Elimina la empresa y físicamente sus contactos asociados).
+  * Body (opcionales): `name`, `razon_social`, `rut`, `direccion`, `alias`, `active`
+* **Eliminar Empresa (Soft Delete)**: `DELETE /companies/:id` (Desactiva la empresa y todos sus contactos asociados poniendo `active = false`).
 
 Ejemplo GET /companies/:id:
 ```json
@@ -158,11 +166,11 @@ Un contacto pertenece obligatoriamente a una Empresa (`company_id`).
 
 * **Crear Contacto**: `POST /contacts`
   * Body: `name`, `phone`, `email`, `company_id` (ID de la empresa existente).
-* **Obtener Todos**: `GET /contacts`
+* **Obtener Todos**: `GET /contacts?active=true&page=1&limit=10`
 * **Obtener por ID**: `GET /contacts/:id`
 * **Actualizar Contacto**: `PUT /contacts/:id`
-  * Body (opcionales): `name`, `phone`, `email`, `company_id`
-* **Eliminar Contacto**: `DELETE /contacts/:id`
+  * Body (opcionales): `name`, `phone`, `email`, `company_id`, `active`
+* **Eliminar Contacto (Soft Delete)**: `DELETE /contacts/:id` (Cambia `active` a `false`).
 
 Ejemplo POST /contacts:
 ```json
