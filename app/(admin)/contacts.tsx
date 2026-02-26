@@ -12,9 +12,9 @@ import {
     ActivityIndicator,
     FlatList,
     Platform,
+    Pressable,
     StyleSheet,
     Text,
-    TouchableOpacity,
     View,
 } from 'react-native';
 
@@ -146,21 +146,29 @@ export default function ContactsScreen() {
                 )}
             </View>
             <View style={styles.cardFooter}>
-                <TouchableOpacity
-                    style={[styles.actionBtn, styles.editBtn]}
+                <Pressable
+                    style={({ pressed }) => [
+                        styles.actionBtn,
+                        styles.editBtn,
+                        pressed && { opacity: 0.7 }
+                    ]}
                     onPress={() => setEditingContact(item)}
                 >
                     <Edit size={16} color="#0284c7" />
                     <Text style={styles.editBtnText}>Editar</Text>
-                </TouchableOpacity>
+                </Pressable>
 
-                <TouchableOpacity
-                    style={[styles.actionBtn, styles.deleteBtn]}
+                <Pressable
+                    style={({ pressed }) => [
+                        styles.actionBtn,
+                        styles.deleteBtn,
+                        pressed && { opacity: 0.7 }
+                    ]}
                     onPress={() => setDeletingContact(item)}
                 >
                     <Trash2 size={16} color="#ef4444" />
                     <Text style={styles.deleteBtnText}>Eliminar</Text>
-                </TouchableOpacity>
+                </Pressable>
             </View>
         </View>
     );

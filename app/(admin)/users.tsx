@@ -11,9 +11,9 @@ import {
     ActivityIndicator,
     FlatList,
     Platform,
+    Pressable,
     StyleSheet,
     Text,
-    TouchableOpacity,
     View,
 } from 'react-native';
 
@@ -144,21 +144,29 @@ export default function UsersScreen() {
                 {isSuperAdmin && <Text style={styles.detail}>Empresa: {item.company_name}</Text>}
             </View>
             <View style={styles.cardFooter}>
-                <TouchableOpacity
-                    style={[styles.actionBtn, styles.editBtn]}
+                <Pressable
+                    style={({ pressed }) => [
+                        styles.actionBtn,
+                        styles.editBtn,
+                        pressed && { opacity: 0.7 }
+                    ]}
                     onPress={() => setEditingUser(item)}
                 >
                     <Edit size={16} color="#3b82f6" />
                     <Text style={styles.editBtnText}>Editar</Text>
-                </TouchableOpacity>
+                </Pressable>
 
-                <TouchableOpacity
-                    style={[styles.actionBtn, styles.deleteBtn]}
+                <Pressable
+                    style={({ pressed }) => [
+                        styles.actionBtn,
+                        styles.deleteBtn,
+                        pressed && { opacity: 0.7 }
+                    ]}
                     onPress={() => setDeletingUser(item)}
                 >
                     <Trash2 size={16} color="#ef4444" />
                     <Text style={styles.deleteBtnText}>Eliminar</Text>
-                </TouchableOpacity>
+                </Pressable>
             </View>
         </View>
     );

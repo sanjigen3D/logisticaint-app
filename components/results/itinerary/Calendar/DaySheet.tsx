@@ -11,7 +11,6 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    TouchableWithoutFeedback,
     View,
 } from 'react-native';
 import ResultCard from '../ResultCard';
@@ -86,9 +85,7 @@ export default function DaySheet({ selectedDate, routes, onClose }: DaySheetProp
             statusBarTranslucent
         >
             {/* Overlay */}
-            <TouchableWithoutFeedback onPress={handleClose}>
-                <View style={styles.overlay} />
-            </TouchableWithoutFeedback>
+            <Pressable style={styles.overlay} onPress={handleClose} />
 
             {/* Sheet */}
             <Animated.View

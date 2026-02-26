@@ -11,9 +11,9 @@ import { Anchor, ArrowLeft } from 'lucide-react-native';
 import { JSX, useMemo } from 'react';
 import {
 	Platform,
+	Pressable,
 	StyleSheet,
 	Text,
-	TouchableOpacity,
 	View,
 } from 'react-native';
 
@@ -60,8 +60,11 @@ const Navbar = ({
 			{/* Top row: brand + back button */}
 			<View style={styles.topRow}>
 				{backButton ? (
-					<TouchableOpacity
-						style={styles.backButton}
+					<Pressable
+						style={({ pressed }) => [
+							styles.backButton,
+							pressed && { opacity: 0.7 }
+						]}
 						onPress={() =>
 							router.push(
 								ROUTES.ITINERARY as RelativePathString | ExternalPathString,
@@ -71,7 +74,7 @@ const Navbar = ({
 						<View style={styles.backButtonInner}>
 							<ArrowLeft size={18} color="#ffffff" />
 						</View>
-					</TouchableOpacity>
+					</Pressable>
 				) : (
 					<View style={styles.brandMark}>
 						<View style={styles.brandIconRing}>

@@ -1,8 +1,8 @@
-import { Modal, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
-import { CheckCircle, Mail, X } from 'lucide-react-native';
 import { RegisterFormData } from '@/lib/types/types';
-import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import { CheckCircle, Mail, X } from 'lucide-react-native';
+import React from 'react';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export const ModalRequestNewUser = ({
 	showSuccessModal,
@@ -22,13 +22,15 @@ export const ModalRequestNewUser = ({
 		>
 			<View style={styles.modalOverlay}>
 				<View style={styles.modalContainer}>
-					<TouchableOpacity
-						style={styles.modalCloseButton}
+					<Pressable
+						style={({ pressed }) => [
+							styles.modalCloseButton,
+							pressed && { opacity: 0.7 }
+						]}
 						onPress={handleCloseModal}
-						activeOpacity={0.7}
 					>
 						<X size={24} color="#64748b" />
-					</TouchableOpacity>
+					</Pressable>
 
 					<View style={styles.modalContent}>
 						<View style={styles.modalIconContainer}>
@@ -62,10 +64,12 @@ export const ModalRequestNewUser = ({
 							</Text>
 						</View>
 
-						<TouchableOpacity
-							style={styles.modalButton}
+						<Pressable
+							style={({ pressed }) => [
+								styles.modalButton,
+								pressed && { opacity: 0.8 }
+							]}
 							onPress={handleCloseModal}
-							activeOpacity={0.8}
 						>
 							<LinearGradient
 								colors={['#07174c', '#0b3477']}
@@ -73,7 +77,7 @@ export const ModalRequestNewUser = ({
 							>
 								<Text style={styles.modalButtonText}>Entendido</Text>
 							</LinearGradient>
-						</TouchableOpacity>
+						</Pressable>
 					</View>
 				</View>
 			</View>

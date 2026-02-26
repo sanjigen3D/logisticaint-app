@@ -22,11 +22,11 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
     ActivityIndicator,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
-    TouchableOpacity,
     View,
 } from 'react-native';
 
@@ -243,17 +243,19 @@ export const CreateUserForm = () => {
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                 />
-                                <TouchableOpacity
-                                    style={styles.passwordToggle}
+                                <Pressable
+                                    style={({ pressed }) => [
+                                        styles.passwordToggle,
+                                        pressed && { opacity: 0.7 }
+                                    ]}
                                     onPress={togglePasswordVisibility}
-                                    activeOpacity={0.7}
                                 >
                                     {showPassword ? (
                                         <EyeOff size={20} color="#64748b" />
                                     ) : (
                                         <Eye size={20} color="#64748b" />
                                     )}
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
                             {errors.password && (
                                 <Text style={styles.errorText}>{errors.password.message}</Text>
@@ -312,14 +314,13 @@ export const CreateUserForm = () => {
                 />
 
                 {/* Submit Button */}
-                <TouchableOpacity
-                    style={[
+                <Pressable
+                    style={({ pressed }) => [
                         styles.submitButton,
-                        (!isValid || isSubmitting) && styles.submitButtonDisabled,
+                        (!isValid || isSubmitting || pressed) && styles.submitButtonDisabled,
                     ]}
                     onPress={handleSubmit(handleCreateUser)}
                     disabled={!isValid || isSubmitting}
-                    activeOpacity={0.8}
                 >
                     <LinearGradient
                         colors={
@@ -338,7 +339,7 @@ export const CreateUserForm = () => {
                             </>
                         )}
                     </LinearGradient>
-                </TouchableOpacity>
+                </Pressable>
             </View>
         </ScrollView>
     );

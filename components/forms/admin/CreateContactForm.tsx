@@ -19,11 +19,11 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
     ActivityIndicator,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
-    TouchableOpacity,
     View,
 } from 'react-native';
 
@@ -255,14 +255,13 @@ export const CreateContactForm = () => {
                 />
 
                 {/* Submit Button */}
-                <TouchableOpacity
-                    style={[
+                <Pressable
+                    style={({ pressed }) => [
                         styles.submitButton,
-                        (!isValid || isSubmitting) && styles.submitButtonDisabled,
+                        (!isValid || isSubmitting || pressed) && styles.submitButtonDisabled,
                     ]}
                     onPress={handleSubmit(handleCreateContact)}
                     disabled={!isValid || isSubmitting}
-                    activeOpacity={0.8}
                 >
                     <LinearGradient
                         colors={
@@ -281,7 +280,7 @@ export const CreateContactForm = () => {
                             </>
                         )}
                     </LinearGradient>
-                </TouchableOpacity>
+                </Pressable>
             </View>
         </ScrollView>
     );

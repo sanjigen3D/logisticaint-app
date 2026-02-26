@@ -1,6 +1,6 @@
 import { AlertCircle, Trash2, X } from 'lucide-react-native';
 import React from 'react';
-import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface ConfirmationModalProps {
     visible: boolean;
@@ -34,13 +34,16 @@ export const ConfirmationModal = ({
         >
             <View style={styles.overlay}>
                 <View style={styles.modalContainer}>
-                    <TouchableOpacity
-                        style={styles.closeButton}
+                    <Pressable
+                        style={({ pressed }) => [
+                            styles.closeButton,
+                            pressed && { opacity: 0.6 }
+                        ]}
                         onPress={onCancel}
                         disabled={isLoading}
                     >
                         <X size={20} color="#64748b" />
-                    </TouchableOpacity>
+                    </Pressable>
 
                     <View style={styles.iconContainer}>
                         <View style={[styles.iconCircle, isDestructive ? styles.iconCircleDestructive : styles.iconCircleWarning]}>
@@ -56,19 +59,23 @@ export const ConfirmationModal = ({
                     <Text style={styles.description}>{description}</Text>
 
                     <View style={styles.actionsContainer}>
-                        <TouchableOpacity
-                            style={[styles.button, styles.cancelButton]}
+                        <Pressable
+                            style={({ pressed }) => [
+                                styles.button,
+                                styles.cancelButton,
+                                pressed && { opacity: 0.7, backgroundColor: '#e2e8f0' }
+                            ]}
                             onPress={onCancel}
                             disabled={isLoading}
                         >
                             <Text style={styles.cancelButtonText}>{cancelText}</Text>
-                        </TouchableOpacity>
+                        </Pressable>
 
-                        <TouchableOpacity
-                            style={[
+                        <Pressable
+                            style={({ pressed }) => [
                                 styles.button,
                                 isDestructive ? styles.confirmButtonDestructive : styles.confirmButtonPrimary,
-                                isLoading && styles.buttonDisabled
+                                (isLoading || pressed) && styles.buttonDisabled
                             ]}
                             onPress={onConfirm}
                             disabled={isLoading}
@@ -78,7 +85,7 @@ export const ConfirmationModal = ({
                             ) : (
                                 <Text style={styles.confirmButtonText}>{confirmText}</Text>
                             )}
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
                 </View>
             </View>

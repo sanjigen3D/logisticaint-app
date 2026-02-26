@@ -9,11 +9,11 @@ import { Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react-native';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
+	Pressable,
 	StyleSheet,
 	Text,
 	TextInput,
-	TouchableOpacity,
-	View,
+	View
 } from 'react-native';
 
 export const LoginForm = () => {
@@ -140,17 +140,19 @@ export const LoginForm = () => {
 									autoCapitalize="none"
 									autoCorrect={false}
 								/>
-								<TouchableOpacity
-									style={styles.passwordToggle}
+								<Pressable
+									style={({ pressed }) => [
+										styles.passwordToggle,
+										pressed && { opacity: 0.7 }
+									]}
 									onPress={togglePasswordVisibility}
-									activeOpacity={0.7}
 								>
 									{showPassword ? (
 										<EyeOff size={20} color="#64748b" />
 									) : (
 										<Eye size={20} color="#64748b" />
 									)}
-								</TouchableOpacity>
+								</Pressable>
 							</View>
 							{errors.password && (
 								<Text style={styles.errorText}>{errors.password.message}</Text>
@@ -160,14 +162,13 @@ export const LoginForm = () => {
 				/>
 
 				{/* Login Button */}
-				<TouchableOpacity
-					style={[
+				<Pressable
+					style={({ pressed }) => [
 						styles.loginButton,
-						(!isValid || isLoading) && styles.loginButtonDisabled,
+						(!isValid || isLoading || pressed) && styles.loginButtonDisabled,
 					]}
 					onPress={handleSubmit(handleLogin)}
 					disabled={!isValid || isLoading}
-					activeOpacity={0.8}
 				>
 					<LinearGradient
 						colors={
@@ -184,7 +185,7 @@ export const LoginForm = () => {
 							</Text>
 						</>
 					</LinearGradient>
-				</TouchableOpacity>
+				</Pressable>
 
 				{/* Forgot Password NOT IMPLEMENTED*/}
 				{/*<TouchableOpacity style={styles.forgotPasswordButton}>*/}

@@ -18,11 +18,11 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
     ActivityIndicator,
+    Pressable,
     StyleSheet,
     Switch,
     Text,
     TextInput,
-    TouchableOpacity,
     View,
 } from 'react-native';
 import { z } from 'zod';
@@ -234,11 +234,14 @@ export const EditUserForm = ({ userItem, onSuccess }: EditUserFormProps) => {
             />
 
             {/* Submit Button */}
-            <TouchableOpacity
-                style={[styles.submitButton, (!isValid || isSubmitting) && styles.submitButtonDisabled]}
+            <Pressable
                 onPress={handleSubmit(handleEditUser)}
                 disabled={!isValid || isSubmitting}
-                activeOpacity={0.8}
+                style={({ pressed }) => [
+                    styles.submitButton,
+                    (!isValid || isSubmitting) && styles.submitButtonDisabled,
+                    pressed && !isSubmitting && isValid && { opacity: 0.8 }
+                ]}
             >
                 <LinearGradient
                     colors={!isValid || isSubmitting ? ['#94a3b8', '#64748b'] : ['#3b82f6', '#1e40af']}
@@ -253,7 +256,7 @@ export const EditUserForm = ({ userItem, onSuccess }: EditUserFormProps) => {
                         </>
                     )}
                 </LinearGradient>
-            </TouchableOpacity>
+            </Pressable>
         </View>
     );
 };

@@ -12,11 +12,11 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
     ActivityIndicator,
+    Pressable,
     StyleSheet,
     Switch,
     Text,
     TextInput,
-    TouchableOpacity,
     View,
 } from 'react-native';
 import { z } from 'zod';
@@ -218,11 +218,14 @@ export const EditContactForm = ({ contact, onSuccess }: EditContactFormProps) =>
             />
 
             {/* Submit Button */}
-            <TouchableOpacity
-                style={[styles.submitButton, (!isValid || isSubmitting) && styles.submitButtonDisabled]}
+            <Pressable
                 onPress={handleSubmit(handleEditContact)}
                 disabled={!isValid || isSubmitting}
-                activeOpacity={0.8}
+                style={({ pressed }) => [
+                    styles.submitButton,
+                    (!isValid || isSubmitting) && styles.submitButtonDisabled,
+                    pressed && !isSubmitting && isValid && { opacity: 0.8 }
+                ]}
             >
                 <LinearGradient
                     colors={!isValid || isSubmitting ? ['#94a3b8', '#64748b'] : ['#0284c7', '#0369a1']}
@@ -237,7 +240,7 @@ export const EditContactForm = ({ contact, onSuccess }: EditContactFormProps) =>
                         </>
                     )}
                 </LinearGradient>
-            </TouchableOpacity>
+            </Pressable>
         </View>
     );
 };

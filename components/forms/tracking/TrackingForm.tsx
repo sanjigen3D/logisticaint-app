@@ -9,10 +9,10 @@ import { Search, Ship } from 'lucide-react-native';
 import { Dispatch, SetStateAction } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
+	Pressable,
 	StyleSheet,
 	Text,
 	TextInput,
-	TouchableOpacity,
 	View,
 } from 'react-native';
 
@@ -81,14 +81,14 @@ export const TrackingForm = ({
 						render={({ field: { value } }) => (
 							<View style={styles.radioGroupContainer}>
 								{CARRIERS.map((carrier) => (
-									<TouchableOpacity
+									<Pressable
 										key={carrier.id}
-										style={[
+										style={({ pressed }) => [
 											styles.radioOption,
 											value === carrier.id && styles.radioOptionSelected,
+											pressed && { opacity: 0.8 }
 										]}
 										onPress={() => handleCarrierSelect(carrier.id)}
-										activeOpacity={0.7}
 									>
 										<View style={styles.radioButton}>
 											<View
@@ -123,7 +123,7 @@ export const TrackingForm = ({
 												{carrier.description}
 											</Text>
 										</View>
-									</TouchableOpacity>
+									</Pressable>
 								))}
 							</View>
 						)}
@@ -177,28 +177,32 @@ export const TrackingForm = ({
 							Ejemplos de números válidos:
 						</Text>
 						{getSelectedCarrier()?.examples.map((example, index) => (
-							<TouchableOpacity
+							<Pressable
 								key={index}
-								style={styles.exampleItem}
+								style={({ pressed }) => [
+									styles.exampleItem,
+									pressed && { backgroundColor: '#e2e8f0' }
+								]}
 								onPress={() =>
 									setValue('trackingNumber', example, {
 										shouldValidate: true,
 									})
 								}
-								activeOpacity={0.7}
 							>
 								<Text style={styles.exampleText}>{example}</Text>
-							</TouchableOpacity>
+							</Pressable>
 						))}
 					</View>
 				)}
 
 				{/* SUBMIT BUTTON */}
-				<TouchableOpacity
-					style={[styles.trackButton, !isValid && styles.trackButtonDisabled]}
+				<Pressable
+					style={({ pressed }) => [
+						styles.trackButton,
+						(!isValid || isTracking || pressed) && styles.trackButtonDisabled
+					]}
 					onPress={handleSubmit(handleTrack)}
 					disabled={!isValid || isTracking}
-					activeOpacity={0.8}
 				>
 					<LinearGradient
 						colors={!isValid ? ['#94a3b8', '#64748b'] : ['#07174c', '#0b3477']}
@@ -209,7 +213,7 @@ export const TrackingForm = ({
 							{isTracking ? 'Rastreando...' : 'Rastrear'}
 						</Text>
 					</LinearGradient>
-				</TouchableOpacity>
+				</Pressable>
 			</View>
 		</View>
 	);

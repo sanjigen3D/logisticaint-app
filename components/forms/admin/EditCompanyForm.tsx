@@ -9,11 +9,11 @@ import { Building, Building2, MapPin, Save, Tag } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
 import {
     ActivityIndicator,
+    Pressable,
     StyleSheet,
     Switch,
     Text,
     TextInput,
-    TouchableOpacity,
     View,
 } from 'react-native';
 import { z } from 'zod';
@@ -211,11 +211,14 @@ export const EditCompanyForm = ({ company, onSuccess }: EditCompanyFormProps) =>
             />
 
             {/* Submit Button */}
-            <TouchableOpacity
-                style={[styles.submitButton, (!isValid || isSubmitting) && styles.submitButtonDisabled]}
+            <Pressable
                 onPress={handleSubmit(handleEditCompany)}
                 disabled={!isValid || isSubmitting}
-                activeOpacity={0.8}
+                style={({ pressed }) => [
+                    styles.submitButton,
+                    (!isValid || isSubmitting) && styles.submitButtonDisabled,
+                    pressed && !isSubmitting && isValid && { opacity: 0.8 }
+                ]}
             >
                 <LinearGradient
                     colors={!isValid || isSubmitting ? ['#94a3b8', '#64748b'] : ['#10b981', '#047857']}
@@ -230,7 +233,7 @@ export const EditCompanyForm = ({ company, onSuccess }: EditCompanyFormProps) =>
                         </>
                     )}
                 </LinearGradient>
-            </TouchableOpacity>
+            </Pressable>
         </View>
     );
 };

@@ -11,7 +11,7 @@ import {
 	Ship,
 } from 'lucide-react-native';
 import { Dispatch, SetStateAction } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 export const TrackingResult = ({
 	trackingData,
@@ -155,10 +155,12 @@ export const TrackingResult = ({
 					</Text>
 					{trackingData.containers.map((container) => (
 						<View key={container.number} style={styles.containerCard}>
-							<TouchableOpacity
-								style={styles.containerHeader}
+							<Pressable
+								style={({ pressed }) => [
+									styles.containerHeader,
+									pressed && { backgroundColor: '#e2e8f0' }
+								]}
 								onPress={() => toggleContainerExpansion(container.number)}
-								activeOpacity={0.7}
 							>
 								<View style={styles.containerHeaderContent}>
 									<Box size={16} color="#3b82f6" />
@@ -170,7 +172,7 @@ export const TrackingResult = ({
 								) : (
 									<ChevronDown size={16} color="#64748b" />
 								)}
-							</TouchableOpacity>
+							</Pressable>
 
 							{expandedContainers.has(container.number) && (
 								<View style={styles.containerEvents}>

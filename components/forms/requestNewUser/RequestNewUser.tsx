@@ -1,18 +1,12 @@
-import {
-	StyleSheet,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	View,
-} from 'react-native';
+import { ROUTES } from '@/lib/Routes';
+import { RegisterFormData } from '@/lib/types/types';
+import { RequestNewUserSchema } from '@/lib/validations/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Building, Mail, User, UserPlus } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { RegisterFormData } from '@/lib/types/types';
 import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { RequestNewUserSchema } from '@/lib/validations/schemas';
-import { ROUTES } from '@/lib/Routes';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 const RequestNewUSerText = {
 	Title: 'Información Personal',
@@ -231,14 +225,13 @@ export const RequestNewUser = ({
 				/>
 
 				{/* Register Button */}
-				<TouchableOpacity
-					style={[
+				<Pressable
+					style={({ pressed }) => [
 						styles.registerButton,
-						!isValid && styles.registerButtonDisabled,
+						(!isValid || isLoading || pressed) && styles.registerButtonDisabled,
 					]}
 					onPress={handleSubmit(handleRegister)}
 					disabled={!isValid || isLoading}
-					activeOpacity={0.8}
 				>
 					<LinearGradient
 						colors={!isValid ? ['#07174c', '#0b3477'] : ['#07174c', '#0b3477']}
@@ -249,7 +242,7 @@ export const RequestNewUser = ({
 							{isLoading ? 'Solicitando cuenta...' : 'Solicitar Cuenta'}
 						</Text>
 					</LinearGradient>
-				</TouchableOpacity>
+				</Pressable>
 
 				{/* INFO */}
 				<Text style={styles.termsText}>

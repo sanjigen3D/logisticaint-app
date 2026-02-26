@@ -11,7 +11,6 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    TouchableWithoutFeedback,
     View,
 } from 'react-native';
 
@@ -92,9 +91,7 @@ export default function AdaptiveModal({ visible, onClose, title, children }: Ada
                 style={styles.container}
             >
                 {/* Overlay */}
-                <TouchableWithoutFeedback onPress={handleClose}>
-                    <View style={styles.overlay} />
-                </TouchableWithoutFeedback>
+                <Pressable style={styles.overlay} onPress={handleClose} />
 
                 {/* Sheet */}
                 <Animated.View

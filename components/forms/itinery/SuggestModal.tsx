@@ -1,12 +1,12 @@
+import { Port } from '@/lib/types/types';
 import { Anchor } from 'lucide-react-native';
 import {
 	FlatList,
-	TouchableOpacity,
-	View,
-	Text,
+	Pressable,
 	StyleSheet,
+	Text,
+	View,
 } from 'react-native';
-import { Port } from '@/lib/types/types';
 
 type SuggestionsModalProps = {
 	suggestions: Port[];
@@ -29,12 +29,15 @@ const SuggestionsModal = ({
 			data={suggestions}
 			keyExtractor={(item) => item.name + item.country}
 			renderItem={({ item }) => (
-				<TouchableOpacity
+				<Pressable
 					onPress={() => {
 						onSelectItem(item);
 						setSuggestions([]);
 					}}
-					style={styles.suggestionItem}
+					style={({ pressed }) => [
+						styles.suggestionItem,
+						pressed && { backgroundColor: '#f1f5f9' }
+					]}
 				>
 					<Anchor size={16} color={iconColor} />
 					<View style={styles.suggestionContent}>
@@ -46,7 +49,7 @@ const SuggestionsModal = ({
 							<Text style={styles.suggestionCode}>{item.location}</Text>
 						</View>
 					</View>
-				</TouchableOpacity>
+				</Pressable>
 			)}
 		/>
 	);
