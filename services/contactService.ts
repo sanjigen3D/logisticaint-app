@@ -40,4 +40,23 @@ export const contactService = {
 
         return data;
     },
+
+    updateContact: async (id: number, contactData: Partial<CreateContactFormData>, token: string): Promise<{ contact?: Contact }> => {
+        const response = await fetch(`${API_URL}/contacts/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(contactData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Error al actualizar el contacto');
+        }
+
+        return data;
+    },
 };

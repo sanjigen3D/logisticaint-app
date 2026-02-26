@@ -64,6 +64,9 @@ export default function AdminLayout() {
             <Tabs.Screen name="create-user" options={{ href: null }} />
             <Tabs.Screen name="create-company" options={{ href: null }} />
             <Tabs.Screen name="create-contact" options={{ href: null }} />
+            <Tabs.Screen name="users" options={{ href: null }} />
+            <Tabs.Screen name="companies" options={{ href: null }} />
+            <Tabs.Screen name="contacts" options={{ href: null }} />
         </Tabs>
     );
 }

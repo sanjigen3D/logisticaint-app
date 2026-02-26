@@ -1,14 +1,17 @@
 import { ROUTES } from '@/lib/Routes';
 import { MyRoute } from "@/lib/types/types";
 import {
+	Building,
 	Building2,
+	Contact,
 	Contact2,
 	LogIn,
 	LogOut,
 	LucideIcon,
 	Package,
 	Search,
-	UserPlus
+	UserPlus,
+	Users
 } from 'lucide-react-native';
 
 type Carrier = {
@@ -100,7 +103,7 @@ export const quickActionsAccount: QuickAction[] = [
 
 /************************  CONST de (admin)  ***********************************/
 
-export const quickActionsAdmin: QuickAction[] = [
+export const quickActionsAdminUsers: QuickAction[] = [
 	{
 		id: 100,
 		title: 'Crear Usuario',
@@ -111,6 +114,17 @@ export const quickActionsAdmin: QuickAction[] = [
 	},
 	{
 		id: 101,
+		title: 'Gestionar Usuarios',
+		subtitle: 'Ver, editar y eliminar',
+		icon: Users,
+		color: '#6d28d9',
+		route: ROUTES.USERS as MyRoute,
+	},
+];
+
+export const quickActionsAdminCompanies: QuickAction[] = [
+	{
+		id: 102,
 		title: 'Crear Empresa',
 		subtitle: 'Registrar nueva empresa',
 		icon: Building2,
@@ -118,12 +132,31 @@ export const quickActionsAdmin: QuickAction[] = [
 		route: ROUTES.CREATE_COMPANY as MyRoute,
 	},
 	{
-		id: 102,
+		id: 103,
+		title: 'Gestionar Empresas',
+		subtitle: 'Ver, editar y eliminar',
+		icon: Building,
+		color: '#047857',
+		route: ROUTES.COMPANIES as MyRoute,
+	},
+];
+
+export const quickActionsAdminContacts: QuickAction[] = [
+	{
+		id: 104,
 		title: 'Crear Contacto',
 		subtitle: 'Agregar contacto a empresa',
 		icon: Contact2,
 		color: '#0284c7',
 		route: ROUTES.CREATE_CONTACT as MyRoute,
+	},
+	{
+		id: 105,
+		title: 'Gestionar Contactos',
+		subtitle: 'Ver, editar y eliminar',
+		icon: Contact,
+		color: '#0369a1',
+		route: ROUTES.CONTACTS as MyRoute,
 	},
 ];
 

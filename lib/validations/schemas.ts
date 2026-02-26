@@ -128,3 +128,27 @@ export const createContactSchema = z.object({
 		.toLowerCase(),
 	company_id: z.number({ required_error: 'Debe seleccionar una empresa' }).int().positive('Empresa inválida'),
 });
+
+// formularios de edición
+export const editUserSchema = z.object({
+	name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres').max(100).optional(),
+	email: z.string().email('Ingresa un email válido').toLowerCase().optional(),
+	type_id: z.number().int().min(1).max(3).optional(),
+	company_id: z.number().int().positive().optional(),
+	active: z.boolean().optional(),
+});
+
+export const editCompanySchema = z.object({
+	name: z.string().min(2).max(150).optional(),
+	razon_social: z.string().min(2).max(200).optional(),
+	rut: z.string().min(3).max(20).optional(),
+	direccion: z.string().min(5).max(250).optional(),
+	alias: z.string().min(2).max(50).optional(),
+});
+
+export const editContactSchema = z.object({
+	name: z.string().min(2).max(150).optional(),
+	phone: z.string().min(6).max(30).optional(),
+	email: z.string().email().toLowerCase().optional(),
+	company_id: z.number().int().positive().optional(),
+});

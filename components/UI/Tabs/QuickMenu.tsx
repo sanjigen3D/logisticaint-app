@@ -5,6 +5,8 @@ import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 interface QuickMenuProps {
 	quickActions: QuickAction[];
 	type: 'quick' | 'admin' | 'none';
+	title?: string;
+	accentColor?: string;
 }
 
 const GAP = 14;
@@ -17,7 +19,7 @@ function getColumns(width: number): number {
 	return 1;
 }
 
-export default function QuickMenu({ quickActions, type }: QuickMenuProps) {
+export default function QuickMenu({ quickActions, type, title, accentColor }: QuickMenuProps) {
 	const { width } = useWindowDimensions();
 	const columns = getColumns(width);
 
@@ -25,21 +27,23 @@ export default function QuickMenu({ quickActions, type }: QuickMenuProps) {
 	const effectiveWidth = Math.min(width, CONTENT_MAX_WIDTH) - HORIZONTAL_PADDING;
 	const cardWidth = (effectiveWidth - GAP * (columns - 1)) / columns;
 
-	const label =
-		type === 'quick'
+	const label = title !== undefined
+		? title
+		: type === 'quick'
 			? 'Acceso Rápido'
 			: type === 'admin'
 				? 'Panel de Administración'
 				: '';
 
-	const accentColor =
-		type === 'admin' ? '#7c3aed' : '#1e40af';
+	const finalAccentColor = accentColor !== undefined
+		? accentColor
+		: type === 'admin' ? '#7c3aed' : '#1e40af';
 
 	return (
 		<View style={styles.container}>
 			{label ? (
 				<View style={styles.titleRow}>
-					<View style={[styles.titleAccent, { backgroundColor: accentColor }]} />
+					<View style={[styles.titleAccent, { backgroundColor: finalAccentColor }]} />
 					<Text style={styles.title}>{label}</Text>
 				</View>
 			) : null}
