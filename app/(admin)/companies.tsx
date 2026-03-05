@@ -1,20 +1,23 @@
 import { EditCompanyForm } from '@/components/forms/admin/EditCompanyForm';
 import AdaptiveModal from '@/components/UI/AdaptiveModal';
 import { ConfirmationModal } from '@/components/UI/ConfirmationModal';
+import ItemCard from '@/components/UI/ItemCard';
+import SearchBar from '@/components/UI/SearchBar';
+import { SelectDropdown } from '@/components/UI/SelectDropdown';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { ROUTES } from '@/lib/Routes';
 import { useToastStore } from '@/lib/stores/useToastStore';
 import { Company } from '@/lib/types/types';
-import { Redirect } from 'expo-router';
-import { Building, Edit, Trash2 } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { Redirect, useRouter } from 'expo-router';
+import { Building } from 'lucide-react-native';
+import { useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
     Platform,
-    Pressable,
     StyleSheet,
     Text,
+    useWindowDimensions,
     View,
 } from 'react-native';
 
@@ -22,52 +25,73 @@ const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export default function CompaniesScreen() {
     const { isManagerOrHigher, user, token } = useAuth();
+    const router = useRouter();
     const { showToast } = useToastStore();
     const [companies, setCompanies] = useState<Company[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingCompany, setEditingCompany] = useState<Company | null>(null);
     const [deletingCompany, setDeletingCompany] = useState<Company | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const { width } = useWindowDimensions();
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [filterActive, setFilterActive] = useState<string | number>('all'); // 'all', 1 (Active)
+
+    const getNumColumns = () => {
+        if (width >= 1024) return 3; // lg
+        if (width >= 768) return 2;  // md
+        return 1;                    // sm/mobile
+    };
+
+    const numColumns = getNumColumns();
 
     const isSuperAdmin = user?.company_name?.toLowerCase().includes('sanjigen');
 
     useEffect(() => {
-        if (!isSuperAdmin) {
-            showToast({
-                type: 'error',
-                message: 'Acceso restringido',
-                description: 'Solo los administradores globales pueden ver todas las empresas.',
-            });
-        } else {
-            fetchCompanies();
-        }
+        fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [user, isSuperAdmin]); // Trigger based on `isSuperAdmin` to ensure right endpoints
 
-    const fetchCompanies = async () => {
+    const fetchData = async () => {
+        if (!user) return;
+
         try {
             setLoading(true);
-            const response = await fetch(`${ROUTES.API_ROUTE}${ROUTES.API_COMPANIES}`, {
+            const endpoint = isSuperAdmin
+                ? `${ROUTES.API_ROUTE}${ROUTES.API_COMPANIES}`
+                : `${ROUTES.API_ROUTE}${ROUTES.API_COMPANIES}/${user.company_id}`;
+
+            const res = await fetch(endpoint, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            const data = await response.json();
-            if (data.success) {
-                setCompanies(Array.isArray(data.data) ? data.data : [data.data]);
-            } else {
+            const contentType = res.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const text = await res.text();
+                // console.error("Respuesta no es JSON:", text);
                 showToast({
                     type: 'error',
-                    message: 'Error',
-                    description: data.message || 'No se pudieron cargar las empresas.',
+                    message: 'Error de servidor',
+                    description: 'La respuesta no tiene el formato esperado (JSON).',
                 });
+                return;
+            }
+
+            const data = await res.json();
+            if (data.success) {
+                // If it's a single object (non-superadmin), wrap it in an array
+                setCompanies(Array.isArray(data.data) ? data.data : [data.data]);
+            } else {
+                showToast({ type: 'error', message: 'Error', description: data.message });
             }
         } catch (error) {
             console.error(error);
             showToast({
                 type: 'error',
                 message: 'Error de red',
-                description: 'No se pudo conectar con el servidor.',
+                description: 'No se pudieron cargar las empresas.',
             });
         } finally {
             setLoading(false);
@@ -76,6 +100,7 @@ export default function CompaniesScreen() {
 
     const confirmDelete = async () => {
         if (!deletingCompany) return;
+
         setIsDeleting(true);
         try {
             const response = await fetch(`${ROUTES.API_ROUTE}${ROUTES.API_COMPANIES}/${deletingCompany.id}`, {
@@ -85,25 +110,23 @@ export default function CompaniesScreen() {
                 },
             });
             const data = await response.json();
+
             if (data.success) {
                 showToast({
                     type: 'success',
                     message: 'Empresa eliminada',
-                    description: 'La empresa y sus contactos se han eliminado correctamente.',
+                    description: 'La empresa y sus contactos asociados han sido eliminados correctamente.',
                 });
-                fetchCompanies();
+                fetchData();
             } else {
-                showToast({
-                    type: 'error',
-                    message: 'Error',
-                    description: data.message,
-                });
+                showToast({ type: 'error', message: 'Error', description: data.message });
             }
         } catch (error) {
+            console.error(error);
             showToast({
                 type: 'error',
-                message: 'Error',
-                description: 'No se pudo eliminar la empresa.',
+                message: 'Error de red',
+                description: 'No se pudo procesar la solicitud. Verifica tu conexión.',
             });
         } finally {
             setIsDeleting(false);
@@ -111,72 +134,84 @@ export default function CompaniesScreen() {
         }
     };
 
+    const filteredData = useMemo(() => {
+        let result = companies;
+
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            result = result.filter(
+                (company) =>
+                    company.name.toLowerCase().includes(query) ||
+                    company.rut.toLowerCase().includes(query) ||
+                    (company.alias && company.alias.toLowerCase().includes(query))
+            );
+        }
+
+        if (filterActive !== 'all') {
+            result = result.filter((company) => company.active === (filterActive === 1));
+        }
+
+        return result;
+    }, [companies, searchQuery]);
+
     if (!isSuperAdmin) {
         return <Redirect href="/(tabs)" />;
     }
 
     const renderItem = ({ item }: { item: Company }) => (
-        <View style={styles.card}>
-            <View style={styles.cardHeader}>
-                <View style={styles.titleRow}>
-                    <Building size={20} color="#047857" style={{ marginRight: 8 }} />
-                    <Text style={styles.name}>{item.name}</Text>
-                </View>
-                <View style={styles.badgeRow}>
-                    <View style={[styles.statusBadge, item.active ? styles.statusBadgeActive : styles.statusBadgeInactive]}>
-                        <Text style={[styles.statusBadgeText, item.active ? styles.statusBadgeTextActive : styles.statusBadgeTextInactive]}>
-                            {item.active ? 'Activa' : 'Inactiva'}
-                        </Text>
-                    </View>
-                    <View style={styles.aliasBadge}>
-                        <Text style={styles.aliasBadgeText}>{item.alias}</Text>
-                    </View>
-                </View>
-            </View>
-            <View style={styles.cardBody}>
-                <Text style={styles.detail}>Razón Social: {item.razon_social}</Text>
-                <Text style={styles.detail}>RUT: {item.rut}</Text>
-                <Text style={styles.detail}>Dirección: {item.direccion}</Text>
-                {item.contacts && item.contacts.length > 0 && (
-                    <Text style={styles.detailContactCount}>
-                        Contactos asociados: {item.contacts.length}
-                    </Text>
-                )}
-            </View>
-            <View style={styles.cardFooter}>
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.actionBtn,
-                        styles.editBtn,
-                        pressed && { opacity: 0.7 }
-                    ]}
-                    onPress={() => setEditingCompany(item)}
-                >
-                    <Edit size={16} color="#059669" />
-                    <Text style={styles.editBtnText}>Editar</Text>
-                </Pressable>
-
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.actionBtn,
-                        styles.deleteBtn,
-                        pressed && { opacity: 0.7 }
-                    ]}
-                    onPress={() => setDeletingCompany(item)}
-                >
-                    <Trash2 size={16} color="#ef4444" />
-                    <Text style={styles.deleteBtnText}>Eliminar</Text>
-                </Pressable>
-            </View>
-        </View>
+        <ItemCard
+            title={item.name}
+            icon={<Building size={20} color="#047857" />}
+            badges={[
+                { label: item.active ? 'Activa' : 'Inactiva', variant: item.active ? 'active' : 'inactive' },
+                { label: item.alias, variant: 'default' }
+            ]}
+            details={[
+                { label: 'Razón Social', value: item.razon_social },
+                { label: 'RUT', value: item.rut },
+                { label: 'Dirección', value: item.direccion },
+                ...(item.contacts && item.contacts.length > 0 ? [{ label: 'Contactos Asociados', value: item.contacts.length.toString() }] : []),
+            ]}
+            style={numColumns > 1 ? { flex: 1, marginHorizontal: 6, maxWidth: `${100 / numColumns}%` } : {}}
+            onPress={() => router.push(`/(admin)/company/${item.id}` as any)}
+        />
     );
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Empresas</Text>
-                <Text style={styles.subtitle}>Gestión global de empresas y clientes</Text>
+                <Text style={styles.title}>Directorio de Empresas</Text>
+                <Text style={styles.subtitle}>Gestona las empresas asociadas al sistema.</Text>
             </View>
+
+            <SearchBar
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholder="Buscar por nombre, RUT o alias..."
+                showFilter={true}
+                onFilterPress={() => setShowFilterModal(true)}
+            />
+
+            {/* Filer Modal */}
+            <AdaptiveModal
+                visible={showFilterModal}
+                onClose={() => setShowFilterModal(false)}
+                title="Filtros de Búsqueda"
+            >
+                <View style={styles.filterForm}>
+                    <Text style={styles.filterLabel}>Estado</Text>
+                    <SelectDropdown
+                        options={[
+                            { label: 'Todos', value: 'all' },
+                            { label: 'Activas', value: 1 },
+                            // { label: 'Inactivas', value: 0 }, // Future inactive support
+                        ]}
+                        selectedValue={filterActive}
+                        onSelect={setFilterActive}
+                        placeholder="Filtrar por estado..."
+                    />
+                </View>
+            </AdaptiveModal>
 
             {loading ? (
                 <View style={styles.loaderContainer}>
@@ -184,10 +219,13 @@ export default function CompaniesScreen() {
                 </View>
             ) : (
                 <FlatList
-                    data={companies}
+                    key={numColumns} // Force re-render flatlist on column change
+                    data={filteredData}
+                    numColumns={numColumns}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderItem}
                     contentContainerStyle={styles.listContent}
+                    columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={
                         <View style={styles.emptyContainer}>
@@ -207,7 +245,7 @@ export default function CompaniesScreen() {
                         company={editingCompany}
                         onSuccess={() => {
                             setEditingCompany(null);
-                            fetchCompanies();
+                            fetchData();
                         }}
                     />
                 )}
@@ -257,132 +295,18 @@ const styles = StyleSheet.create({
     listContent: {
         paddingBottom: TAB_BAR_HEIGHT + 20,
     },
-    card: {
-        backgroundColor: '#ffffff',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
-        borderWidth: 1,
-        borderColor: '#e2e8f0',
+    filterForm: {
+        paddingVertical: 10,
+        gap: 8,
     },
-    cardHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-    titleRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    name: {
-        fontSize: 16,
-        fontFamily: 'Inter-SemiBold',
-        color: '#0f172a',
-    },
-    badge: {
-        backgroundColor: '#f1f5f9',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: '#e2e8f0',
-    },
-    badgeText: {
-        fontSize: 11,
-        fontFamily: 'Inter-Medium',
-        color: '#475569',
-    },
-    badgeRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-    },
-    statusBadge: {
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 12,
-    },
-    statusBadgeActive: {
-        backgroundColor: '#dcfce7',
-    },
-    statusBadgeInactive: {
-        backgroundColor: '#fee2e2',
-    },
-    statusBadgeText: {
-        fontSize: 11,
-        fontFamily: 'Inter-Medium',
-    },
-    statusBadgeTextActive: {
-        color: '#166534',
-    },
-    statusBadgeTextInactive: {
-        color: '#991b1b',
-    },
-    aliasBadge: {
-        backgroundColor: '#f1f5f9',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: '#e2e8f0',
-    },
-    aliasBadgeText: {
-        fontSize: 11,
-        fontFamily: 'Inter-Medium',
-        color: '#475569',
-    },
-    cardBody: {
-        marginBottom: 16,
-    },
-    detail: {
+    filterLabel: {
         fontSize: 14,
-        fontFamily: 'Inter-Regular',
+        fontFamily: 'Inter-Medium',
         color: '#475569',
         marginBottom: 4,
     },
-    detailContactCount: {
-        fontSize: 13,
-        fontFamily: 'Inter-Medium',
-        color: '#047857',
-        marginTop: 8,
-    },
-    cardFooter: {
-        flexDirection: 'row',
-        gap: 8,
-        justifyContent: 'flex-end',
-        borderTopWidth: 1,
-        borderTopColor: '#f1f5f9',
-        paddingTop: 12,
-    },
-    actionBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 8,
-    },
-    editBtn: {
-        backgroundColor: '#ecfdf5',
-    },
-    editBtnText: {
-        color: '#059669',
-        fontSize: 13,
-        fontFamily: 'Inter-Medium',
-    },
-    deleteBtn: {
-        backgroundColor: '#fef2f2',
-    },
-    deleteBtnText: {
-        color: '#ef4444',
-        fontSize: 13,
-        fontFamily: 'Inter-Medium',
+    columnWrapper: {
+        justifyContent: 'flex-start',
     },
     emptyContainer: {
         padding: 40,

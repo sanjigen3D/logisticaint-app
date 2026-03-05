@@ -1,12 +1,12 @@
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useTabBar } from '@/lib/hooks/useTabBar';
 import { Tabs, usePathname } from 'expo-router';
-import { Home, LogIn, ShieldAlert, User } from 'lucide-react-native';
+import { Building, Home, LogIn, ShieldAlert, User } from 'lucide-react-native';
 import { View } from 'react-native';
 
 export default function TabLayout() {
 	const pathname = usePathname();
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated, user } = useAuth();
 	const { screenOptions, styles } = useTabBar();
 
 	const isInAdmin = pathname.startsWith('/(admin)') || pathname.startsWith('/admin');
@@ -57,9 +57,25 @@ export default function TabLayout() {
 			/>
 
 			<Tabs.Screen
+				name="my-company"
+				options={
+					!isAuthenticated
+						? { href: null }
+						: {
+							title: 'Empresa',
+							tabBarIcon: ({ size, color }) => (
+								<View style={styles.iconWrap}>
+									<Building size={size} color={color} strokeWidth={2.4} />
+								</View>
+							),
+						}
+				}
+			/>
+
+			<Tabs.Screen
 				name="admin"
 				options={
-					!isAuthenticated || isInAdmin
+					!isAuthenticated || isInAdmin || !user || user.type === 'User'
 						? { href: null }
 						: {
 							title: 'Admin',

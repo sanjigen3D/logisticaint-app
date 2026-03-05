@@ -1,19 +1,24 @@
 import { EditUserForm } from '@/components/forms/admin/EditUserForm';
 import AdaptiveModal from '@/components/UI/AdaptiveModal';
 import { ConfirmationModal } from '@/components/UI/ConfirmationModal';
+import ItemCard from '@/components/UI/ItemCard';
+import SearchBar from '@/components/UI/SearchBar';
+import { SelectDropdown } from '@/components/UI/SelectDropdown';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { ROUTES } from '@/lib/Routes';
 import { useToastStore } from '@/lib/stores/useToastStore';
+import { Company } from '@/lib/types/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Redirect } from 'expo-router';
-import { Edit, Trash2 } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { Edit, Trash2, User } from 'lucide-react-native';
+import { useEffect, useMemo, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
     Platform,
-    Pressable,
     StyleSheet,
     Text,
+    useWindowDimensions,
     View,
 } from 'react-native';
 
@@ -30,15 +35,67 @@ type UserItem = {
 };
 
 export default function UsersScreen() {
-    const { isManagerOrHigher, user, token } = useAuth();
+    const { isManagerOrHigher, user, token, canEditUser, isSuperAdmin: checkSuperAdmin } = useAuth();
+    const isSuperAdmin = checkSuperAdmin();
     const { showToast } = useToastStore();
-    const [users, setUsers] = useState<UserItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const queryClient = useQueryClient();
     const [editingUser, setEditingUser] = useState<UserItem | null>(null);
     const [deletingUser, setDeletingUser] = useState<UserItem | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const { width } = useWindowDimensions();
 
-    const isSuperAdmin = user?.company_name?.toLowerCase().includes('sanjigen');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [filterActive, setFilterActive] = useState<string | number>('all');
+    const [filterCompanyId, setFilterCompanyId] = useState<string | number>('all');
+
+    const getNumColumns = () => {
+        if (width >= 1024) return 3;
+        if (width >= 768) return 2;
+        return 1;
+    };
+
+    const numColumns = getNumColumns();
+
+    const { data: queryData, isLoading: loading, refetch: fetchUsers } = useQuery({
+        queryKey: ['usersList', isSuperAdmin, user?.company_id],
+        queryFn: async () => {
+            if (!isManagerOrHigher()) throw new Error('Acceso restringido');
+
+            const endpoint = isSuperAdmin
+                ? `${ROUTES.API_ROUTE}${ROUTES.API_USERS}`
+                : `${ROUTES.API_ROUTE}${ROUTES.API_USERS}/company/${user?.company_id}`;
+
+            const [usersRes, compRes] = await Promise.all([
+                fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } }),
+                isSuperAdmin
+                    ? fetch(`${ROUTES.API_ROUTE}${ROUTES.API_COMPANIES}`, { headers: { Authorization: `Bearer ${token}` } })
+                    : Promise.resolve(null)
+            ]);
+
+            const usersData = await usersRes.json();
+            let companiesData = { success: false, data: [] };
+
+            if (compRes) {
+                companiesData = await compRes.json();
+            }
+
+            if (!usersData.success) {
+                showToast({ type: 'error', message: 'Error', description: usersData.message || 'Error al cargar usuarios.' });
+                throw new Error(usersData.message);
+            }
+
+            return {
+                users: (Array.isArray(usersData.data) ? usersData.data : [usersData.data]) as UserItem[],
+                companies: (companiesData.success ? companiesData.data : []) as Company[]
+            };
+        },
+        enabled: !!token && isManagerOrHigher(),
+        staleTime: 1000 * 60 * 1.5, // 1.5 minutes cache
+    });
+
+    const users = queryData?.users || [];
+    const companiesList = queryData?.companies || [];
 
     useEffect(() => {
         if (!isManagerOrHigher()) {
@@ -47,45 +104,9 @@ export default function UsersScreen() {
                 message: 'Acceso restringido',
                 description: 'No tienes permisos para acceder a esta sección.',
             });
-        } else {
-            fetchUsers();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const fetchUsers = async () => {
-        try {
-            setLoading(true);
-            const endpoint = isSuperAdmin
-                ? `${ROUTES.API_ROUTE}${ROUTES.API_USERS}`
-                : `${ROUTES.API_ROUTE}${ROUTES.API_USERS}/company/${user?.company_id}`;
-
-            const response = await fetch(endpoint, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            const data = await response.json();
-            if (data.success) {
-                setUsers(Array.isArray(data.data) ? data.data : [data.data]);
-            } else {
-                showToast({
-                    type: 'error',
-                    message: 'Error',
-                    description: data.message || 'No se pudieron cargar los usuarios.',
-                });
-            }
-        } catch (error) {
-            console.error(error);
-            showToast({
-                type: 'error',
-                message: 'Error de red',
-                description: 'No se pudo conectar con el servidor.',
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const confirmDelete = async () => {
         if (!deletingUser) return;
@@ -128,57 +149,114 @@ export default function UsersScreen() {
         return <Redirect href="/(tabs)" />;
     }
 
-    const renderItem = ({ item }: { item: UserItem }) => (
-        <View style={styles.card}>
-            <View style={styles.cardHeader}>
-                <Text style={styles.name}>{item.name}</Text>
-                <View style={[styles.badge, item.active ? styles.badgeActive : styles.badgeInactive]}>
-                    <Text style={[styles.badgeText, item.active ? styles.badgeTextActive : styles.badgeTextInactive]}>
-                        {item.active ? 'Activo' : 'Inactivo'}
-                    </Text>
-                </View>
-            </View>
-            <View style={styles.cardBody}>
-                <Text style={styles.detail}>Email: {item.email}</Text>
-                <Text style={styles.detail}>Rol: {item.type}</Text>
-                {isSuperAdmin && <Text style={styles.detail}>Empresa: {item.company_name}</Text>}
-            </View>
-            <View style={styles.cardFooter}>
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.actionBtn,
-                        styles.editBtn,
-                        pressed && { opacity: 0.7 }
-                    ]}
-                    onPress={() => setEditingUser(item)}
-                >
-                    <Edit size={16} color="#3b82f6" />
-                    <Text style={styles.editBtnText}>Editar</Text>
-                </Pressable>
+    const filteredData = useMemo(() => {
+        let result = users;
 
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.actionBtn,
-                        styles.deleteBtn,
-                        pressed && { opacity: 0.7 }
-                    ]}
-                    onPress={() => setDeletingUser(item)}
-                >
-                    <Trash2 size={16} color="#ef4444" />
-                    <Text style={styles.deleteBtnText}>Eliminar</Text>
-                </Pressable>
-            </View>
-        </View>
-    );
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            result = result.filter(
+                (u) =>
+                    u.name.toLowerCase().includes(query) ||
+                    u.email.toLowerCase().includes(query) ||
+                    (u.type && u.type.toLowerCase().includes(query))
+            );
+        }
+
+        if (filterActive !== 'all') {
+            result = result.filter((u) => u.active === (filterActive === 1));
+        }
+
+        if (filterCompanyId !== 'all') {
+            result = result.filter((u) => u.company_id === filterCompanyId);
+        }
+
+        return result;
+    }, [users, searchQuery]);
+
+    const renderItem = ({ item }: { item: UserItem }) => {
+        const canEdit = canEditUser({ id: item.id, type: item.type, company_name: item.company_name });
+
+        return (
+            <ItemCard
+                title={item.name}
+                icon={<User size={20} color="#3b82f6" />}
+                badges={[
+                    { label: item.active ? 'Activo' : 'Inactivo', variant: item.active ? 'active' : 'inactive' }
+                ]}
+                actions={canEdit ? [
+                    {
+                        label: 'Editar',
+                        icon: <Edit size={16} color="#3b82f6" />,
+                        onPress: () => setEditingUser(item),
+                        variant: 'primary'
+                    },
+                    {
+                        label: 'Eliminar',
+                        icon: <Trash2 size={16} color="#ef4444" />,
+                        onPress: () => setDeletingUser(item),
+                        variant: 'destructive'
+                    }
+                ] : []}
+                details={[
+                    { label: 'Email', value: item.email },
+                    { label: 'Rol', value: item.type },
+                    ...(isSuperAdmin ? [{ label: 'Empresa', value: item.company_name }] : []),
+                ]}
+                style={numColumns > 1 ? { flex: 1, marginHorizontal: 6, maxWidth: `${100 / numColumns}%` } : {}}
+            />
+        );
+    };
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Usuarios</Text>
-                <Text style={styles.subtitle}>
-                    {isSuperAdmin ? 'Gestiona todos los usuarios del sistema' : 'Gestiona los usuarios de tu empresa'}
-                </Text>
+                <Text style={styles.title}>Directorio de Usuarios</Text>
+                <Text style={styles.subtitle}>Gestona los usuarios de las plataformas.</Text>
             </View>
+
+            <SearchBar
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholder="Buscar por nombre, email o rol..."
+                showFilter={true}
+                onFilterPress={() => setShowFilterModal(true)}
+            />
+
+            {/* Filter Modal */}
+            <AdaptiveModal
+                visible={showFilterModal}
+                onClose={() => setShowFilterModal(false)}
+                title="Filtros de Búsqueda"
+            >
+                <View style={styles.filterForm}>
+                    <Text style={styles.filterLabel}>Estado</Text>
+                    <SelectDropdown
+                        options={[
+                            { label: 'Todos', value: 'all' },
+                            { label: 'Activos', value: 1 },
+                            // { label: 'Inactivos', value: 0 },
+                        ]}
+                        selectedValue={filterActive}
+                        onSelect={setFilterActive}
+                        placeholder="Filtrar por estado..."
+                    />
+
+                    {isSuperAdmin && (
+                        <>
+                            <Text style={[styles.filterLabel, { marginTop: 12 }]}>Empresa</Text>
+                            <SelectDropdown
+                                options={[
+                                    { label: 'Todas las empresas', value: 'all' },
+                                    ...companiesList.map(c => ({ label: c.name, value: c.id }))
+                                ]}
+                                selectedValue={filterCompanyId}
+                                onSelect={setFilterCompanyId}
+                                placeholder="Filtrar por empresa..."
+                            />
+                        </>
+                    )}
+                </View>
+            </AdaptiveModal>
 
             {loading ? (
                 <View style={styles.loaderContainer}>
@@ -186,10 +264,13 @@ export default function UsersScreen() {
                 </View>
             ) : (
                 <FlatList
-                    data={users}
+                    key={numColumns}
+                    data={filteredData}
+                    numColumns={numColumns}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderItem}
                     contentContainerStyle={styles.listContent}
+                    columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={
                         <View style={styles.emptyContainer}>
@@ -259,91 +340,18 @@ const styles = StyleSheet.create({
     listContent: {
         paddingBottom: TAB_BAR_HEIGHT + 20,
     },
-    card: {
-        backgroundColor: '#ffffff',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
-        borderWidth: 1,
-        borderColor: '#e2e8f0',
+    filterForm: {
+        paddingVertical: 10,
+        gap: 8,
     },
-    cardHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-    name: {
-        fontSize: 16,
-        fontFamily: 'Inter-SemiBold',
-        color: '#0f172a',
-    },
-    badge: {
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 12,
-    },
-    badgeActive: {
-        backgroundColor: '#dcfce7',
-    },
-    badgeInactive: {
-        backgroundColor: '#fee2e2',
-    },
-    badgeText: {
-        fontSize: 11,
-        fontFamily: 'Inter-Medium',
-    },
-    badgeTextActive: {
-        color: '#166534',
-    },
-    badgeTextInactive: {
-        color: '#991b1b',
-    },
-    cardBody: {
-        marginBottom: 16,
-    },
-    detail: {
+    filterLabel: {
         fontSize: 14,
-        fontFamily: 'Inter-Regular',
+        fontFamily: 'Inter-Medium',
         color: '#475569',
         marginBottom: 4,
     },
-    cardFooter: {
-        flexDirection: 'row',
-        gap: 8,
-        justifyContent: 'flex-end',
-        borderTopWidth: 1,
-        borderTopColor: '#f1f5f9',
-        paddingTop: 12,
-    },
-    actionBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 8,
-    },
-    editBtn: {
-        backgroundColor: '#eff6ff',
-    },
-    editBtnText: {
-        color: '#3b82f6',
-        fontSize: 13,
-        fontFamily: 'Inter-Medium',
-    },
-    deleteBtn: {
-        backgroundColor: '#fef2f2',
-    },
-    deleteBtnText: {
-        color: '#ef4444',
-        fontSize: 13,
-        fontFamily: 'Inter-Medium',
+    columnWrapper: {
+        justifyContent: 'flex-start',
     },
     emptyContainer: {
         padding: 40,

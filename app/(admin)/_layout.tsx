@@ -1,11 +1,13 @@
+import { useAuth } from '@/lib/hooks/useAuth';
 import { useTabBar } from '@/lib/hooks/useTabBar';
 import { ROUTES } from '@/lib/Routes';
 import { Tabs, usePathname } from 'expo-router';
-import { Home, ShieldAlert, User } from 'lucide-react-native';
+import { Building, Home, ShieldAlert, User } from 'lucide-react-native';
 import { View } from 'react-native';
 
 export default function AdminLayout() {
     const pathname = usePathname();
+    const { user } = useAuth();
     const { screenOptions, styles } = useTabBar();
 
     const isAdminMain = pathname === ROUTES.ADMIN || pathname === '/(admin)/admin';
@@ -44,20 +46,38 @@ export default function AdminLayout() {
             />
 
             <Tabs.Screen
+                name="toMyCompany"
+                options={{
+                    title: 'Empresa',
+                    tabBarIcon: ({ size, color }) => (
+                        <View style={styles.iconWrap}>
+                            <Building
+                                size={size}
+                                color={color}
+                                strokeWidth={2.4}
+                            />
+                        </View>
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
                 name="admin"
                 options={
-                    {
-                        title: 'Admin',
-                        tabBarIcon: ({ size, color }) => (
-                            <View style={styles.iconWrap}>
-                                <ShieldAlert
-                                    size={size}
-                                    color={color}
-                                    strokeWidth={2.4}
-                                />
-                            </View>
-                        ),
-                    }
+                    !user || user.type === 'User'
+                        ? { href: null }
+                        : {
+                            title: 'Admin',
+                            tabBarIcon: ({ size, color }) => (
+                                <View style={styles.iconWrap}>
+                                    <ShieldAlert
+                                        size={size}
+                                        color={color}
+                                        strokeWidth={2.4}
+                                    />
+                                </View>
+                            ),
+                        }
                 }
             />
 
@@ -67,6 +87,7 @@ export default function AdminLayout() {
             <Tabs.Screen name="users" options={{ href: null }} />
             <Tabs.Screen name="companies" options={{ href: null }} />
             <Tabs.Screen name="contacts" options={{ href: null }} />
+            <Tabs.Screen name="company/[id]" options={{ href: null }} />
         </Tabs>
     );
 }

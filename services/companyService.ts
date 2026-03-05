@@ -22,6 +22,24 @@ export const companyService = {
         return data.data || [];
     },
 
+    getCompanyById: async (id: number | string, token: string): Promise<Company> => {
+        const response = await fetch(`${API_URL}/companies/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || 'Error al obtener la empresa');
+        }
+
+        const data = await response.json();
+        return data.data;
+    },
+
     createCompany: async (companyData: CreateCompanyFormData, token: string): Promise<{ company?: Company }> => {
         const response = await fetch(`${API_URL}/companies`, {
             method: 'POST',
