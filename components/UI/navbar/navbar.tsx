@@ -33,10 +33,8 @@ const Navbar = ({
 	backButton = false,
 }: NavbarProps) => {
 	const pathname = usePathname();
-
 	const navParams = getNavbarProps(pathname);
 
-	// Esta ruta usa un navbar especial para mostrar más info
 	if (pathname === ROUTES.ITINERARY_RESULT) {
 		navParams.title = title;
 		navParams.subtitle = subtitle;
@@ -44,35 +42,33 @@ const Navbar = ({
 	}
 
 	const gradientColors = useMemo(() => {
-		if (colors?.length >= 2) {
-			return colors.slice(0, 2);
-		}
+		if (colors?.length >= 2) return colors.slice(0, 2);
 		return ['#07174c', '#0f2d6b'];
 	}, [colors]);
 
+	const displayTitle = navParams.title || title;
+	const displaySubtitle = navParams.subtitle || subtitle;
+
 	return (
 		<LinearGradient
-			colors={[gradientColors[0], gradientColors[1]]}
+			colors={[gradientColors[0], gradientColors[1]] as [string, string]}
 			start={{ x: 0, y: 0 }}
 			end={{ x: 1, y: 1 }}
 			style={styles.header}
 		>
-			{/* Top row: brand + back button */}
 			<View style={styles.topRow}>
 				{backButton ? (
 					<Pressable
 						style={({ pressed }) => [
 							styles.backButton,
-							pressed && { opacity: 0.7 }
+							pressed && { opacity: 0.7 },
 						]}
 						onPress={() =>
-							router.push(
-								ROUTES.ITINERARY as RelativePathString | ExternalPathString,
-							)
+							router.push(ROUTES.ITINERARY as RelativePathString | ExternalPathString)
 						}
 					>
 						<View style={styles.backButtonInner}>
-							<ArrowLeft size={18} color="#ffffff" />
+							<ArrowLeft size={20} color="#ffffff" />
 						</View>
 					</Pressable>
 				) : (
@@ -85,18 +81,25 @@ const Navbar = ({
 				)}
 			</View>
 
-			{/* Main content */}
-			<View style={styles.headerContent}>
-				<View style={styles.iconWrap}>
-					{navParams.icon || icon}
+			<View style={styles.contentContainer}>
+				<View style={styles.titleRow}>
+					{navParams.icon || icon ? (
+						<View style={styles.iconWrap}>{navParams.icon || icon}</View>
+					) : null}
+					{displayTitle ? (
+						<Text style={styles.headerTitle} numberOfLines={2}>
+							{displayTitle}
+						</Text>
+					) : null}
 				</View>
-				<Text style={styles.headerTitle}>{navParams.title || title}</Text>
-				<Text style={styles.headerSubtitle}>
-					{navParams.subtitle || subtitle}
-				</Text>
+
+				{displaySubtitle ? (
+					<Text style={styles.headerSubtitle} numberOfLines={2}>
+						{displaySubtitle}
+					</Text>
+				) : null}
 			</View>
 
-			{/* Curved divider at bottom */}
 			<View style={styles.curveDivider} />
 		</LinearGradient>
 	);
@@ -105,16 +108,15 @@ export default Navbar;
 
 const styles = StyleSheet.create({
 	header: {
-		paddingTop: Platform.OS === 'ios' ? 56 : 36,
-		paddingBottom: 32,
+		paddingTop: Platform.OS === 'ios' ? 56 : 40,
+		paddingBottom: 28, // Reduced from original 40/32, but more than the cramped 20
 		overflow: 'visible',
 	},
 	topRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'space-between',
 		paddingHorizontal: 20,
-		marginBottom: 16,
+		marginBottom: 12,
 	},
 	brandMark: {
 		flexDirection: 'row',
@@ -134,72 +136,63 @@ const styles = StyleSheet.create({
 	brandText: {
 		fontFamily: 'Inter-Bold',
 		fontSize: 11,
-		color: 'rgba(255,255,255,0.55)',
+		color: 'rgba(255,255,255,0.6)',
 		letterSpacing: 2.5,
 	},
-	accentDots: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 4,
-	},
-	dot: {
-		borderRadius: 99,
-		backgroundColor: 'rgba(96,165,250,0.35)',
-	},
-	dotSm: { width: 4, height: 4 },
-	dotMd: { width: 6, height: 6 },
-	dotLg: { width: 8, height: 8, backgroundColor: 'rgba(96,165,250,0.5)' },
 	backButton: {
 		padding: 4,
+		marginLeft: -4,
 	},
 	backButtonInner: {
-		width: 34,
-		height: 34,
-		borderRadius: 10,
+		width: 38,
+		height: 38,
+		borderRadius: 12,
 		backgroundColor: 'rgba(255,255,255,0.12)',
 		borderWidth: 1,
 		borderColor: 'rgba(255,255,255,0.2)',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	headerContent: {
+	contentContainer: {
+		paddingHorizontal: 24,
 		alignItems: 'center',
-		paddingHorizontal: 20,
 	},
-	iconWrap: {
-		width: 52,
-		height: 52,
-		borderRadius: 16,
-		backgroundColor: 'rgba(59,130,246,0.2)',
-		borderWidth: 1,
-		borderColor: 'rgba(96,165,250,0.3)',
+	titleRow: {
+		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginBottom: 12,
+		gap: 12,
+		marginBottom: 6,
+	},
+	iconWrap: {
+		// No background box, just the clean icon
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	headerTitle: {
-		fontSize: 22,
+		fontSize: 24, // Original was 28 (too big), compact was 16 (too small)
 		fontFamily: 'Inter-Bold',
 		color: '#ffffff',
-		letterSpacing: 0.3,
+		letterSpacing: 0.5,
 		textAlign: 'center',
+		flexShrink: 1,
 	},
 	headerSubtitle: {
-		fontSize: 13,
+		fontSize: 14,
 		fontFamily: 'Inter-Regular',
-		color: 'rgba(191,219,254,0.85)',
-		marginTop: 4,
+		color: 'rgba(191,219,254,0.9)',
 		textAlign: 'center',
-		lineHeight: 18,
+		lineHeight: 20,
+		maxWidth: '90%',
 	},
 	curveDivider: {
 		position: 'absolute',
 		bottom: -1,
 		left: 0,
 		right: 0,
-		height: 16,
+		height: 18,
 		backgroundColor: '#f1f5f9',
-		borderTopLeftRadius: 20,
-		borderTopRightRadius: 20,
+		borderTopLeftRadius: 24,
+		borderTopRightRadius: 24,
 	},
 });

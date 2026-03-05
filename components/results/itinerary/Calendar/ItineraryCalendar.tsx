@@ -14,9 +14,17 @@ const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Se
 const CARRIER_COLORS: Record<string, string> = {
     'ZIM': '#07174c',
     'Maersk': '#2d9cdb',
-    'Hapag-Lloyd': '#f26e21',
-    'default': '#64748b'
+    'Hapag-Lloyd': '#e55a0b',
+    'default': '#64748b',
 };
+
+function getCompanyColor(company: string): string {
+    if (CARRIER_COLORS[company]) return CARRIER_COLORS[company];
+    const key = Object.keys(CARRIER_COLORS).find(k =>
+        company?.toLowerCase().includes(k.toLowerCase())
+    );
+    return key ? CARRIER_COLORS[key] : CARRIER_COLORS['default'];
+}
 
 const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -185,7 +193,10 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
                         const dayRoutes = routesByDate[dateKey] || [];
                         const isSelected = selectedDate === dateKey;
                         const isToday = new Date().toDateString() === date.toDateString();
-                        const carriersPresent = Array.from(new Set(dayRoutes.map(r => r.carrier)));
+                        // Use route.company (reflects the API source, not the vessel carrier)
+                        const companiesPresent = Array.from(new Set(dayRoutes.map(r => r.company)));
+                        const visibleCompanies = companiesPresent.slice(0, 2);
+                        const overflowCount = companiesPresent.length - visibleCompanies.length;
 
                         return (
                             <Pressable
@@ -210,18 +221,24 @@ const ItineraryCalendar = ({ routes }: ItineraryCalendarProps) => {
                                     {date.getDate()}
                                 </Text>
 
-                                <View style={styles.indicators}>
-                                    {carriersPresent.slice(0, 3).map((carrier, cIdx) => (
+                                <View style={styles.pillsContainer}>
+                                    {visibleCompanies.map((company, cIdx) => (
                                         <View
                                             key={cIdx}
                                             style={[
-                                                styles.carrierDot,
-                                                { backgroundColor: CARRIER_COLORS[carrier] || CARRIER_COLORS['default'] }
+                                                styles.companyPill,
+                                                { backgroundColor: getCompanyColor(company) }
                                             ]}
-                                        />
+                                        >
+                                            <Text style={styles.companyPillText} numberOfLines={1}>
+                                                {company}
+                                            </Text>
+                                        </View>
                                     ))}
-                                    {carriersPresent.length > 3 && (
-                                        <Text style={styles.moreIndicators}>+</Text>
+                                    {overflowCount > 0 && (
+                                        <View style={styles.overflowPill}>
+                                            <Text style={styles.overflowText}>+{overflowCount}</Text>
+                                        </View>
                                     )}
                                 </View>
                             </Pressable>
@@ -361,32 +378,33 @@ const styles = StyleSheet.create({
     },
     dayCell: {
         width: `${100 / 7}%`,
-        aspectRatio: 1,
-        padding: 4,
+        minHeight: 56,
+        padding: 3,
         borderWidth: 1,
         borderColor: '#f8fafc',
         alignItems: 'center',
     },
     hasRoutesDayCell: {
-        backgroundColor: '#dcfce7',
+        backgroundColor: '#f0fdf4',
         borderColor: '#bbf7d0',
-        borderRadius: 12,
+        borderRadius: 10,
     },
     selectedDayCell: {
         backgroundColor: '#eff6ff',
         borderColor: '#bfdbfe',
-        borderRadius: 12,
+        borderRadius: 10,
         borderWidth: 2,
     },
     todayCell: {
         backgroundColor: '#f8fafc',
-        borderRadius: 12,
+        borderRadius: 10,
     },
     dayNumber: {
         fontFamily: 'Inter-Medium',
-        fontSize: 15,
+        fontSize: 13,
         color: '#334155',
-        marginTop: 4,
+        marginTop: 3,
+        marginBottom: 2,
     },
     selectedDayText: {
         color: '#1d4ed8',
@@ -396,22 +414,34 @@ const styles = StyleSheet.create({
         color: '#0f172a',
         fontFamily: 'Inter-Bold',
     },
-    indicators: {
-        flexDirection: 'row',
-        marginTop: 'auto',
-        marginBottom: 4,
-        gap: 3,
-        flexWrap: 'wrap',
-        justifyContent: 'center',
+    pillsContainer: {
+        width: '100%',
+        gap: 2,
+        alignItems: 'stretch',
+        paddingBottom: 2,
     },
-    carrierDot: {
-        width: 6,
-        height: 6,
-        borderRadius: 3,
+    companyPill: {
+        borderRadius: 4,
+        paddingHorizontal: 3,
+        paddingVertical: 2,
+        alignItems: 'center',
     },
-    moreIndicators: {
-        fontSize: 8,
-        color: '#64748b',
+    companyPillText: {
         fontFamily: 'Inter-Bold',
+        fontSize: 7,
+        color: '#ffffff',
+        letterSpacing: 0.2,
+    },
+    overflowPill: {
+        borderRadius: 4,
+        paddingHorizontal: 3,
+        paddingVertical: 2,
+        backgroundColor: '#94a3b8',
+        alignItems: 'center',
+    },
+    overflowText: {
+        fontFamily: 'Inter-Bold',
+        fontSize: 7,
+        color: '#ffffff',
     },
 });
