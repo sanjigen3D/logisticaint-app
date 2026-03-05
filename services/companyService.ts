@@ -47,7 +47,7 @@ export const companyService = {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(companyData),
+            body: JSON.stringify({ ...companyData, active: true }),
         });
 
         const data = await response.json();

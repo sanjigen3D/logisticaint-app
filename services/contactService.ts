@@ -29,7 +29,7 @@ export const contactService = {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(contactData),
+            body: JSON.stringify({ ...contactData, active: true }),
         });
 
         const data = await response.json();
