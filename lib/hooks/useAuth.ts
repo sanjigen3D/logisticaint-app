@@ -38,16 +38,15 @@ export const useAuth = () => {
 	const canEditUser = (targetUser: { id: number; type: string; company_name?: string }) => {
 		if (!auth.user) return false;
 
-		// 1. Regla de Auto-Preservacion: Protege que el usuario se elimine o pase a Inactivo
 		if (targetUser.id === auth.user.id) return false;
 
 		const myWeight = getRoleWeight(auth.user.type, auth.user.company_name);
 		const targetWeight = getRoleWeight(targetUser.type, targetUser.company_name);
 
-		// 2. Supremacia: SuperAdmins pueden tocar a cualquiera
+		// Supremacia: SuperAdmins pueden tocar a cualquiera
 		if (myWeight === 4) return true;
 
-		// 3. Jerarquía Normal: Puedo editar sólo si mi peso es mayor o igual al del objetivo
+		// Jerarquía Normal: Puedo editar sólo si mi peso es mayor o igual al del objetivo
 		return myWeight >= targetWeight;
 	};
 
@@ -66,12 +65,6 @@ export const useAuth = () => {
 
 export const useRequireAuth = () => {
 	const auth = useAuth();
-
-	// useEffect(() => {
-	// 	if (!auth.isLoading && !auth.isAuthenticated){
-	// 		// manejo de navegación, debería ser manejado en routing
-	// 	}
-	// }, [auth.isLoading, auth.isAuthenticated]);
 
 	return auth;
 }
