@@ -28,7 +28,7 @@ import {
 } from 'react-native';
 
 export const CreateContactForm = () => {
-    const { token, isManagerOrHigher } = useAuth();
+    const { token, user, isManagerOrHigher, isSuperAdmin } = useAuth();
     const { showToast } = useToastStore();
     const router = useRouter();
 
@@ -54,7 +54,12 @@ export const CreateContactForm = () => {
         setLoadingCompanies(true);
         try {
             const data = await companyService.getCompanies(token);
-            setCompanies(data);
+            if (!isSuperAdmin() && user?.company_id) {
+                const myCompany = data.find((c: Company) => c.id === user.company_id);
+                setCompanies(myCompany ? [myCompany] : []);
+            } else {
+                setCompanies(data);
+            }
         } catch {
             showToast({
                 type: 'error',
@@ -71,6 +76,7 @@ export const CreateContactForm = () => {
         handleSubmit,
         formState: { errors, isValid, isSubmitting },
         reset,
+        setValue,
     } = useForm<CreateContactFormData>({
         resolver: zodResolver(createContactSchema),
         mode: 'onChange',
@@ -80,6 +86,12 @@ export const CreateContactForm = () => {
             email: '',
         },
     });
+
+    useEffect(() => {
+        if (!isSuperAdmin() && user?.company_id) {
+            setValue('company_id', user.company_id, { shouldValidate: true });
+        }
+    }, [user?.company_id, setValue]);
 
     const handleCreateContact = async (data: CreateContactFormData) => {
         if (!token) {
@@ -243,7 +255,7 @@ export const CreateContactForm = () => {
                                 selectedValue={value}
                                 onSelect={(val) => onChange(Number(val))}
                                 placeholder={loadingCompanies ? 'Cargando empresas...' : 'Seleccionar empresa'}
-                                disabled={loadingCompanies || companies.length === 0}
+                                disabled={loadingCompanies || companies.length === 0 || !isSuperAdmin()}
                                 error={!!errors.company_id}
                                 icon={<Building2 size={20} color="#0284c7" />}
                             />

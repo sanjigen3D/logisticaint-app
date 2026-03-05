@@ -1,5 +1,7 @@
 import { useAuthStore } from '@/lib/stores/authStore';
 
+const SUPER_ADMIN_COMPANY_NAME = 'sanjigen';
+
 export const useAuth = () => {
 	const auth = useAuthStore();
 
@@ -12,7 +14,7 @@ export const useAuth = () => {
 	};
 
 	const isSuperAdmin = (): boolean => {
-		return !!auth.user?.company_name?.toLowerCase().includes('sanjigen');
+		return !!auth.user?.company_name?.toLowerCase().includes(SUPER_ADMIN_COMPANY_NAME);
 	};
 
 	const hasRole = (role: string | string[]) => {
@@ -24,7 +26,7 @@ export const useAuth = () => {
 	};
 
 	const getRoleWeight = (roleType?: string, companyName?: string) => {
-		if (companyName?.toLowerCase().includes('sanjigen')) return 4;
+		if (companyName?.toLowerCase().includes(SUPER_ADMIN_COMPANY_NAME)) return 4;
 		switch (roleType) {
 			case 'Admin': return 3;
 			case 'Manager': return 2;

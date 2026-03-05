@@ -42,7 +42,7 @@ const MANAGER_TYPE_OPTIONS = ALL_TYPE_OPTIONS.filter((o) => o.value >= 2);
 
 export const CreateUserForm = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const { token, isAdmin, isManagerOrHigher } = useAuth();
+    const { token, user, isAdmin, isManagerOrHigher, isSuperAdmin } = useAuth();
     const { showToast } = useToastStore();
     const router = useRouter();
 
@@ -71,7 +71,12 @@ export const CreateUserForm = () => {
         setLoadingCompanies(true);
         try {
             const data = await companyService.getCompanies(token);
-            setCompanies(data);
+            if (!isSuperAdmin() && user?.company_id) {
+                const myCompany = data.find((c: Company) => c.id === user.company_id);
+                setCompanies(myCompany ? [myCompany] : []);
+            } else {
+                setCompanies(data);
+            }
         } catch (error) {
             showToast({
                 type: 'error',
@@ -89,6 +94,7 @@ export const CreateUserForm = () => {
         handleSubmit,
         formState: { errors, isValid, isSubmitting },
         reset,
+        setValue,
     } = useForm<CreateUserFormData>({
         resolver: zodResolver(createUserSchema),
         mode: 'onChange',
@@ -100,6 +106,12 @@ export const CreateUserForm = () => {
             active: true,
         },
     });
+
+    useEffect(() => {
+        if (!isSuperAdmin() && user?.company_id) {
+            setValue('company_id', user.company_id, { shouldValidate: true });
+        }
+    }, [user?.company_id, setValue]);
 
     const handleCreateUser = async (data: CreateUserFormData) => {
         if (!token) {
@@ -302,7 +314,7 @@ export const CreateUserForm = () => {
                                 selectedValue={value}
                                 onSelect={(val) => onChange(Number(val))}
                                 placeholder={loadingCompanies ? 'Cargando empresas...' : 'Seleccionar empresa'}
-                                disabled={loadingCompanies || companies.length === 0}
+                                disabled={loadingCompanies || companies.length === 0 || !isSuperAdmin()}
                                 error={!!errors.company_id}
                                 icon={<Building2 size={20} color="#3b82f6" />}
                             />
