@@ -1,15 +1,14 @@
 import LocationInput from '@/components/forms/itinery/LocationInput';
-import useDebounce from '@/lib/hooks/useDebounce';
-import { FormData, Port } from '@/lib/types/types';
+import { FormData } from '@/lib/types/types';
 import { formSchema } from '@/lib/validations/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Search } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
 	ActivityIndicator,
+	Platform,
 	Pressable,
 	StyleSheet,
 	Text,
@@ -20,96 +19,23 @@ const PortSearchForm = () => {
 	const {
 		control,
 		handleSubmit,
-		watch,
 		formState: { errors, isValid, isLoading },
 	} = useForm<FormData>({
 		resolver: zodResolver(formSchema),
+		mode: 'onChange', // Validate on every change for instant UI feedback
 		defaultValues: {
 			origin: {
 				name: '',
 				country: '',
+				location: '',
 			},
 			destination: {
 				name: '',
 				country: '',
+				location: '',
 			},
 		},
 	});
-
-	// Observar los valores actuales del formulario
-	const originValue = watch('origin');
-	const destinationValue = watch('destination');
-
-	const [originQuery, setOriginQuery] = useState('');
-	const [destinationQuery, setDestinationQuery] = useState('');
-	const [originSuggestions, setOriginSuggestions] = useState<Port[]>([]);
-	const [destinationSuggestions, setDestinationSuggestions] = useState<Port[]>(
-		[],
-	);
-	const [loadingOrigin, setLoadingOrigin] = useState(false);
-	const [loadingDestination, setLoadingDestination] = useState(false);
-	const debouncedOrigin = useDebounce(originQuery, 600);
-	const debouncedDestination = useDebounce(destinationQuery, 600);
-
-	const fetchPorts = async (query: string): Promise<Port[]> => {
-		if (query.length < 3) return [];
-		const newQuery = query.toLowerCase();
-		try {
-			const res = await fetch(
-				`https://marines-services.vercel.app/portSearch?name=${encodeURIComponent(newQuery)}`,
-			);
-			if (!res.ok) return [];
-			const data: Port[] = await res.json();
-
-			// aquí retorno cada puerto encontrado para ser mostrado en el autocompletar
-			return data.map((port) => {
-				return {
-					name: port.name,
-					country: port.country,
-					location: port.location,
-				};
-			});
-		} catch {
-			return [];
-		}
-	};
-
-	// Función para verificar si la query coincide con el puerto seleccionado
-	const isQueryMatchingSelectedPort = (
-		query: string,
-		selectedPort: Port,
-	): boolean => {
-		if (!query || query.length < 3) return true;
-		if (!selectedPort.name || !selectedPort.country) return false;
-		const fullPortName = `${selectedPort.name}, ${selectedPort.country}`;
-		return (
-			fullPortName.toLowerCase().includes(query.toLowerCase()) ||
-			selectedPort.name.toLowerCase().includes(query.toLowerCase())
-		);
-	};
-
-	// Efectos para buscar sugerencias
-	useEffect(() => {
-		// Solo hacer fetch si la query de origen no coincide con el puerto ya seleccionado
-		if (!isQueryMatchingSelectedPort(debouncedOrigin, originValue)) {
-			setLoadingOrigin(true);
-			fetchPorts(debouncedOrigin).then((results) => {
-				setOriginSuggestions(results);
-				setLoadingOrigin(false);
-			});
-		}
-	}, [debouncedOrigin, originValue]);
-
-	useEffect(() => {
-		// Solo hacer fetch si la query de destino no coincide con el puerto ya seleccionado
-		if (!isQueryMatchingSelectedPort(debouncedDestination, destinationValue)) {
-			setLoadingDestination(true);
-			fetchPorts(debouncedDestination).then((results) => {
-				setDestinationSuggestions(results);
-				setLoadingDestination(false);
-			});
-		}
-	}, [debouncedDestination, destinationValue]);
 
 	const onSubmit = (data: FormData) => {
 		router.push({
@@ -127,70 +53,65 @@ const PortSearchForm = () => {
 
 	return (
 		<View style={styles.cardShadow}>
-			<View style={{ paddingBottom: 16 }}>
-				<Text
-					style={{
-						fontFamily: 'Inter-SemiBold',
-						fontSize: 18,
-						color: '#0f172a',
-						letterSpacing: 0.2,
-						marginBottom: 4,
-					}}
-				>
-					Buscar Itinerario
-				</Text>
+			<View style={styles.header}>
+				<Text style={styles.title}>Buscar Itinerario</Text>
+				<Text style={styles.subtitle}>Encuentra las mejores rutas portuarias</Text>
 			</View>
 
-			<View style={{ gap: 14, marginBottom: 20 }}>
+			<View style={[styles.formContainer, { zIndex: 10, elevation: 10 }]}>
 				{/* Origen */}
-				<LocationInput
-					control={control}
-					name="origin"
-					placeholder="Origen"
-					iconColor="#3b82f6"
-					loading={loadingOrigin}
-					suggestions={originSuggestions}
-					setSuggestions={setOriginSuggestions}
-					setQuery={setOriginQuery}
-					error={errors.origin}
-				/>
+				<View style={{ zIndex: 10, elevation: 10 }}>
+					<LocationInput
+						control={control}
+						name="origin"
+						placeholder="Puerto de origen"
+						iconColor="#3b82f6"
+						error={errors.origin}
+					/>
+				</View>
 
 				{/* Destino */}
-				<LocationInput
-					control={control}
-					name="destination"
-					placeholder="Destino"
-					iconColor="#ef4444"
-					loading={loadingDestination}
-					suggestions={destinationSuggestions}
-					setSuggestions={setDestinationSuggestions}
-					setQuery={setDestinationQuery}
-					error={errors.destination}
-				/>
+				{/* zIndex menor para no tapar los resultados del origen */}
+				<View style={{ zIndex: 5, elevation: 5 }}>
+					<LocationInput
+						control={control}
+						name="destination"
+						placeholder="Puerto de destino"
+						iconColor="#ef4444"
+						error={errors.destination}
+					/>
+				</View>
 			</View>
 
 			<Pressable
-				style={isValid ? styles.buttonActive : styles.buttonDisabled}
+				style={({ pressed }) => [
+					styles.buttonBase,
+					!isValid && styles.buttonDisabled,
+					pressed && isValid && styles.buttonPressed,
+				]}
 				onPress={handleSubmit(onSubmit)}
 				disabled={!isValid}
 			>
 				<LinearGradient
-					colors={isValid ? ['#07174c', '#0b3477'] : ['#94a3b8', '#64748b']}
+					colors={isValid ? ['#0f172a', '#1e293b'] : ['#cbd5e1', '#94a3b8']}
+					start={{ x: 0, y: 0 }}
+					end={{ x: 1, y: 1 }}
 					style={styles.searchButtonGradient}
 				>
-					<Search size={20} color="#fff" />
-					<Text style={styles.searchButtonText}>
-						{isLoading ? (
-							<ActivityIndicator size="small" color="#5a8ce8" />
-						) : (
-							'Buscar'
-						)}
-					</Text>
+					{isLoading ? (
+						<ActivityIndicator size="small" color="#ffffff" />
+					) : (
+						<>
+							<Search size={20} color="#ffffff" strokeWidth={2.5} />
+							<Text style={styles.searchButtonText}>Buscar</Text>
+						</>
+					)}
 				</LinearGradient>
 			</Pressable>
 		</View>
 	);
 };
+
 export default PortSearchForm;
 
 const styles = StyleSheet.create({
@@ -198,35 +119,78 @@ const styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		borderRadius: 24,
 		padding: 24,
-		shadowColor: '#0f172a',
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.1,
-		shadowRadius: 16,
-		elevation: 6,
+		...Platform.select({
+			ios: {
+				shadowColor: '#1e293b',
+				shadowOffset: { width: 0, height: 12 },
+				shadowOpacity: 0.08,
+				shadowRadius: 32,
+			},
+			android: {
+				elevation: 8,
+			},
+		}),
 		borderWidth: 1,
-		borderColor: '#f1f5f9',
+		borderColor: '#f8fafc',
 	},
-	buttonActive: {
+	header: {
+		marginBottom: 24,
+	},
+	title: {
+		fontFamily: 'Inter-Bold',
+		fontSize: 20,
+		color: '#0f172a',
+		letterSpacing: -0.5,
+		marginBottom: 4,
+	},
+	subtitle: {
+		fontFamily: 'Inter-Medium',
+		fontSize: 14,
+		color: '#64748b',
+		letterSpacing: 0.2,
+	},
+	formContainer: {
+		gap: 16, // Espaciado entre inputs
+		marginBottom: 28,
+	},
+	buttonBase: {
 		borderRadius: 16,
 		overflow: 'hidden',
+		zIndex: 1,
+		elevation: 1,
+		marginTop: 8,
+		...Platform.select({
+			ios: {
+				shadowColor: '#3b82f6',
+				shadowOffset: { width: 0, height: 8 },
+				shadowOpacity: 0.2,
+				shadowRadius: 16,
+			},
+			android: {
+				elevation: 4,
+			},
+		}),
+	},
+	buttonPressed: {
+		transform: [{ scale: 0.98 }],
 	},
 	buttonDisabled: {
-		borderRadius: 16,
-		overflow: 'hidden',
-		opacity: 0.5,
+		opacity: 0.8,
+		shadowOpacity: 0,
+		elevation: 0,
 	},
 	searchButtonGradient: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
-		paddingVertical: 17,
+		paddingVertical: 18,
 		paddingHorizontal: 24,
-		gap: 8,
+		gap: 10,
 	},
 	searchButtonText: {
-		fontSize: 15,
+		fontSize: 16,
 		fontFamily: 'Inter-SemiBold',
 		color: '#ffffff',
-		letterSpacing: 0.3,
+		letterSpacing: 0.5,
 	},
 });
