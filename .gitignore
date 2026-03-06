@@ -49,3 +49,4 @@ app-example
 .agent/
 tasks/
 docs/tasks
+ts_errors.log

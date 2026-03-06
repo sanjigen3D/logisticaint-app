@@ -1,3 +1,5 @@
+import { CompanyDocumentsList } from '@/components/company/CompanyDocumentsList';
+import { DocumentUploadForm } from '@/components/forms/admin/DocumentUploadForm';
 import { EditCompanyForm } from '@/components/forms/admin/EditCompanyForm';
 import { EditUserForm } from '@/components/forms/admin/EditUserForm';
 import AdaptiveModal from '@/components/UI/AdaptiveModal';
@@ -93,6 +95,10 @@ export default function CompanyDashboardScreen() {
     const [editingUser, setEditingUser] = useState<UserItem | null>(null);
     const [deletingUser, setDeletingUser] = useState<UserItem | null>(null);
     const [isDeletingUser, setIsDeletingUser] = useState(false);
+
+    // Document Modals state
+    const [showUploadModal, setShowUploadModal] = useState(false);
+    const [showDocsModal, setShowDocsModal] = useState(false);
 
     const { width } = useWindowDimensions();
 
@@ -254,7 +260,7 @@ export default function CompanyDashboardScreen() {
                         styles.docButton,
                         pressed && { opacity: 0.8 }
                     ]}
-                    onPress={() => showToast({ type: 'info', message: 'Próximamente', description: 'Esta función estará disponible muy pronto.' })}
+                    onPress={() => setShowUploadModal(true)}
                 >
                     <UploadCloud size={24} color="#059669" />
                     <Text style={styles.docButtonText}>Subir Documento</Text>
@@ -266,7 +272,7 @@ export default function CompanyDashboardScreen() {
                         styles.docButtonView,
                         pressed && { opacity: 0.8 }
                     ]}
-                    onPress={() => showToast({ type: 'info', message: 'Próximamente', description: 'Esta función estará disponible muy pronto.' })}
+                    onPress={() => setShowDocsModal(true)}
                 >
                     <FileText size={24} color="#3b82f6" />
                     <Text style={[styles.docButtonText, { color: '#2563eb' }]}>Ver Documentos</Text>
@@ -396,6 +402,29 @@ export default function CompanyDashboardScreen() {
                 isDestructive={true}
                 isLoading={isDeletingUser}
             />
+
+            {/* Document Upload Modal */}
+            <AdaptiveModal
+                visible={showUploadModal}
+                onClose={() => setShowUploadModal(false)}
+                title="Subir Documento"
+            >
+                <DocumentUploadForm
+                    companyId={company.id}
+                    onSuccess={() => setShowUploadModal(false)}
+                />
+            </AdaptiveModal>
+
+            {/* Documents List Modal */}
+            <AdaptiveModal
+                visible={showDocsModal}
+                onClose={() => setShowDocsModal(false)}
+                title="Documentos de la Empresa"
+            >
+                <View style={{ minHeight: 300, maxHeight: 600 }}>
+                    <CompanyDocumentsList companyId={company.id} />
+                </View>
+            </AdaptiveModal>
         </View>
     );
 }
