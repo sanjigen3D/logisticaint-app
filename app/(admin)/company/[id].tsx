@@ -225,7 +225,7 @@ export default function CompanyDashboardScreen() {
                                 {company.active ? 'Activa' : 'Inactiva'}
                             </Text>
                         </View>
-                        {authUser?.type !== 'User' && (
+                        {authUser?.type === 'Admin' && (
                             <Pressable
                                 onPress={() => setShowOptionsModal(true)}
                                 style={({ pressed }) => [
@@ -322,21 +322,23 @@ export default function CompanyDashboardScreen() {
                         <Text style={styles.optionText}>Editar Información</Text>
                     </Pressable>
 
-                    <Pressable
-                        style={({ pressed }) => [
-                            styles.optionItem,
-                            pressed && { backgroundColor: '#f8fafc' }
-                        ]}
-                        onPress={() => {
-                            setShowOptionsModal(false);
-                            setTimeout(() => setDeletingCompany(true), 300);
-                        }}
-                    >
-                        <View style={[styles.optionIcon, { backgroundColor: '#fef2f2' }]}>
-                            <Trash2 size={20} color="#ef4444" />
-                        </View>
-                        <Text style={[styles.optionText, { color: '#ef4444' }]}>Eliminar Empresa</Text>
-                    </Pressable>
+                    {isSuperAdmin && (
+                        <Pressable
+                            style={({ pressed }) => [
+                                styles.optionItem,
+                                pressed && { backgroundColor: '#f8fafc' }
+                            ]}
+                            onPress={() => {
+                                setShowOptionsModal(false);
+                                setTimeout(() => setDeletingCompany(true), 300);
+                            }}
+                        >
+                            <View style={[styles.optionIcon, { backgroundColor: '#fef2f2' }]}>
+                                <Trash2 size={20} color="#ef4444" />
+                            </View>
+                            <Text style={[styles.optionText, { color: '#ef4444' }]}>Eliminar Empresa</Text>
+                        </Pressable>
+                    )}
                 </View>
             </AdaptiveModal>
 

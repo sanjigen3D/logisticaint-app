@@ -24,7 +24,7 @@ import {
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export default function CompaniesScreen() {
-    const { isManagerOrHigher, user, token } = useAuth();
+    const { isManager, isUser, user, token } = useAuth();
     const router = useRouter();
     const { showToast } = useToastStore();
     const [companies, setCompanies] = useState<Company[]>([]);
@@ -154,7 +154,7 @@ export default function CompaniesScreen() {
         return result;
     }, [companies, searchQuery]);
 
-    if (!isSuperAdmin) {
+    if (isManager() || isUser()) {
         return <Redirect href="/(tabs)" />;
     }
 

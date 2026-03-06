@@ -1,6 +1,6 @@
 # Jerarquía de Roles Basada en Pesos Matemáticos (`typeWeight`)
 
-En aplicaciones empresariales Multi-Tenant, el manejo de permisos basado exclusivamente en strings (ej. `if (role === 'Admin' || role === 'Manager')`) rápidamente se vuelve insostenible a medida que el sistema crece. Para solucionar esto y mantener la integridad del Directorio de Usuarios de manera robusta y de bajo costo algorítmico, hemos implementado una **Estrategia de Seguridad basada en Pesos (Weights)**.
+En aplicaciones empresariales Multi-Tenant, el manejo de permisos basado exclusivamente en strings (ej. `if (role === 'Admin' || role === 'Manager')`) rápidamente se vuelve insostenible a medida que el sistema crece. Para solucionar esto y mantener la integridad del Directorio de Usuarios de manera robusta y de bajo costo algorítmico, implementamos una **Estrategia de Seguridad basada en Pesos (Weights)**.
 
 ## 🔢 La Escala Matemática
 Se ha asignado un valor entero constante a cada rol dentro del ecosistema, ordenado de mayor a menor privilegio:

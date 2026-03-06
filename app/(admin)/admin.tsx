@@ -14,7 +14,7 @@ import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 108 : 96;
 
 export default function AdminScreen() {
-    const { isManagerOrHigher } = useAuth();
+    const { isManagerOrHigher, isManager } = useAuth();
     const { showToast } = useToastStore();
 
     useEffect(() => {
@@ -51,12 +51,14 @@ export default function AdminScreen() {
                 accentColor="#7c3aed"
             />
 
-            <QuickMenu
-                quickActions={quickActionsAdminCompanies}
-                type="admin"
-                title="Empresas"
-                accentColor="#059669"
-            />
+            {!isManager() && (
+                <QuickMenu
+                    quickActions={quickActionsAdminCompanies}
+                    type="admin"
+                    title="Empresas"
+                    accentColor="#059669"
+                />
+            )}
 
             <QuickMenu
                 quickActions={quickActionsAdminContacts}
